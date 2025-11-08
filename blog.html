@@ -546,47 +546,151 @@
             background: #4b5563;
         }
         
-        /* Phrase Button Styles */
-        .phrase-section {
-            margin-top: 1rem;
+        /* Parse Section Styles */
+        .parse-section {
+            margin-bottom: 1.5rem;
             padding: 1rem;
-            background: #f8fafc;
-            border-radius: 0.5rem;
             border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            background: #f8fafc;
         }
-        .phrase-textarea {
+        .parse-textarea {
             width: 100%;
+            min-height: 150px;
             padding: 0.75rem;
             border: 1px solid #d1d5db;
             border-radius: 0.375rem;
             resize: vertical;
-            min-height: 120px;
-            margin-bottom: 0.75rem;
             font-family: monospace;
+            font-size: 0.875rem;
         }
-        .phrase-buttons {
-            display: flex;
-            gap: 0.5rem;
-        }
-        .phrase-buttons button {
-            padding: 0.5rem 1rem;
+        .parse-btn {
+            margin-top: 0.5rem;
+            background: #3b82f6;
+            color: white;
             border: none;
             border-radius: 0.375rem;
+            padding: 0.5rem 1rem;
             cursor: pointer;
             transition: background-color 0.2s;
         }
-        .phrase-buttons button.primary {
+        .parse-btn:hover {
+            background: #2563eb;
+        }
+        
+        /* Text Editor Styles */
+        .text-editor {
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            overflow: hidden;
+        }
+        .editor-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.25rem;
+            padding: 0.5rem;
+            background: #f8fafc;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .editor-btn {
+            background: white;
+            border: 1px solid #d1d5db;
+            border-radius: 0.25rem;
+            padding: 0.375rem 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .editor-btn:hover {
+            background: #f1f5f9;
+        }
+        .editor-btn.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+        .editor-content {
+            min-height: 120px;
+            padding: 0.75rem;
+            outline: none;
+        }
+        .editor-content:empty:before {
+            content: attr(data-placeholder);
+            color: #9ca3af;
+        }
+        .editor-content ul, .editor-content ol {
+            padding-left: 1.5rem;
+            margin: 0.5rem 0;
+        }
+        .editor-content ul {
+            list-style-type: disc;
+        }
+        .editor-content ol {
+            list-style-type: decimal;
+        }
+        .link-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .link-modal-content {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            width: 90%;
+            max-width: 500px;
+        }
+        .link-modal h3 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+        .link-input-group {
+            margin-bottom: 1rem;
+        }
+        .link-input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        .link-input-group input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.25rem;
+        }
+        .link-modal-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+        .link-modal-actions button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .link-modal-actions button.primary {
             background: #3b82f6;
             color: white;
         }
-        .phrase-buttons button.primary:hover {
+        .link-modal-actions button.primary:hover {
             background: #2563eb;
         }
-        .phrase-buttons button.secondary {
+        .link-modal-actions button.secondary {
             background: #6b7280;
             color: white;
         }
-        .phrase-buttons button.secondary:hover {
+        .link-modal-actions button.secondary:hover {
             background: #4b5563;
         }
     </style>
@@ -595,6 +699,25 @@
     <!-- Success Message -->
     <div id="copySuccess" class="copy-success">
         <i class="fas fa-check-circle mr-2"></i> Copied to clipboard successfully!
+    </div>
+
+    <!-- Link Modal -->
+    <div id="linkModal" class="link-modal">
+        <div class="link-modal-content">
+            <h3>Insert Link</h3>
+            <div class="link-input-group">
+                <label for="linkText">Link Text</label>
+                <input type="text" id="linkText" placeholder="Enter link text">
+            </div>
+            <div class="link-input-group">
+                <label for="linkUrl">URL</label>
+                <input type="text" id="linkUrl" placeholder="https://example.com">
+            </div>
+            <div class="link-modal-actions">
+                <button id="cancelLink" class="secondary">Cancel</button>
+                <button id="insertLink" class="primary">Insert Link</button>
+            </div>
+        </div>
     </div>
 
     <div class="container mx-auto px-4 py-8">
@@ -665,7 +788,31 @@
                     
                     <div class="mb-6">
                         <label for="summary" class="block text-gray-700 font-medium mb-2">Summary</label>
-                        <textarea id="summary" rows="6" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Write or paste your summary here">The Staff Selection Commission (SSC) has officially released the notification for Combined Graduate Level (CGL) Examination 2024 with a total of 17,727 vacancies across various government departments. This comprehensive guide covers all essential details including eligibility criteria, important dates, application process, exam pattern, and preparation strategy. Candidates between 18-32 years with a bachelor's degree can apply online through the official SSC website before the deadline of March 24, 2024. The selection process involves a tiered examination system followed by skill tests and document verification for successful candidates.</textarea>
+                        <div class="text-editor">
+                            <div class="editor-toolbar">
+                                <button type="button" class="editor-btn" data-command="bold" title="Bold">
+                                    <i class="fas fa-bold"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="italic" title="Italic">
+                                    <i class="fas fa-italic"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="underline" title="Underline">
+                                    <i class="fas fa-underline"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="insertUnorderedList" title="Bullet List">
+                                    <i class="fas fa-list-ul"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="insertOrderedList" title="Numbered List">
+                                    <i class="fas fa-list-ol"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="createLink" title="Insert Link">
+                                    <i class="fas fa-link"></i>
+                                </button>
+                            </div>
+                            <div id="summary" class="editor-content" contenteditable="true" data-placeholder="Write or paste your summary here">
+                                The Staff Selection Commission (SSC) has officially released the notification for Combined Graduate Level (CGL) Examination 2024 with a total of <strong>17,727 vacancies</strong> across various government departments. This comprehensive guide covers all essential details including <strong>eligibility criteria, important dates, application process, exam pattern, and preparation strategy</strong>. Candidates between 18-32 years with a bachelor's degree can apply online through the official SSC website before the deadline of March 24, 2024. The selection process involves a tiered examination system followed by skill tests and document verification for successful candidates.
+                            </div>
+                        </div>
                     </div>
                     
                     <hr class="my-8 border-gray-300">
@@ -738,26 +885,19 @@
                 <div class="mb-8">
                     <h3 class="text-lg font-bold mb-4 text-blue-700">Important Dates</h3>
                     
-                    <div class="phrase-section">
-                        <h4 class="font-medium mb-2">Quick Date Entry</h4>
-                        <textarea id="datesPhraseText" class="phrase-textarea" placeholder="Paste dates in format:
-Short Notification Date : 17 July 2025
+                    <!-- Parse Dates Section -->
+                    <div class="parse-section">
+                        <h4 class="font-medium mb-2">Parse Dates from Text</h4>
+                        <p class="text-sm text-gray-600 mb-2">Paste dates in format: "Label : Value"</p>
+                        <textarea id="parseDatesText" class="parse-textarea" placeholder="Short Notification Date : 17 July 2025
 Full Notification Date : 06 November 2025
 Application Start : 07 November 2025
 Last Date Apply Online : 06 December 2025
 Fee Payment Date : 06 December 2025
-Correction Last Date : 12 December 2025
-Admit Card : January 2026
-Exam Date : 17 to 21 January 2026
-Result Date : Notify Later"></textarea>
-                        <div class="phrase-buttons">
-                            <button type="button" id="phraseDatesBtn" class="primary">
-                                <i class="fas fa-magic mr-2"></i> Parse Dates
-                            </button>
-                            <button type="button" id="clearDatesBtn" class="secondary">
-                                <i class="fas fa-trash mr-2"></i> Clear
-                            </button>
-                        </div>
+Correction Last Date : 12 December 2025"></textarea>
+                        <button type="button" id="parseDatesBtn" class="parse-btn">
+                            <i class="fas fa-magic mr-2"></i> Parse Dates
+                        </button>
                     </div>
                     
                     <div id="datesContainer">
@@ -795,21 +935,17 @@ Result Date : Notify Later"></textarea>
                 <div class="mb-8">
                     <h3 class="text-lg font-bold mb-4 text-blue-700">Application Fees</h3>
                     
-                    <div class="phrase-section">
-                        <h4 class="font-medium mb-2">Quick Fee Entry</h4>
-                        <textarea id="feesPhraseText" class="phrase-textarea" placeholder="Paste fees in format:
-General/ OBC/ EBC (CL) : ₹600/-
+                    <!-- Parse Fees Section -->
+                    <div class="parse-section">
+                        <h4 class="font-medium mb-2">Parse Fees from Text</h4>
+                        <p class="text-sm text-gray-600 mb-2">Paste fees in format: "Label : Value"</p>
+                        <textarea id="parseFeesText" class="parse-textarea" placeholder="General/ OBC/ EBC (CL) : ₹600/-
 EBC/ OBC (NCL)/ EWS : ₹400/-
 SC/ ST/ PH (Divyang) : ₹400/-
 Error Correction Charges : ₹300/-"></textarea>
-                        <div class="phrase-buttons">
-                            <button type="button" id="phraseFeesBtn" class="primary">
-                                <i class="fas fa-magic mr-2"></i> Parse Fees
-                            </button>
-                            <button type="button" id="clearFeesBtn" class="secondary">
-                                <i class="fas fa-trash mr-2"></i> Clear
-                            </button>
-                        </div>
+                        <button type="button" id="parseFeesBtn" class="parse-btn">
+                            <i class="fas fa-magic mr-2"></i> Parse Fees
+                        </button>
                     </div>
                     
                     <div id="feesContainer">
@@ -848,14 +984,16 @@ Error Correction Charges : ₹300/-"></textarea>
                     <div id="linksContainer">
                         <div class="dynamic-list">
                             <div class="dynamic-item">
-                                <input type="text" class="link-label-input px-3 py-2 border border-gray-300 rounded" placeholder="Link Label" value="Apply Online">
-                                <input type="text" class="link-button-input px-3 py-2 border border-gray-300 rounded" placeholder="Link Button Text" value="Registration | Login">
+                                <input type="text" class="link-label-input px-3 py-2 border border-gray-300 rounded" placeholder="Link Label" value="Apply Online (OTR)">
+                                <input type="text" class="link-url-input px-3 py-2 border border-gray-300 rounded" placeholder="Link URL" value="https://www.google.com">
+                                <input type="text" class="link-button-input px-3 py-2 border border-gray-300 rounded" placeholder="Link Button Text" value="Click here">
                                 <button type="button" class="remove-link-btn bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600">
                                     <i class="fas fa-times"></i>
                                 </button>
                             </div>
                             <div class="dynamic-item">
                                 <input type="text" class="link-label-input px-3 py-2 border border-gray-300 rounded" placeholder="Link Label" value="Official Notification">
+                                <input type="text" class="link-url-input px-3 py-2 border border-gray-300 rounded" placeholder="Link URL" value="https://www.example.com">
                                 <input type="text" class="link-button-input px-3 py-2 border border-gray-300 rounded" placeholder="Link Button Text" value="Click Here">
                                 <button type="button" class="remove-link-btn bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600">
                                     <i class="fas fa-times"></i>
@@ -892,6 +1030,35 @@ Error Correction Charges : ₹300/-"></textarea>
                         </div>
                     </div>
                     
+                    <div class="mt-4">
+                        <label for="ageRelaxationText" class="block text-gray-700 font-medium mb-2">Age Relaxation Text</label>
+                        <div class="text-editor">
+                            <div class="editor-toolbar">
+                                <button type="button" class="editor-btn" data-command="bold" title="Bold">
+                                    <i class="fas fa-bold"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="italic" title="Italic">
+                                    <i class="fas fa-italic"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="underline" title="Underline">
+                                    <i class="fas fa-underline"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="insertUnorderedList" title="Bullet List">
+                                    <i class="fas fa-list-ul"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="insertOrderedList" title="Numbered List">
+                                    <i class="fas fa-list-ol"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="createLink" title="Insert Link">
+                                    <i class="fas fa-link"></i>
+                                </button>
+                            </div>
+                            <div id="ageRelaxationText" class="editor-content" contenteditable="true" data-placeholder="Enter age relaxation text here">
+                                PNB provides age relaxation for the Bank LBO as per their regulations.
+                            </div>
+                        </div>
+                    </div>
+                    
                     <button type="button" id="addAgeBtn" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-200">
                         <i class="fas fa-plus mr-2"></i> Add More Age Limits
                     </button>
@@ -911,7 +1078,34 @@ Error Correction Charges : ₹300/-"></textarea>
                             <div class="dynamic-item">
                                 <input type="text" class="post-name-input px-3 py-2 border border-gray-300 rounded" placeholder="Post Name" value="PNB Bank LBO">
                                 <input type="text" class="post-count-input px-3 py-2 border border-gray-300 rounded" placeholder="No. Of Post" value="750 Post">
-                                <textarea class="eligibility-input px-3 py-2 border border-gray-300 rounded" placeholder="Eligibility Criteria" rows="2">Candidates must have a Bachelor's Degree in any discipline from a university recognized by the Government of India or possess an equivalent qualification approved by the Central Government. They must also have a valid marksheet or degree certificate and clearly mention the percentage of marks obtained in graduation while registering for the position.</textarea>
+                                <div class="flex-1">
+                                    <label class="block text-sm text-gray-600 mb-1">Eligibility Criteria</label>
+                                    <div class="text-editor">
+                                        <div class="editor-toolbar">
+                                            <button type="button" class="editor-btn" data-command="bold" title="Bold">
+                                                <i class="fas fa-bold"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="italic" title="Italic">
+                                                <i class="fas fa-italic"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="underline" title="Underline">
+                                                <i class="fas fa-underline"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="insertUnorderedList" title="Bullet List">
+                                                <i class="fas fa-list-ul"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="insertOrderedList" title="Numbered List">
+                                                <i class="fas fa-list-ol"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="createLink" title="Insert Link">
+                                                <i class="fas fa-link"></i>
+                                            </button>
+                                        </div>
+                                        <div class="editor-content eligibility-editor" contenteditable="true" data-placeholder="Enter eligibility criteria">
+                                            Candidates must have a Bachelor's Degree in any discipline from a university recognized by the Government of India or possess an equivalent qualification approved by the Central Government. They must also have a valid marksheet or degree certificate and clearly mention the percentage of marks obtained in graduation while registering for the position.
+                                        </div>
+                                    </div>
+                                </div>
                                 <button type="button" class="remove-vacancy-btn bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600">
                                     <i class="fas fa-times"></i>
                                 </button>
@@ -919,7 +1113,34 @@ Error Correction Charges : ₹300/-"></textarea>
                             <div class="dynamic-item">
                                 <input type="text" class="post-name-input px-3 py-2 border border-gray-300 rounded" placeholder="Post Name" value="Assistant Manager">
                                 <input type="text" class="post-count-input px-3 py-2 border border-gray-300 rounded" placeholder="No. Of Post" value="250 Post">
-                                <textarea class="eligibility-input px-3 py-2 border border-gray-300 rounded" placeholder="Eligibility Criteria" rows="2">Graduate in any discipline with minimum 60% marks. Preference will be given to candidates with MBA degree. Computer knowledge is essential.</textarea>
+                                <div class="flex-1">
+                                    <label class="block text-sm text-gray-600 mb-1">Eligibility Criteria</label>
+                                    <div class="text-editor">
+                                        <div class="editor-toolbar">
+                                            <button type="button" class="editor-btn" data-command="bold" title="Bold">
+                                                <i class="fas fa-bold"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="italic" title="Italic">
+                                                <i class="fas fa-italic"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="underline" title="Underline">
+                                                <i class="fas fa-underline"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="insertUnorderedList" title="Bullet List">
+                                                <i class="fas fa-list-ul"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="insertOrderedList" title="Numbered List">
+                                                <i class="fas fa-list-ol"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="createLink" title="Insert Link">
+                                                <i class="fas fa-link"></i>
+                                            </button>
+                                        </div>
+                                        <div class="editor-content eligibility-editor" contenteditable="true" data-placeholder="Enter eligibility criteria">
+                                            Graduate in any discipline with minimum 60% marks. Preference will be given to candidates with MBA degree. Computer knowledge is essential.
+                                        </div>
+                                    </div>
+                                </div>
                                 <button type="button" class="remove-vacancy-btn bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600">
                                     <i class="fas fa-times"></i>
                                 </button>
@@ -1020,21 +1241,99 @@ Error Correction Charges : ₹300/-"></textarea>
                         <div class="dynamic-list">
                             <div class="dynamic-item">
                                 <input type="text" class="process-icon-input px-3 py-2 border border-gray-300 rounded" placeholder="Icon Class (e.g., fas fa-user-check)" value="fas fa-user-check">
-                                <textarea class="process-text-input px-3 py-2 border border-gray-300 rounded" placeholder="Process Text" rows="2">Interested candidates who wish to apply for the PNB Bank post can submit their application online before 23 November 2025.</textarea>
+                                <div class="flex-1">
+                                    <div class="text-editor">
+                                        <div class="editor-toolbar">
+                                            <button type="button" class="editor-btn" data-command="bold" title="Bold">
+                                                <i class="fas fa-bold"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="italic" title="Italic">
+                                                <i class="fas fa-italic"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="underline" title="Underline">
+                                                <i class="fas fa-underline"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="insertUnorderedList" title="Bullet List">
+                                                <i class="fas fa-list-ul"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="insertOrderedList" title="Numbered List">
+                                                <i class="fas fa-list-ol"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="createLink" title="Insert Link">
+                                                <i class="fas fa-link"></i>
+                                            </button>
+                                        </div>
+                                        <div class="editor-content process-text-editor" contenteditable="true" data-placeholder="Enter process text">
+                                            Interested candidates who wish to apply for the PNB Bank post can submit their application online before 23 November 2025.
+                                        </div>
+                                    </div>
+                                </div>
                                 <button type="button" class="remove-process-btn bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600">
                                     <i class="fas fa-times"></i>
                                 </button>
                             </div>
                             <div class="dynamic-item">
                                 <input type="text" class="process-icon-input px-3 py-2 border border-gray-300 rounded" placeholder="Icon Class (e.g., fas fa-link)" value="fas fa-link">
-                                <textarea class="process-text-input px-3 py-2 border border-gray-300 rounded" placeholder="Process Text" rows="2">Use the click here link provided below under important link section to apply directly.</textarea>
+                                <div class="flex-1">
+                                    <div class="text-editor">
+                                        <div class="editor-toolbar">
+                                            <button type="button" class="editor-btn" data-command="bold" title="Bold">
+                                                <i class="fas fa-bold"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="italic" title="Italic">
+                                                <i class="fas fa-italic"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="underline" title="Underline">
+                                                <i class="fas fa-underline"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="insertUnorderedList" title="Bullet List">
+                                                <i class="fas fa-list-ul"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="insertOrderedList" title="Numbered List">
+                                                <i class="fas fa-list-ol"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="createLink" title="Insert Link">
+                                                <i class="fas fa-link"></i>
+                                            </button>
+                                        </div>
+                                        <div class="editor-content process-text-editor" contenteditable="true" data-placeholder="Enter process text">
+                                            Use the click here link provided below under important link section to apply directly.
+                                        </div>
+                                    </div>
+                                </div>
                                 <button type="button" class="remove-process-btn bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600">
                                     <i class="fas fa-times"></i>
                                 </button>
                             </div>
                             <div class="dynamic-item">
                                 <input type="text" class="process-icon-input px-3 py-2 border border-gray-300 rounded" placeholder="Icon Class (e.g., fas fa-globe)" value="fas fa-globe">
-                                <textarea class="process-text-input px-3 py-2 border border-gray-300 rounded" placeholder="Process Text" rows="2">Alternatively, visit the official website of PNB Bank to complete the application process online.</textarea>
+                                <div class="flex-1">
+                                    <div class="text-editor">
+                                        <div class="editor-toolbar">
+                                            <button type="button" class="editor-btn" data-command="bold" title="Bold">
+                                                <i class="fas fa-bold"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="italic" title="Italic">
+                                                <i class="fas fa-italic"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="underline" title="Underline">
+                                                <i class="fas fa-underline"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="insertUnorderedList" title="Bullet List">
+                                                <i class="fas fa-list-ul"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="insertOrderedList" title="Numbered List">
+                                                <i class="fas fa-list-ol"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="createLink" title="Insert Link">
+                                                <i class="fas fa-link"></i>
+                                            </button>
+                                        </div>
+                                        <div class="editor-content process-text-editor" contenteditable="true" data-placeholder="Enter process text">
+                                            Alternatively, visit the official website of PNB Bank to complete the application process online.
+                                        </div>
+                                    </div>
+                                </div>
                                 <button type="button" class="remove-process-btn bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600">
                                     <i class="fas fa-times"></i>
                                 </button>
@@ -1048,7 +1347,31 @@ Error Correction Charges : ₹300/-"></textarea>
                     
                     <div class="mt-4">
                         <label for="noteText" class="block text-gray-700 font-medium mb-2">Note Text</label>
-                        <textarea id="noteText" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter note text here"><strong>Note:</strong> छात्रो से ये अनुरोध किया जाता है की वो अपना फॉर्म भरने से पहले Official Notification को ध्यान से जरूर पढे उसके बाद ही अपना फॉर्म भरे । (Last Date, Age Limit, & Education Qualification)</textarea>
+                        <div class="text-editor">
+                            <div class="editor-toolbar">
+                                <button type="button" class="editor-btn" data-command="bold" title="Bold">
+                                    <i class="fas fa-bold"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="italic" title="Italic">
+                                    <i class="fas fa-italic"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="underline" title="Underline">
+                                    <i class="fas fa-underline"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="insertUnorderedList" title="Bullet List">
+                                    <i class="fas fa-list-ul"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="insertOrderedList" title="Numbered List">
+                                    <i class="fas fa-list-ol"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="createLink" title="Insert Link">
+                                    <i class="fas fa-link"></i>
+                                </button>
+                            </div>
+                            <div id="noteText" class="editor-content" contenteditable="true" data-placeholder="Enter note text here">
+                                <strong>Note:</strong> छात्रो से ये अनुरोध किया जाता है की वो अपना फॉर्म भरने से पहले Official Notification को ध्यान से जरूर पढे उसके बाद ही अपना फॉर्म भरे । (Last Date, Age Limit, & Education Qualification)
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
@@ -1060,21 +1383,99 @@ Error Correction Charges : ₹300/-"></textarea>
                         <div class="dynamic-list">
                             <div class="dynamic-item">
                                 <input type="text" class="selection-icon-input px-3 py-2 border border-gray-300 rounded" placeholder="Icon Class (e.g., fas fa-desktop)" value="fas fa-desktop">
-                                <textarea class="selection-text-input px-3 py-2 border border-gray-300 rounded" placeholder="Selection Text" rows="2"><strong>Online Exam:</strong> Candidates will have to appear for an online examination that tests their knowledge in relevant subjects, reasoning ability, and general awareness.</textarea>
+                                <div class="flex-1">
+                                    <div class="text-editor">
+                                        <div class="editor-toolbar">
+                                            <button type="button" class="editor-btn" data-command="bold" title="Bold">
+                                                <i class="fas fa-bold"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="italic" title="Italic">
+                                                <i class="fas fa-italic"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="underline" title="Underline">
+                                                <i class="fas fa-underline"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="insertUnorderedList" title="Bullet List">
+                                                <i class="fas fa-list-ul"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="insertOrderedList" title="Numbered List">
+                                                <i class="fas fa-list-ol"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="createLink" title="Insert Link">
+                                                <i class="fas fa-link"></i>
+                                            </button>
+                                        </div>
+                                        <div class="editor-content selection-text-editor" contenteditable="true" data-placeholder="Enter selection text">
+                                            <strong>Online Exam:</strong> Candidates will have to appear for an online examination that tests their knowledge in relevant subjects, reasoning ability, and general awareness.
+                                        </div>
+                                    </div>
+                                </div>
                                 <button type="button" class="remove-selection-btn bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600">
                                     <i class="fas fa-times"></i>
                                 </button>
                             </div>
                             <div class="dynamic-item">
                                 <input type="text" class="selection-icon-input px-3 py-2 border border-gray-300 rounded" placeholder="Icon Class (e.g., fas fa-language)" value="fas fa-language">
-                                <textarea class="selection-text-input px-3 py-2 border border-gray-300 rounded" placeholder="Selection Text" rows="2"><strong>Language Proficiency Test:</strong> Candidates must demonstrate proficiency in the local language of the state/region for which they are applying.</textarea>
+                                <div class="flex-1">
+                                    <div class="text-editor">
+                                        <div class="editor-toolbar">
+                                            <button type="button" class="editor-btn" data-command="bold" title="Bold">
+                                                <i class="fas fa-bold"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="italic" title="Italic">
+                                                <i class="fas fa-italic"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="underline" title="Underline">
+                                                <i class="fas fa-underline"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="insertUnorderedList" title="Bullet List">
+                                                <i class="fas fa-list-ul"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="insertOrderedList" title="Numbered List">
+                                                <i class="fas fa-list-ol"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="createLink" title="Insert Link">
+                                                <i class="fas fa-link"></i>
+                                            </button>
+                                        </div>
+                                        <div class="editor-content selection-text-editor" contenteditable="true" data-placeholder="Enter selection text">
+                                            <strong>Language Proficiency Test:</strong> Candidates must demonstrate proficiency in the local language of the state/region for which they are applying.
+                                        </div>
+                                    </div>
+                                </div>
                                 <button type="button" class="remove-selection-btn bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600">
                                     <i class="fas fa-times"></i>
                                 </button>
                             </div>
                             <div class="dynamic-item">
                                 <input type="text" class="selection-icon-input px-3 py-2 border border-gray-300 rounded" placeholder="Icon Class (e.g., fas fa-user-tie)" value="fas fa-user-tie">
-                                <textarea class="selection-text-input px-3 py-2 border border-gray-300 rounded" placeholder="Selection Text" rows="2"><strong>Personal Interview:</strong> Shortlisted candidates from the online exam will be called for a personal interview to assess their communication skills, personality, and suitability for the banking sector.</textarea>
+                                <div class="flex-1">
+                                    <div class="text-editor">
+                                        <div class="editor-toolbar">
+                                            <button type="button" class="editor-btn" data-command="bold" title="Bold">
+                                                <i class="fas fa-bold"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="italic" title="Italic">
+                                                <i class="fas fa-italic"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="underline" title="Underline">
+                                                <i class="fas fa-underline"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="insertUnorderedList" title="Bullet List">
+                                                <i class="fas fa-list-ul"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="insertOrderedList" title="Numbered List">
+                                                <i class="fas fa-list-ol"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="createLink" title="Insert Link">
+                                                <i class="fas fa-link"></i>
+                                            </button>
+                                        </div>
+                                        <div class="editor-content selection-text-editor" contenteditable="true" data-placeholder="Enter selection text">
+                                            <strong>Personal Interview:</strong> Shortlisted candidates from the online exam will be called for a personal interview to assess their communication skills, personality, and suitability for the banking sector.
+                                        </div>
+                                    </div>
+                                </div>
                                 <button type="button" class="remove-selection-btn bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600">
                                     <i class="fas fa-times"></i>
                                 </button>
@@ -1112,7 +1513,31 @@ Error Correction Charges : ₹300/-"></textarea>
                     
                     <div class="mb-6">
                         <label for="paragraphContent" class="block text-gray-700 font-medium mb-2">Paragraph Content</label>
-                        <textarea id="paragraphContent" rows="6" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter paragraph content">The Staff Selection Commission Combined Graduate Level (SSC CGL) examination is one of the most prestigious competitive exams in India, attracting lakhs of graduates every year. The examination process consists of multiple tiers, each designed to test different skill sets and competencies required for various government positions.</textarea>
+                        <div class="text-editor">
+                            <div class="editor-toolbar">
+                                <button type="button" class="editor-btn" data-command="bold" title="Bold">
+                                    <i class="fas fa-bold"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="italic" title="Italic">
+                                    <i class="fas fa-italic"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="underline" title="Underline">
+                                    <i class="fas fa-underline"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="insertUnorderedList" title="Bullet List">
+                                    <i class="fas fa-list-ul"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="insertOrderedList" title="Numbered List">
+                                    <i class="fas fa-list-ol"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="createLink" title="Insert Link">
+                                    <i class="fas fa-link"></i>
+                                </button>
+                            </div>
+                            <div id="paragraphContent" class="editor-content" contenteditable="true" data-placeholder="Enter paragraph content">
+                                The Staff Selection Commission Combined Graduate Level (SSC CGL) examination is one of the most prestigious competitive exams in India, attracting lakhs of graduates every year. The examination process consists of multiple tiers, each designed to test different skill sets and competencies required for various government positions.
+                            </div>
+                        </div>
                     </div>
                     
                     <h3 class="text-lg font-bold mb-4 text-blue-700">Tables</h3>
@@ -1263,32 +1688,229 @@ Error Correction Charges : ₹300/-"></textarea>
                     
                     <div class="mb-6">
                         <label for="faqIntroText" class="block text-gray-700 font-medium mb-2">FAQ Introduction Text</label>
-                        <textarea id="faqIntroText" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter FAQ introduction text">Find answers to the most frequently asked questions about SSC CGL examination, eligibility, preparation, and selection process.</textarea>
+                        <div class="text-editor">
+                            <div class="editor-toolbar">
+                                <button type="button" class="editor-btn" data-command="bold" title="Bold">
+                                    <i class="fas fa-bold"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="italic" title="Italic">
+                                    <i class="fas fa-italic"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="underline" title="Underline">
+                                    <i class="fas fa-underline"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="insertUnorderedList" title="Bullet List">
+                                    <i class="fas fa-list-ul"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="insertOrderedList" title="Numbered List">
+                                    <i class="fas fa-list-ol"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="createLink" title="Insert Link">
+                                    <i class="fas fa-link"></i>
+                                </button>
+                            </div>
+                            <div id="faqIntroText" class="editor-content" contenteditable="true" data-placeholder="Enter FAQ introduction text">
+                                Find answers to the most frequently asked questions about SSC CGL examination, eligibility, preparation, and selection process.
+                            </div>
+                        </div>
                     </div>
                     
                     <h3 class="text-lg font-bold mb-4 text-blue-700">FAQ Questions & Answers</h3>
+                    
+                    <!-- Parse FAQ Section -->
+                    <div class="parse-section">
+                        <h4 class="font-medium mb-2">Parse FAQ from Text</h4>
+                        <p class="text-sm text-gray-600 mb-2">Paste Q&A in format: "Q: Question" and "A: Answer"</p>
+                        <textarea id="parseFaqText" class="parse-textarea" placeholder="Q: What is the start and last date to apply online for NABARD Assistant Manager Grade A Recruitment 2025?
+A: The online application for NABARD Assistant Manager Grade A Recruitment 2025 will start on 08 November 2025, and the last date to apply online is 30 November 2025. Candidates are advised to complete the registration process well before the closing date to avoid last-minute rush.
+
+Q: How many vacancies are announced under NABARD Grade A Recruitment 2025?
+A: The National Bank for Agriculture and Rural Development (NABARD) has announced a total of 91 vacancies for the Assistant Manager Grade A posts under the NABARD Grade A Recruitment 2025.
+
+Q: What is the age limit for NABARD Assistant Manager Grade A Recruitment 2025?
+A: The minimum age required for NABARD Grade A Recruitment 2025 is 21 years, and the maximum age limit is 30 years as on 01 November 2025. Age relaxation applies as per government rules."></textarea>
+                        <button type="button" id="parseFaqBtn" class="parse-btn">
+                            <i class="fas fa-magic mr-2"></i> Parse FAQ
+                        </button>
+                    </div>
                     
                     <div class="faq-input-section">
                         <div class="faq-input-container">
                             <div id="faqItemsContainer">
                                 <!-- FAQ items will be added here dynamically -->
                                 <div class="faq-input-row" data-id="1">
-                                    <textarea class="faq-question-input" placeholder="Enter question">What is the educational qualification required for SSC CGL 2024?</textarea>
-                                    <textarea class="faq-answer-input" placeholder="Enter answer">Candidates must possess a Bachelor's degree in any discipline from a recognized university or equivalent. The degree must be obtained before the closing date of application. Some specific posts may require additional educational qualifications:</textarea>
+                                    <div class="flex-1">
+                                        <div class="text-editor">
+                                            <div class="editor-toolbar">
+                                                <button type="button" class="editor-btn" data-command="bold" title="Bold">
+                                                    <i class="fas fa-bold"></i>
+                                                </button>
+                                                <button type="button" class="editor-btn" data-command="italic" title="Italic">
+                                                    <i class="fas fa-italic"></i>
+                                                </button>
+                                                <button type="button" class="editor-btn" data-command="underline" title="Underline">
+                                                    <i class="fas fa-underline"></i>
+                                                </button>
+                                                <button type="button" class="editor-btn" data-command="insertUnorderedList" title="Bullet List">
+                                                    <i class="fas fa-list-ul"></i>
+                                                </button>
+                                                <button type="button" class="editor-btn" data-command="insertOrderedList" title="Numbered List">
+                                                    <i class="fas fa-list-ol"></i>
+                                                </button>
+                                                <button type="button" class="editor-btn" data-command="createLink" title="Insert Link">
+                                                    <i class="fas fa-link"></i>
+                                                </button>
+                                            </div>
+                                            <div class="editor-content faq-question-editor" contenteditable="true" data-placeholder="Enter question">
+                                                What is the educational qualification required for SSC CGL 2024?
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="text-editor">
+                                            <div class="editor-toolbar">
+                                                <button type="button" class="editor-btn" data-command="bold" title="Bold">
+                                                    <i class="fas fa-bold"></i>
+                                                </button>
+                                                <button type="button" class="editor-btn" data-command="italic" title="Italic">
+                                                    <i class="fas fa-italic"></i>
+                                                </button>
+                                                <button type="button" class="editor-btn" data-command="underline" title="Underline">
+                                                    <i class="fas fa-underline"></i>
+                                                </button>
+                                                <button type="button" class="editor-btn" data-command="insertUnorderedList" title="Bullet List">
+                                                    <i class="fas fa-list-ul"></i>
+                                                </button>
+                                                <button type="button" class="editor-btn" data-command="insertOrderedList" title="Numbered List">
+                                                    <i class="fas fa-list-ol"></i>
+                                                </button>
+                                                <button type="button" class="editor-btn" data-command="createLink" title="Insert Link">
+                                                    <i class="fas fa-link"></i>
+                                                </button>
+                                            </div>
+                                            <div class="editor-content faq-answer-editor" contenteditable="true" data-placeholder="Enter answer">
+                                                Candidates must possess a Bachelor's degree in any discipline from a recognized university or equivalent. The degree must be obtained before the closing date of application. Some specific posts may require additional educational qualifications:
+                                            </div>
+                                        </div>
+                                    </div>
                                     <button type="button" class="remove-faq-btn">
                                         <i class="fas fa-times"></i>
                                     </button>
                                 </div>
                                 <div class="faq-input-row" data-id="2">
-                                    <textarea class="faq-question-input" placeholder="Enter question">What is the age limit for SSC CGL 2024?</textarea>
-                                    <textarea class="faq-answer-input" placeholder="Enter answer">The age limit for SSC CGL 2024 varies between 18 to 32 years as of August 1, 2024. However, age relaxation is provided for different categories:</textarea>
+                                    <div class="flex-1">
+                                        <div class="text-editor">
+                                            <div class="editor-toolbar">
+                                                <button type="button" class="editor-btn" data-command="bold" title="Bold">
+                                                    <i class="fas fa-bold"></i>
+                                                </button>
+                                                <button type="button" class="editor-btn" data-command="italic" title="Italic">
+                                                    <i class="fas fa-italic"></i>
+                                                </button>
+                                                <button type="button" class="editor-btn" data-command="underline" title="Underline">
+                                                    <i class="fas fa-underline"></i>
+                                                </button>
+                                                <button type="button" class="editor-btn" data-command="insertUnorderedList" title="Bullet List">
+                                                    <i class="fas fa-list-ul"></i>
+                                                </button>
+                                                <button type="button" class="editor-btn" data-command="insertOrderedList" title="Numbered List">
+                                                    <i class="fas fa-list-ol"></i>
+                                                </button>
+                                                <button type="button" class="editor-btn" data-command="createLink" title="Insert Link">
+                                                    <i class="fas fa-link"></i>
+                                                </button>
+                                            </div>
+                                            <div class="editor-content faq-question-editor" contenteditable="true" data-placeholder="Enter question">
+                                                What is the age limit for SSC CGL 2024?
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="text-editor">
+                                            <div class="editor-toolbar">
+                                                <button type="button" class="editor-btn" data-command="bold" title="Bold">
+                                                    <i class="fas fa-bold"></i>
+                                                </button>
+                                                <button type="button" class="editor-btn" data-command="italic" title="Italic">
+                                                    <i class="fas fa-italic"></i>
+                                                </button>
+                                                <button type="button" class="editor-btn" data-command="underline" title="Underline">
+                                                    <i class="fas fa-underline"></i>
+                                                </button>
+                                                <button type="button" class="editor-btn" data-command="insertUnorderedList" title="Bullet List">
+                                                    <i class="fas fa-list-ul"></i>
+                                                </button>
+                                                <button type="button" class="editor-btn" data-command="insertOrderedList" title="Numbered List">
+                                                    <i class="fas fa-list-ol"></i>
+                                                </button>
+                                                <button type="button" class="editor-btn" data-command="createLink" title="Insert Link">
+                                                    <i class="fas fa-link"></i>
+                                                </button>
+                                            </div>
+                                            <div class="editor-content faq-answer-editor" contenteditable="true" data-placeholder="Enter answer">
+                                                The age limit for SSC CGL 2024 varies between 18 to 32 years as of August 1, 2024. However, age relaxation is provided for different categories:
+                                            </div>
+                                        </div>
+                                    </div>
                                     <button type="button" class="remove-faq-btn">
                                         <i class="fas fa-times"></i>
                                     </button>
                                 </div>
                                 <div class="faq-input-row" data-id="3">
-                                    <textarea class="faq-question-input" placeholder="Enter question">How many attempts are allowed for SSC CGL?</textarea>
-                                    <textarea class="faq-answer-input" placeholder="Enter answer">There is no restriction on the number of attempts for SSC CGL examination. Candidates can appear for the exam as many times as they want, provided they meet the age criteria for that particular year. However, candidates should note:</textarea>
+                                    <div class="flex-1">
+                                        <div class="text-editor">
+                                            <div class="editor-toolbar">
+                                                <button type="button" class="editor-btn" data-command="bold" title="Bold">
+                                                    <i class="fas fa-bold"></i>
+                                                </button>
+                                                <button type="button" class="editor-btn" data-command="italic" title="Italic">
+                                                    <i class="fas fa-italic"></i>
+                                                </button>
+                                                <button type="button" class="editor-btn" data-command="underline" title="Underline">
+                                                    <i class="fas fa-underline"></i>
+                                                </button>
+                                                <button type="button" class="editor-btn" data-command="insertUnorderedList" title="Bullet List">
+                                                    <i class="fas fa-list-ul"></i>
+                                                </button>
+                                                <button type="button" class="editor-btn" data-command="insertOrderedList" title="Numbered List">
+                                                    <i class="fas fa-list-ol"></i>
+                                                </button>
+                                                <button type="button" class="editor-btn" data-command="createLink" title="Insert Link">
+                                                    <i class="fas fa-link"></i>
+                                                </button>
+                                            </div>
+                                            <div class="editor-content faq-question-editor" contenteditable="true" data-placeholder="Enter question">
+                                                How many attempts are allowed for SSC CGL?
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="text-editor">
+                                            <div class="editor-toolbar">
+                                                <button type="button" class="editor-btn" data-command="bold" title="Bold">
+                                                    <i class="fas fa-bold"></i>
+                                                </button>
+                                                <button type="button" class="editor-btn" data-command="italic" title="Italic">
+                                                    <i class="fas fa-italic"></i>
+                                                </button>
+                                                <button type="button" class="editor-btn" data-command="underline" title="Underline">
+                                                    <i class="fas fa-underline"></i>
+                                                </button>
+                                                <button type="button" class="editor-btn" data-command="insertUnorderedList" title="Bullet List">
+                                                    <i class="fas fa-list-ul"></i>
+                                                </button>
+                                                <button type="button" class="editor-btn" data-command="insertOrderedList" title="Numbered List">
+                                                    <i class="fas fa-list-ol"></i>
+                                                </button>
+                                                <button type="button" class="editor-btn" data-command="createLink" title="Insert Link">
+                                                    <i class="fas fa-link"></i>
+                                                </button>
+                                            </div>
+                                            <div class="editor-content faq-answer-editor" contenteditable="true" data-placeholder="Enter answer">
+                                                There is no restriction on the number of attempts for SSC CGL examination. Candidates can appear for the exam as many times as they want, provided they meet the age criteria for that particular year. However, candidates should note:
+                                            </div>
+                                        </div>
+                                    </div>
                                     <button type="button" class="remove-faq-btn">
                                         <i class="fas fa-times"></i>
                                     </button>
@@ -1300,9 +1922,6 @@ Error Correction Charges : ₹300/-"></textarea>
                             <button type="button" id="addFaqBtn" class="primary">
                                 <i class="fas fa-plus mr-2"></i> Add FAQ Item
                             </button>
-                            <button type="button" id="phraseFaqBtn" class="secondary">
-                                <i class="fas fa-magic mr-2"></i> Phrase FAQ
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -1312,7 +1931,7 @@ Error Correction Charges : ₹300/-"></textarea>
                 <button type="button" id="generateBtn" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center">
                     <i class="fas fa-code mr-2"></i> Generate HTML
                 </button>
-                <button type="button" id="copyBtn" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center">
+                <button type="button" id="copyBtn" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center" disabled>
                     <i class="fas fa-copy mr-2"></i> Copy to Clipboard
                 </button>
             </div>
@@ -1336,6 +1955,9 @@ Error Correction Charges : ₹300/-"></textarea>
             });
             document.getElementById('date').value = formattedDate;
             
+            // Load saved data from localStorage
+            loadSavedData();
+            
             // Generate initial HTML
             generateHTML();
             
@@ -1354,243 +1976,763 @@ Error Correction Charges : ₹300/-"></textarea>
             // Initialize FAQ functionality
             initFAQ();
             
-            // Initialize phrase functionality
-            initPhraseFunctionality();
+            // Initialize parse functionality
+            initParseFunctionality();
+            
+            // Initialize text editor functionality
+            initTextEditors();
         });
         
-        // Tab functionality
-        function initTabs() {
-            const tabButtons = document.querySelectorAll('.tab-button');
-            const tabContents = document.querySelectorAll('.tab-content');
+        // Initialize text editors
+        function initTextEditors() {
+            // Add event listeners to all editor buttons
+            document.querySelectorAll('.editor-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const command = this.getAttribute('data-command');
+                    const editor = this.closest('.text-editor').querySelector('.editor-content');
+                    
+                    if (command === 'createLink') {
+                        showLinkModal(editor);
+                    } else {
+                        document.execCommand(command, false, null);
+                        editor.focus();
+                    }
+                });
+            });
             
-            tabButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    const tabId = button.getAttribute('data-tab');
-                    
-                    // Update active tab button
-                    tabButtons.forEach(btn => btn.classList.remove('active'));
-                    button.classList.add('active');
-                    
-                    // Show active tab content
-                    tabContents.forEach(content => {
-                        content.classList.remove('active');
-                        if (content.id === tabId) {
-                            content.classList.add('active');
-                        }
-                    });
+            // Add event listeners to editor content areas
+            document.querySelectorAll('.editor-content').forEach(editor => {
+                editor.addEventListener('input', function() {
+                    saveDataToStorage();
+                    generateHTML();
                 });
             });
         }
         
-        // Phrase functionality
-        function initPhraseFunctionality() {
-            // Parse Dates
-            document.getElementById('phraseDatesBtn').addEventListener('click', function() {
-                const text = document.getElementById('datesPhraseText').value;
-                if (text) {
-                    parseDates(text);
-                }
-            });
+        // Show link modal
+function showLinkModal(editor) {
+    const modal = document.getElementById('linkModal');
+    const linkTextInput = document.getElementById('linkText');
+    const linkUrlInput = document.getElementById('linkUrl');
+    
+    // *** FIX: Store the current selection range before opening the modal and losing focus/selection. ***
+    const selection = window.getSelection();
+    let originalRange = null;
+
+    if (selection.rangeCount > 0) {
+        originalRange = selection.getRangeAt(0);
+    }
+    
+    // Capture the text that was selected (if any)
+    const selectedText = selection.toString();
+    
+    // Pre-populate link text input if text was selected
+    linkTextInput.value = selectedText;
+    linkUrlInput.value = ''; // Clear URL input
+    
+    modal.style.display = 'flex';
+    linkUrlInput.focus();
+
+    // Insert link button handler
+    document.getElementById('insertLink').onclick = function() {
+        const text = linkTextInput.value;
+        const url = linkUrlInput.value;
+        
+        if (url) {
+            // Restore focus to the editor
+            editor.focus();
             
-            // Clear Dates
-            document.getElementById('clearDatesBtn').addEventListener('click', function() {
-                document.getElementById('datesPhraseText').value = '';
-            });
+            // Restore the original selection range
+            if (originalRange) {
+                selection.removeAllRanges();
+                selection.addRange(originalRange);
+            }
             
-            // Parse Fees
-            document.getElementById('phraseFeesBtn').addEventListener('click', function() {
-                const text = document.getElementById('feesPhraseText').value;
-                if (text) {
-                    parseFees(text);
-                }
-            });
+            // If the user selected text, apply the link command
+            if (selectedText.trim() !== '') {
+                document.execCommand('createLink', false, url);
+                
+            } else {
+                // If no text was selected, insert the full <a> element as HTML
+                const linkContent = text || url;
+                document.execCommand('insertHTML', false, `<a href="${url}" target="_blank">${linkContent}</a>`);
+            }
             
-            // Clear Fees
-            document.getElementById('clearFeesBtn').addEventListener('click', function() {
-                document.getElementById('feesPhraseText').value = '';
-            });
+            // Reset the range to collapse after insertion
+            selection.collapseToEnd();
         }
         
-        function parseDates(text) {
-            const lines = text.split('\n');
-            const datesContainer = document.getElementById('datesContainer');
-            datesContainer.innerHTML = '';
+        // Hide and clean up
+        modal.style.display = 'none';
+        linkTextInput.value = '';
+        linkUrlInput.value = '';
+        
+        saveDataToStorage();
+        generateHTML();
+    };
+
+    // Cancel button handler
+    document.getElementById('cancelLink').onclick = function() {
+        modal.style.display = 'none';
+        linkTextInput.value = '';
+        linkUrlInput.value = '';
+    };
+}
+        
+        // Save data to localStorage
+        function saveDataToStorage() {
+            const formData = {
+                title: document.getElementById('title').value,
+                date: document.getElementById('date').value,
+                category: document.getElementById('category').value,
+                readTime: document.getElementById('readTime').value,
+                author: document.getElementById('author').value,
+                totalPosts: document.getElementById('totalPosts').value,
+                summary: document.getElementById('summary').innerHTML,
+                ageRelaxationText: document.getElementById('ageRelaxationText').innerHTML,
+                noteText: document.getElementById('noteText').innerHTML,
+                castVacancyTitle: document.getElementById('castVacancyTitle').value,
+                modernParagraphTitle: document.getElementById('modernParagraphTitle').value,
+                modernParagraphIcon: document.getElementById('modernParagraphIcon').value,
+                paragraphHeading: document.getElementById('paragraphHeading').value,
+                paragraphContent: document.getElementById('paragraphContent').innerHTML,
+                tableTitle: document.getElementById('tableTitle').value,
+                faqTitle: document.getElementById('faqTitle').value,
+                faqIntroTitle: document.getElementById('faqIntroTitle').value,
+                faqIntroText: document.getElementById('faqIntroText').innerHTML,
+                dates: getDynamicInputData('datesContainer'),
+                fees: getDynamicInputData('feesContainer'),
+                links: getDynamicInputData('linksContainer'),
+                age: getDynamicInputData('ageContainer'),
+                vacancy: getVacancyData(),
+                form: getFormData(),
+                selection: getSelectionData(),
+                castVacancy: getCastVacancyData(),
+                modernParagraph: getModernParagraphData(),
+                faq: getFaqData(),
+                toggles: getToggleStates()
+            };
             
-            lines.forEach(line => {
-                line = line.trim();
-                if (line && line.includes(':')) {
-                    const parts = line.split(':');
-                    const label = parts[0].trim();
-                    const value = parts.slice(1).join(':').trim();
+            localStorage.setItem('blogGeneratorData', JSON.stringify(formData));
+        }
+        
+        // Load saved data from localStorage
+        function loadSavedData() {
+            const savedData = localStorage.getItem('blogGeneratorData');
+            if (savedData) {
+                const formData = JSON.parse(savedData);
+                
+                // Set basic form values
+                document.getElementById('title').value = formData.title || '';
+                document.getElementById('date').value = formData.date || '';
+                document.getElementById('category').value = formData.category || 'Sarkari Jobs';
+                document.getElementById('readTime').value = formData.readTime || '5 min read';
+                document.getElementById('author').value = formData.author || 'SRK Team';
+                document.getElementById('totalPosts').value = formData.totalPosts || '';
+                document.getElementById('summary').innerHTML = formData.summary || '';
+                document.getElementById('ageRelaxationText').innerHTML = formData.ageRelaxationText || '';
+                document.getElementById('noteText').innerHTML = formData.noteText || '';
+                document.getElementById('castVacancyTitle').value = formData.castVacancyTitle || '';
+                document.getElementById('modernParagraphTitle').value = formData.modernParagraphTitle || '';
+                document.getElementById('modernParagraphIcon').value = formData.modernParagraphIcon || '';
+                document.getElementById('paragraphHeading').value = formData.paragraphHeading || '';
+                document.getElementById('paragraphContent').innerHTML = formData.paragraphContent || '';
+                document.getElementById('tableTitle').value = formData.tableTitle || '';
+                document.getElementById('faqTitle').value = formData.faqTitle || '';
+                document.getElementById('faqIntroTitle').value = formData.faqIntroTitle || '';
+                document.getElementById('faqIntroText').innerHTML = formData.faqIntroText || '';
+                
+                // Set dynamic input data
+                setDynamicInputData('datesContainer', formData.dates);
+                setDynamicInputData('feesContainer', formData.fees);
+                setDynamicInputData('linksContainer', formData.links);
+                setDynamicInputData('ageContainer', formData.age);
+                setVacancyData(formData.vacancy);
+                setFormData(formData.form);
+                setSelectionData(formData.selection);
+                
+                // Set cast vacancy data
+                setCastVacancyData(formData.castVacancy);
+                
+                // Set modern paragraph data
+                setModernParagraphData(formData.modernParagraph);
+                
+                // Set FAQ data
+                setFaqData(formData.faq);
+                
+                // Set toggle states
+                setToggleStates(formData.toggles);
+            }
+        }
+        
+        // Helper functions for data persistence
+        function getDynamicInputData(containerId) {
+            const container = document.getElementById(containerId);
+            const items = container.querySelectorAll('.dynamic-item');
+            const data = [];
+            
+            items.forEach(item => {
+                const inputs = item.querySelectorAll('input');
+                const itemData = {};
+                
+                inputs.forEach(input => {
+                    const className = Array.from(input.classList).find(cls => 
+                        cls.includes('label') || cls.includes('value') || 
+                        cls.includes('name') || cls.includes('count') || 
+                        cls.includes('icon') || cls.includes('text') ||
+                        cls.includes('input') || cls.includes('button') ||
+                        cls.includes('url')
+                    );
                     
-                    if (label && value) {
-                        const newDateItem = document.createElement('div');
-                        newDateItem.className = 'dynamic-item';
-                        newDateItem.innerHTML = `
-                            <input type="text" class="date-label-input px-3 py-2 border border-gray-300 rounded" placeholder="Date Label" value="${label}">
-                            <input type="text" class="date-value-input px-3 py-2 border border-gray-300 rounded" placeholder="Date Value" value="${value}">
-                            <button type="button" class="remove-date-btn bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        `;
-                        
-                        // Add event listener to the remove button
-                        newDateItem.querySelector('.remove-date-btn').addEventListener('click', function() {
-                            newDateItem.remove();
-                            generateHTML();
-                        });
-                        
-                        // Add event listeners to inputs
-                        const inputs = newDateItem.querySelectorAll('input');
-                        inputs.forEach(input => {
-                            input.addEventListener('input', generateHTML);
-                        });
-                        
-                        datesContainer.appendChild(newDateItem);
+                    if (className) {
+                        itemData[className] = input.value;
                     }
-                }
+                });
+                
+                data.push(itemData);
             });
             
-            generateHTML();
+            return data;
         }
         
-        function parseFees(text) {
-            const lines = text.split('\n');
-            const feesContainer = document.getElementById('feesContainer');
-            feesContainer.innerHTML = '';
+        function setDynamicInputData(containerId, data) {
+            if (!data || !Array.isArray(data)) return;
             
-            lines.forEach(line => {
-                line = line.trim();
-                if (line && line.includes(':')) {
-                    const parts = line.split(':');
-                    const label = parts[0].trim();
-                    const value = parts.slice(1).join(':').trim();
+            const container = document.getElementById(containerId);
+            const existingItems = container.querySelectorAll('.dynamic-item');
+            
+            // Remove existing items
+            existingItems.forEach(item => item.remove());
+            
+            // Add new items from data
+            data.forEach(itemData => {
+                const newItem = document.createElement('div');
+                newItem.className = 'dynamic-item';
+                
+                let inputsHTML = '';
+                Object.keys(itemData).forEach(key => {
+                    const value = itemData[key];
+                    inputsHTML += `<input type="text" class="${key} px-3 py-2 border border-gray-300 rounded" placeholder="${getPlaceholder(key)}" value="${value}">`;
+                });
+                
+                // Add remove button
+                const removeBtnClass = containerId.includes('dates') ? 'remove-date-btn' :
+                                      containerId.includes('fees') ? 'remove-fee-btn' :
+                                      containerId.includes('links') ? 'remove-link-btn' :
+                                      containerId.includes('age') ? 'remove-age-btn' :
+                                      containerId.includes('vacancy') ? 'remove-vacancy-btn' :
+                                      containerId.includes('form') ? 'remove-process-btn' :
+                                      containerId.includes('selection') ? 'remove-selection-btn' : 'remove-btn';
+                
+                inputsHTML += `<button type="button" class="${removeBtnClass} bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600"><i class="fas fa-times"></i></button>`;
+                
+                newItem.innerHTML = inputsHTML;
+                container.appendChild(newItem);
+            });
+        }
+        
+        function getVacancyData() {
+            const container = document.getElementById('vacancyContainer');
+            const items = container.querySelectorAll('.dynamic-item');
+            const data = [];
+            
+            items.forEach(item => {
+                const postName = item.querySelector('.post-name-input').value;
+                const postCount = item.querySelector('.post-count-input').value;
+                const eligibility = item.querySelector('.eligibility-editor').innerHTML;
+                
+                data.push({
+                    postName,
+                    postCount,
+                    eligibility
+                });
+            });
+            
+            return data;
+        }
+        
+        function setVacancyData(data) {
+            if (!data || !Array.isArray(data)) return;
+            
+            const container = document.getElementById('vacancyContainer');
+            container.innerHTML = '';
+            
+            data.forEach(item => {
+                const newItem = document.createElement('div');
+                newItem.className = 'dynamic-item';
+                
+                newItem.innerHTML = `
+                    <input type="text" class="post-name-input px-3 py-2 border border-gray-300 rounded" placeholder="Post Name" value="${item.postName || ''}">
+                    <input type="text" class="post-count-input px-3 py-2 border border-gray-300 rounded" placeholder="No. Of Post" value="${item.postCount || ''}">
+                    <div class="flex-1">
+                        <label class="block text-sm text-gray-600 mb-1">Eligibility Criteria</label>
+                        <div class="text-editor">
+                            <div class="editor-toolbar">
+                                <button type="button" class="editor-btn" data-command="bold" title="Bold">
+                                    <i class="fas fa-bold"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="italic" title="Italic">
+                                    <i class="fas fa-italic"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="underline" title="Underline">
+                                    <i class="fas fa-underline"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="insertUnorderedList" title="Bullet List">
+                                    <i class="fas fa-list-ul"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="insertOrderedList" title="Numbered List">
+                                    <i class="fas fa-list-ol"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="createLink" title="Insert Link">
+                                    <i class="fas fa-link"></i>
+                                </button>
+                            </div>
+                            <div class="editor-content eligibility-editor" contenteditable="true" data-placeholder="Enter eligibility criteria">
+                                ${item.eligibility || ''}
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="remove-vacancy-btn bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                
+                container.appendChild(newItem);
+            });
+            
+            // Reinitialize text editors
+            initTextEditors();
+        }
+        
+        function getFormData() {
+            const container = document.getElementById('formContainer');
+            const items = container.querySelectorAll('.dynamic-item');
+            const data = [];
+            
+            items.forEach(item => {
+                const icon = item.querySelector('.process-icon-input').value;
+                const text = item.querySelector('.process-text-editor').innerHTML;
+                
+                data.push({
+                    icon,
+                    text
+                });
+            });
+            
+            return data;
+        }
+        
+        function setFormData(data) {
+            if (!data || !Array.isArray(data)) return;
+            
+            const container = document.getElementById('formContainer');
+            container.innerHTML = '';
+            
+            data.forEach(item => {
+                const newItem = document.createElement('div');
+                newItem.className = 'dynamic-item';
+                
+                newItem.innerHTML = `
+                    <input type="text" class="process-icon-input px-3 py-2 border border-gray-300 rounded" placeholder="Icon Class (e.g., fas fa-user-check)" value="${item.icon || ''}">
+                    <div class="flex-1">
+                        <div class="text-editor">
+                            <div class="editor-toolbar">
+                                <button type="button" class="editor-btn" data-command="bold" title="Bold">
+                                    <i class="fas fa-bold"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="italic" title="Italic">
+                                    <i class="fas fa-italic"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="underline" title="Underline">
+                                    <i class="fas fa-underline"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="insertUnorderedList" title="Bullet List">
+                                    <i class="fas fa-list-ul"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="insertOrderedList" title="Numbered List">
+                                    <i class="fas fa-list-ol"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="createLink" title="Insert Link">
+                                    <i class="fas fa-link"></i>
+                                </button>
+                            </div>
+                            <div class="editor-content process-text-editor" contenteditable="true" data-placeholder="Enter process text">
+                                ${item.text || ''}
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="remove-process-btn bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                
+                container.appendChild(newItem);
+            });
+            
+            // Reinitialize text editors
+            initTextEditors();
+        }
+        
+        function getSelectionData() {
+            const container = document.getElementById('selectionContainer');
+            const items = container.querySelectorAll('.dynamic-item');
+            const data = [];
+            
+            items.forEach(item => {
+                const icon = item.querySelector('.selection-icon-input').value;
+                const text = item.querySelector('.selection-text-editor').innerHTML;
+                
+                data.push({
+                    icon,
+                    text
+                });
+            });
+            
+            return data;
+        }
+        
+        function setSelectionData(data) {
+            if (!data || !Array.isArray(data)) return;
+            
+            const container = document.getElementById('selectionContainer');
+            container.innerHTML = '';
+            
+            data.forEach(item => {
+                const newItem = document.createElement('div');
+                newItem.className = 'dynamic-item';
+                
+                newItem.innerHTML = `
+                    <input type="text" class="selection-icon-input px-3 py-2 border border-gray-300 rounded" placeholder="Icon Class (e.g., fas fa-desktop)" value="${item.icon || ''}">
+                    <div class="flex-1">
+                        <div class="text-editor">
+                            <div class="editor-toolbar">
+                                <button type="button" class="editor-btn" data-command="bold" title="Bold">
+                                    <i class="fas fa-bold"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="italic" title="Italic">
+                                    <i class="fas fa-italic"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="underline" title="Underline">
+                                    <i class="fas fa-underline"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="insertUnorderedList" title="Bullet List">
+                                    <i class="fas fa-list-ul"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="insertOrderedList" title="Numbered List">
+                                    <i class="fas fa-list-ol"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="createLink" title="Insert Link">
+                                    <i class="fas fa-link"></i>
+                                </button>
+                            </div>
+                            <div class="editor-content selection-text-editor" contenteditable="true" data-placeholder="Enter selection text">
+                                ${item.text || ''}
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="remove-selection-btn bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                
+                container.appendChild(newItem);
+            });
+            
+            // Reinitialize text editors
+            initTextEditors();
+        }
+        
+        function getPlaceholder(key) {
+            const placeholders = {
+                'date-label-input': 'Date Label',
+                'date-value-input': 'Date Value',
+                'fee-label-input': 'Fee Label',
+                'fee-value-input': 'Fee Value',
+                'link-label-input': 'Link Label',
+                'link-url-input': 'Link URL',
+                'link-button-input': 'Link Button Text',
+                'age-label-input': 'Age Label',
+                'age-value-input': 'Age Value',
+                'post-name-input': 'Post Name',
+                'post-count-input': 'No. Of Post',
+                'process-icon-input': 'Icon Class',
+                'selection-icon-input': 'Icon Class'
+            };
+            
+            return placeholders[key] || 'Enter value';
+        }
+        
+        function getCastVacancyData() {
+            const rows = document.querySelectorAll('#castVacancyRows .vacancy-row');
+            const data = [];
+            
+            rows.forEach(row => {
+                const postName = row.querySelector('.post-name').value;
+                const categories = Array.from(row.querySelectorAll('.category-input')).map(input => input.value);
+                
+                data.push({
+                    postName,
+                    categories
+                });
+            });
+            
+            return data;
+        }
+        
+        function setCastVacancyData(data) {
+            if (!data || !Array.isArray(data)) return;
+            
+            const container = document.getElementById('castVacancyRows');
+            container.innerHTML = '';
+            
+            data.forEach((item, index) => {
+                const newRow = document.createElement('div');
+                newRow.className = 'vacancy-row';
+                newRow.setAttribute('data-id', index + 1);
+                
+                let inputsHTML = `<input type="text" class="post-name" placeholder="Post Name" value="${item.postName || ''}">`;
+                
+                (item.categories || []).forEach(category => {
+                    inputsHTML += `<input type="number" class="category-input" placeholder="0" value="${category || ''}">`;
+                });
+                
+                // Add remove button
+                inputsHTML += `<button type="button" class="remove-row text-red-500 hover:text-red-700"><i class="fas fa-times"></i></button>`;
+                
+                newRow.innerHTML = inputsHTML;
+                container.appendChild(newRow);
+            });
+        }
+        
+        function getModernParagraphData() {
+            const activeTable = document.querySelector('.table-input-section.active');
+            const tableType = activeTable ? parseInt(activeTable.id.replace('table', '').replace('Col', '')) : 2;
+            
+            const headers = Array.from(activeTable.querySelectorAll('.table-header-input')).map(input => input.value);
+            const rows = Array.from(activeTable.querySelectorAll('.table-row')).map(row => 
+                Array.from(row.querySelectorAll('.table-data-input')).map(input => input.value)
+            );
+            
+            return {
+                tableType,
+                headers,
+                rows
+            };
+        }
+        
+        function setModernParagraphData(data) {
+            if (!data) return;
+            
+            // Set table type
+            if (data.tableType) {
+                document.querySelectorAll('.table-type-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                    if (parseInt(btn.getAttribute('data-columns')) === data.tableType) {
+                        btn.classList.add('active');
+                    }
+                });
+                
+                document.querySelectorAll('.table-input-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                document.getElementById(`table${data.tableType}Col`).classList.add('active');
+            }
+            
+            // Set table data
+            if (data.headers && data.rows) {
+                const activeTable = document.querySelector('.table-input-section.active');
+                if (activeTable) {
+                    const headerInputs = activeTable.querySelectorAll('.table-header-input');
+                    headerInputs.forEach((input, index) => {
+                        if (data.headers[index]) {
+                            input.value = data.headers[index];
+                        }
+                    });
                     
-                    if (label && value) {
-                        const newFeeItem = document.createElement('div');
-                        newFeeItem.className = 'dynamic-item';
-                        newFeeItem.innerHTML = `
-                            <input type="text" class="fee-label-input px-3 py-2 border border-gray-300 rounded" placeholder="Fee Label" value="${label}">
-                            <input type="text" class="fee-value-input px-3 py-2 border border-gray-300 rounded" placeholder="Fee Value" value="${value}">
-                            <button type="button" class="remove-fee-btn bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        `;
+                    const rowsContainer = activeTable.querySelector('div[id$="Rows"]');
+                    rowsContainer.innerHTML = '';
+                    
+                    data.rows.forEach(rowData => {
+                        const newRow = document.createElement('div');
+                        newRow.className = 'table-row';
                         
-                        // Add event listener to the remove button
-                        newFeeItem.querySelector('.remove-fee-btn').addEventListener('click', function() {
-                            newFeeItem.remove();
-                            generateHTML();
+                        let inputsHTML = '';
+                        rowData.forEach(cell => {
+                            inputsHTML += `<input type="text" class="table-data-input" value="${cell || ''}">`;
                         });
                         
-                        // Add event listeners to inputs
-                        const inputs = newFeeItem.querySelectorAll('input');
-                        inputs.forEach(input => {
-                            input.addEventListener('input', generateHTML);
-                        });
-                        
-                        feesContainer.appendChild(newFeeItem);
-                    }
+                        inputsHTML += '<button type="button" class="remove-table-row bg-red-500 text-white px-2 py-1 rounded text-sm">×</button>';
+                        newRow.innerHTML = inputsHTML;
+                        rowsContainer.appendChild(newRow);
+                    });
                 }
-            });
-            
-            generateHTML();
+            }
         }
         
-        // FAQ functionality
-        function initFAQ() {
-            let faqCounter = 3;
+        function getFaqData() {
+            const items = document.querySelectorAll('#faqItemsContainer .faq-input-row');
+            const data = [];
             
-            // Add FAQ Item functionality
-            document.getElementById('addFaqBtn').addEventListener('click', function() {
-                faqCounter++;
-                const newFaqItem = document.createElement('div');
-                newFaqItem.className = 'faq-input-row';
-                newFaqItem.setAttribute('data-id', faqCounter);
-                newFaqItem.innerHTML = `
-                    <textarea class="faq-question-input" placeholder="Enter question"></textarea>
-                    <textarea class="faq-answer-input" placeholder="Enter answer"></textarea>
+            items.forEach(item => {
+                const question = item.querySelector('.faq-question-editor').innerHTML;
+                const answer = item.querySelector('.faq-answer-editor').innerHTML;
+                
+                data.push({
+                    question,
+                    answer
+                });
+            });
+            
+            return data;
+        }
+        
+        function setFaqData(data) {
+            if (!data || !Array.isArray(data)) return;
+            
+            const container = document.getElementById('faqItemsContainer');
+            container.innerHTML = '';
+            
+            data.forEach((item, index) => {
+                const newItem = document.createElement('div');
+                newItem.className = 'faq-input-row';
+                newItem.setAttribute('data-id', index + 1);
+                
+                newItem.innerHTML = `
+                    <div class="flex-1">
+                        <div class="text-editor">
+                            <div class="editor-toolbar">
+                                <button type="button" class="editor-btn" data-command="bold" title="Bold">
+                                    <i class="fas fa-bold"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="italic" title="Italic">
+                                    <i class="fas fa-italic"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="underline" title="Underline">
+                                    <i class="fas fa-underline"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="insertUnorderedList" title="Bullet List">
+                                    <i class="fas fa-list-ul"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="insertOrderedList" title="Numbered List">
+                                    <i class="fas fa-list-ol"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="createLink" title="Insert Link">
+                                    <i class="fas fa-link"></i>
+                                </button>
+                            </div>
+                            <div class="editor-content faq-question-editor" contenteditable="true" data-placeholder="Enter question">
+                                ${item.question || ''}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex-1">
+                        <div class="text-editor">
+                            <div class="editor-toolbar">
+                                <button type="button" class="editor-btn" data-command="bold" title="Bold">
+                                    <i class="fas fa-bold"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="italic" title="Italic">
+                                    <i class="fas fa-italic"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="underline" title="Underline">
+                                    <i class="fas fa-underline"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="insertUnorderedList" title="Bullet List">
+                                    <i class="fas fa-list-ul"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="insertOrderedList" title="Numbered List">
+                                    <i class="fas fa-list-ol"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="createLink" title="Insert Link">
+                                    <i class="fas fa-link"></i>
+                                </button>
+                            </div>
+                            <div class="editor-content faq-answer-editor" contenteditable="true" data-placeholder="Enter answer">
+                                ${item.answer || ''}
+                            </div>
+                        </div>
+                    </div>
                     <button type="button" class="remove-faq-btn">
                         <i class="fas fa-times"></i>
                     </button>
                 `;
-                document.getElementById('faqItemsContainer').appendChild(newFaqItem);
                 
-                // Add event listener to the new remove button
-                newFaqItem.querySelector('.remove-faq-btn').addEventListener('click', function() {
-                    removeFaqItem(this);
-                });
-                
-                // Add event listeners to inputs
-                const inputs = newFaqItem.querySelectorAll('textarea');
-                inputs.forEach(input => {
-                    input.addEventListener('input', generateHTML);
-                });
-                
-                generateHTML();
+                container.appendChild(newItem);
             });
             
-            // Phrase FAQ functionality
-            document.getElementById('phraseFaqBtn').addEventListener('click', function() {
-                const qaText = prompt("Paste your Q&A text in the format:\n\nQ: Question text\nA: Answer text\n\nQ: Next question\nA: Next answer");
-                
-                if (qaText) {
-                    // Clear existing FAQ items
-                    document.getElementById('faqItemsContainer').innerHTML = '';
-                    
-                    // Parse Q&A text
-                    const qaPairs = parseQAText(qaText);
-                    
-                    // Add parsed Q&A pairs
-                    qaPairs.forEach((pair, index) => {
-                        faqCounter = index + 1;
-                        const newFaqItem = document.createElement('div');
-                        newFaqItem.className = 'faq-input-row';
-                        newFaqItem.setAttribute('data-id', faqCounter);
-                        newFaqItem.innerHTML = `
-                            <textarea class="faq-question-input" placeholder="Enter question">${pair.question}</textarea>
-                            <textarea class="faq-answer-input" placeholder="Enter answer">${pair.answer}</textarea>
-                            <button type="button" class="remove-faq-btn">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        `;
-                        document.getElementById('faqItemsContainer').appendChild(newFaqItem);
-                        
-                        // Add event listener to the new remove button
-                        newFaqItem.querySelector('.remove-faq-btn').addEventListener('click', function() {
-                            removeFaqItem(this);
-                        });
-                        
-                        // Add event listeners to inputs
-                        const inputs = newFaqItem.querySelectorAll('textarea');
-                        inputs.forEach(input => {
-                            input.addEventListener('input', generateHTML);
-                        });
-                    });
-                    
+            // Reinitialize text editors
+            initTextEditors();
+        }
+        
+        function getToggleStates() {
+            const toggles = {};
+            document.querySelectorAll('.section-toggle input').forEach(toggle => {
+                toggles[toggle.id] = toggle.checked;
+            });
+            return toggles;
+        }
+        
+        function setToggleStates(toggleStates) {
+            if (!toggleStates) return;
+            
+            Object.keys(toggleStates).forEach(toggleId => {
+                const toggle = document.getElementById(toggleId);
+                if (toggle) {
+                    toggle.checked = toggleStates[toggleId];
+                }
+            });
+        }
+        
+        // Parse functionality for dates, fees and FAQ
+        function initParseFunctionality() {
+            // Parse Dates button
+            document.getElementById('parseDatesBtn').addEventListener('click', function() {
+                const datesText = document.getElementById('parseDatesText').value;
+                if (datesText) {
+                    const parsedDates = parseLabelValueText(datesText);
+                    populateDynamicInputs('datesContainer', parsedDates);
+                    saveDataToStorage();
                     generateHTML();
                 }
             });
             
-            // Add event listeners to existing remove buttons
-            document.querySelectorAll('.remove-faq-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    removeFaqItem(this);
-                });
+            // Parse Fees button
+            document.getElementById('parseFeesBtn').addEventListener('click', function() {
+                const feesText = document.getElementById('parseFeesText').value;
+                if (feesText) {
+                    const parsedFees = parseLabelValueText(feesText);
+                    populateDynamicInputs('feesContainer', parsedFees);
+                    saveDataToStorage();
+                    generateHTML();
+                }
             });
             
-            // Add event listeners to FAQ inputs
-            document.getElementById('faqTitle').addEventListener('input', generateHTML);
-            document.getElementById('faqIntroTitle').addEventListener('input', generateHTML);
-            document.getElementById('faqIntroText').addEventListener('input', generateHTML);
+            // Parse FAQ button
+            document.getElementById('parseFaqBtn').addEventListener('click', function() {
+                const faqText = document.getElementById('parseFaqText').value;
+                if (faqText) {
+                    const parsedFaq = parseQAText(faqText);
+                    populateFaqInputs(parsedFaq);
+                    saveDataToStorage();
+                    generateHTML();
+                }
+            });
         }
         
-        function removeFaqItem(button) {
-            const row = button.closest('.faq-input-row');
-            if (row && document.querySelectorAll('.faq-input-row').length > 1) {
-                row.remove();
-                generateHTML();
-            }
+        function parseLabelValueText(text) {
+            const lines = text.split('\n');
+            const parsedData = [];
+            
+            lines.forEach(line => {
+                const parts = line.split(':');
+                if (parts.length >= 2) {
+                    const label = parts[0].trim();
+                    const value = parts.slice(1).join(':').trim();
+                    parsedData.push({ label, value });
+                }
+            });
+            
+            return parsedData;
         }
         
         function parseQAText(text) {
@@ -1637,6 +2779,247 @@ Error Correction Charges : ₹300/-"></textarea>
             return qaPairs;
         }
         
+        function populateDynamicInputs(containerId, data) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            
+            data.forEach(item => {
+                const newItem = document.createElement('div');
+                newItem.className = 'dynamic-item';
+                
+                let inputsHTML = '';
+                let removeBtnClass = '';
+                
+                if (containerId === 'datesContainer') {
+                    inputsHTML = `
+                        <input type="text" class="date-label-input px-3 py-2 border border-gray-300 rounded" placeholder="Date Label" value="${item.label}">
+                        <input type="text" class="date-value-input px-3 py-2 border border-gray-300 rounded" placeholder="Date Value" value="${item.value}">
+                    `;
+                    removeBtnClass = 'remove-date-btn';
+                } else if (containerId === 'feesContainer') {
+                    inputsHTML = `
+                        <input type="text" class="fee-label-input px-3 py-2 border border-gray-300 rounded" placeholder="Fee Label" value="${item.label}">
+                        <input type="text" class="fee-value-input px-3 py-2 border border-gray-300 rounded" placeholder="Fee Value" value="${item.value}">
+                    `;
+                    removeBtnClass = 'remove-fee-btn';
+                }
+                
+                inputsHTML += `<button type="button" class="${removeBtnClass} bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600"><i class="fas fa-times"></i></button>`;
+                
+                newItem.innerHTML = inputsHTML;
+                container.appendChild(newItem);
+            });
+            
+            // Reattach event listeners
+            reattachEventListeners();
+        }
+        
+        function populateFaqInputs(data) {
+            const container = document.getElementById('faqItemsContainer');
+            container.innerHTML = '';
+            
+            data.forEach((item, index) => {
+                const newItem = document.createElement('div');
+                newItem.className = 'faq-input-row';
+                newItem.setAttribute('data-id', index + 1);
+                
+                newItem.innerHTML = `
+                    <div class="flex-1">
+                        <div class="text-editor">
+                            <div class="editor-toolbar">
+                                <button type="button" class="editor-btn" data-command="bold" title="Bold">
+                                    <i class="fas fa-bold"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="italic" title="Italic">
+                                    <i class="fas fa-italic"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="underline" title="Underline">
+                                    <i class="fas fa-underline"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="insertUnorderedList" title="Bullet List">
+                                    <i class="fas fa-list-ul"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="insertOrderedList" title="Numbered List">
+                                    <i class="fas fa-list-ol"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="createLink" title="Insert Link">
+                                    <i class="fas fa-link"></i>
+                                </button>
+                            </div>
+                            <div class="editor-content faq-question-editor" contenteditable="true" data-placeholder="Enter question">
+                                ${item.question}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex-1">
+                        <div class="text-editor">
+                            <div class="editor-toolbar">
+                                <button type="button" class="editor-btn" data-command="bold" title="Bold">
+                                    <i class="fas fa-bold"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="italic" title="Italic">
+                                    <i class="fas fa-italic"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="underline" title="Underline">
+                                    <i class="fas fa-underline"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="insertUnorderedList" title="Bullet List">
+                                    <i class="fas fa-list-ul"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="insertOrderedList" title="Numbered List">
+                                    <i class="fas fa-list-ol"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="createLink" title="Insert Link">
+                                    <i class="fas fa-link"></i>
+                                </button>
+                            </div>
+                            <div class="editor-content faq-answer-editor" contenteditable="true" data-placeholder="Enter answer">
+                                ${item.answer}
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="remove-faq-btn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                
+                container.appendChild(newItem);
+            });
+            
+            // Reinitialize text editors
+            initTextEditors();
+        }
+        
+        // Tab functionality
+        function initTabs() {
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabId = button.getAttribute('data-tab');
+                    
+                    // Update active tab button
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    
+                    // Show active tab content
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                        if (content.id === tabId) {
+                            content.classList.add('active');
+                        }
+                    });
+                });
+            });
+        }
+        
+        // FAQ functionality
+        function initFAQ() {
+            let faqCounter = 3;
+            
+            // Add FAQ Item functionality
+            document.getElementById('addFaqBtn').addEventListener('click', function() {
+                faqCounter++;
+                const newFaqItem = document.createElement('div');
+                newFaqItem.className = 'faq-input-row';
+                newFaqItem.setAttribute('data-id', faqCounter);
+                newFaqItem.innerHTML = `
+                    <div class="flex-1">
+                        <div class="text-editor">
+                            <div class="editor-toolbar">
+                                <button type="button" class="editor-btn" data-command="bold" title="Bold">
+                                    <i class="fas fa-bold"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="italic" title="Italic">
+                                    <i class="fas fa-italic"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="underline" title="Underline">
+                                    <i class="fas fa-underline"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="insertUnorderedList" title="Bullet List">
+                                    <i class="fas fa-list-ul"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="insertOrderedList" title="Numbered List">
+                                    <i class="fas fa-list-ol"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="createLink" title="Insert Link">
+                                    <i class="fas fa-link"></i>
+                                </button>
+                            </div>
+                            <div class="editor-content faq-question-editor" contenteditable="true" data-placeholder="Enter question"></div>
+                        </div>
+                    </div>
+                    <div class="flex-1">
+                        <div class="text-editor">
+                            <div class="editor-toolbar">
+                                <button type="button" class="editor-btn" data-command="bold" title="Bold">
+                                    <i class="fas fa-bold"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="italic" title="Italic">
+                                    <i class="fas fa-italic"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="underline" title="Underline">
+                                    <i class="fas fa-underline"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="insertUnorderedList" title="Bullet List">
+                                    <i class="fas fa-list-ul"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="insertOrderedList" title="Numbered List">
+                                    <i class="fas fa-list-ol"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="createLink" title="Insert Link">
+                                    <i class="fas fa-link"></i>
+                                </button>
+                            </div>
+                            <div class="editor-content faq-answer-editor" contenteditable="true" data-placeholder="Enter answer"></div>
+                        </div>
+                    </div>
+                    <button type="button" class="remove-faq-btn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                document.getElementById('faqItemsContainer').appendChild(newFaqItem);
+                
+                // Initialize text editor for new item
+                initTextEditors();
+                
+                // Add event listener to the new remove button
+                newFaqItem.querySelector('.remove-faq-btn').addEventListener('click', function() {
+                    removeFaqItem(this);
+                });
+                
+                saveDataToStorage();
+                generateHTML();
+            });
+            
+            // Add event listeners to existing remove buttons
+            document.querySelectorAll('.remove-faq-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    removeFaqItem(this);
+                });
+            });
+            
+            // Add event listeners to FAQ inputs
+            document.getElementById('faqTitle').addEventListener('input', function() {
+                saveDataToStorage();
+                generateHTML();
+            });
+            document.getElementById('faqIntroTitle').addEventListener('input', function() {
+                saveDataToStorage();
+                generateHTML();
+            });
+        }
+        
+        function removeFaqItem(button) {
+            const row = button.closest('.faq-input-row');
+            if (row && document.querySelectorAll('.faq-input-row').length > 1) {
+                row.remove();
+                saveDataToStorage();
+                generateHTML();
+            }
+        }
+        
         // Modern Paragraph functionality
         function initModernParagraph() {
             let currentTableType = 2;
@@ -1657,6 +3040,7 @@ Error Correction Charges : ₹300/-"></textarea>
                     });
                     document.getElementById(`table${currentTableType}Col`).classList.add('active');
                     
+                    saveDataToStorage();
                     generateHTML();
                 });
             });
@@ -1683,14 +3067,19 @@ Error Correction Charges : ₹300/-"></textarea>
                 // Add event listener to remove button
                 newRow.querySelector('.remove-table-row').addEventListener('click', function() {
                     newRow.remove();
+                    saveDataToStorage();
                     generateHTML();
                 });
                 
                 // Add event listeners to inputs
                 newRow.querySelectorAll('input').forEach(input => {
-                    input.addEventListener('input', generateHTML);
+                    input.addEventListener('input', function() {
+                        saveDataToStorage();
+                        generateHTML();
+                    });
                 });
                 
+                saveDataToStorage();
                 generateHTML();
             });
             
@@ -1698,21 +3087,36 @@ Error Correction Charges : ₹300/-"></textarea>
             document.querySelectorAll('.remove-table-row').forEach(btn => {
                 btn.addEventListener('click', function() {
                     this.closest('.table-row').remove();
+                    saveDataToStorage();
                     generateHTML();
                 });
             });
             
             // Add event listeners to table inputs
             document.querySelectorAll('.table-header-input, .table-data-input').forEach(input => {
-                input.addEventListener('input', generateHTML);
+                input.addEventListener('input', function() {
+                    saveDataToStorage();
+                    generateHTML();
+                });
             });
             
             // Add event listeners to modern paragraph inputs
-            document.getElementById('modernParagraphTitle').addEventListener('input', generateHTML);
-            document.getElementById('modernParagraphIcon').addEventListener('input', generateHTML);
-            document.getElementById('paragraphHeading').addEventListener('input', generateHTML);
-            document.getElementById('paragraphContent').addEventListener('input', generateHTML);
-            document.getElementById('tableTitle').addEventListener('input', generateHTML);
+            document.getElementById('modernParagraphTitle').addEventListener('input', function() {
+                saveDataToStorage();
+                generateHTML();
+            });
+            document.getElementById('modernParagraphIcon').addEventListener('input', function() {
+                saveDataToStorage();
+                generateHTML();
+            });
+            document.getElementById('paragraphHeading').addEventListener('input', function() {
+                saveDataToStorage();
+                generateHTML();
+            });
+            document.getElementById('tableTitle').addEventListener('input', function() {
+                saveDataToStorage();
+                generateHTML();
+            });
         }
         
         // Cast Vacancy functionality
@@ -1746,9 +3150,13 @@ Error Correction Charges : ₹300/-"></textarea>
                 // Add event listeners to inputs
                 const inputs = newRow.querySelectorAll('input');
                 inputs.forEach(input => {
-                    input.addEventListener('input', generateHTML);
+                    input.addEventListener('input', function() {
+                        saveDataToStorage();
+                        generateHTML();
+                    });
                 });
                 
+                saveDataToStorage();
                 generateHTML();
             });
             
@@ -1760,13 +3168,17 @@ Error Correction Charges : ₹300/-"></textarea>
             });
             
             // Add event listener to cast vacancy title
-            document.getElementById('castVacancyTitle').addEventListener('input', generateHTML);
+            document.getElementById('castVacancyTitle').addEventListener('input', function() {
+                saveDataToStorage();
+                generateHTML();
+            });
         }
         
         function removeCastVacancyRow(button) {
             const row = button.closest('.vacancy-row');
             if (row && document.querySelectorAll('.vacancy-row').length > 1) {
                 row.remove();
+                saveDataToStorage();
                 generateHTML();
             }
         }
@@ -1780,6 +3192,7 @@ Error Correction Charges : ₹300/-"></textarea>
                 newLinkItem.className = 'dynamic-item';
                 newLinkItem.innerHTML = `
                     <input type="text" class="link-label-input px-3 py-2 border border-gray-300 rounded" placeholder="Link Label">
+                    <input type="text" class="link-url-input px-3 py-2 border border-gray-300 rounded" placeholder="Link URL">
                     <input type="text" class="link-button-input px-3 py-2 border border-gray-300 rounded" placeholder="Link Button Text">
                     <button type="button" class="remove-link-btn bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600">
                         <i class="fas fa-times"></i>
@@ -1789,16 +3202,21 @@ Error Correction Charges : ₹300/-"></textarea>
                 // Add event listener to the remove button
                 newLinkItem.querySelector('.remove-link-btn').addEventListener('click', function() {
                     newLinkItem.remove();
+                    saveDataToStorage();
                     generateHTML();
                 });
                 
                 // Add event listeners to inputs
                 const inputs = newLinkItem.querySelectorAll('input');
                 inputs.forEach(input => {
-                    input.addEventListener('input', generateHTML);
+                    input.addEventListener('input', function() {
+                        saveDataToStorage();
+                        generateHTML();
+                    });
                 });
                 
                 linksContainer.appendChild(newLinkItem);
+                saveDataToStorage();
                 generateHTML();
             });
             
@@ -1818,16 +3236,21 @@ Error Correction Charges : ₹300/-"></textarea>
                 // Add event listener to the remove button
                 newAgeItem.querySelector('.remove-age-btn').addEventListener('click', function() {
                     newAgeItem.remove();
+                    saveDataToStorage();
                     generateHTML();
                 });
                 
                 // Add event listeners to inputs
                 const inputs = newAgeItem.querySelectorAll('input');
                 inputs.forEach(input => {
-                    input.addEventListener('input', generateHTML);
+                    input.addEventListener('input', function() {
+                        saveDataToStorage();
+                        generateHTML();
+                    });
                 });
                 
                 ageContainer.appendChild(newAgeItem);
+                saveDataToStorage();
                 generateHTML();
             });
             
@@ -1847,16 +3270,21 @@ Error Correction Charges : ₹300/-"></textarea>
                 // Add event listener to the remove button
                 newDateItem.querySelector('.remove-date-btn').addEventListener('click', function() {
                     newDateItem.remove();
+                    saveDataToStorage();
                     generateHTML();
                 });
                 
                 // Add event listeners to inputs
                 const inputs = newDateItem.querySelectorAll('input');
                 inputs.forEach(input => {
-                    input.addEventListener('input', generateHTML);
+                    input.addEventListener('input', function() {
+                        saveDataToStorage();
+                        generateHTML();
+                    });
                 });
                 
                 datesContainer.appendChild(newDateItem);
+                saveDataToStorage();
                 generateHTML();
             });
             
@@ -1876,16 +3304,21 @@ Error Correction Charges : ₹300/-"></textarea>
                 // Add event listener to the remove button
                 newFeeItem.querySelector('.remove-fee-btn').addEventListener('click', function() {
                     newFeeItem.remove();
+                    saveDataToStorage();
                     generateHTML();
                 });
                 
                 // Add event listeners to inputs
                 const inputs = newFeeItem.querySelectorAll('input');
                 inputs.forEach(input => {
-                    input.addEventListener('input', generateHTML);
+                    input.addEventListener('input', function() {
+                        saveDataToStorage();
+                        generateHTML();
+                    });
                 });
                 
                 feesContainer.appendChild(newFeeItem);
+                saveDataToStorage();
                 generateHTML();
             });
             
@@ -1897,7 +3330,32 @@ Error Correction Charges : ₹300/-"></textarea>
                 newVacancyItem.innerHTML = `
                     <input type="text" class="post-name-input px-3 py-2 border border-gray-300 rounded" placeholder="Post Name">
                     <input type="text" class="post-count-input px-3 py-2 border border-gray-300 rounded" placeholder="No. Of Post">
-                    <textarea class="eligibility-input px-3 py-2 border border-gray-300 rounded" placeholder="Eligibility Criteria" rows="2"></textarea>
+                    <div class="flex-1">
+                        <label class="block text-sm text-gray-600 mb-1">Eligibility Criteria</label>
+                        <div class="text-editor">
+                            <div class="editor-toolbar">
+                                <button type="button" class="editor-btn" data-command="bold" title="Bold">
+                                    <i class="fas fa-bold"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="italic" title="Italic">
+                                    <i class="fas fa-italic"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="underline" title="Underline">
+                                    <i class="fas fa-underline"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="insertUnorderedList" title="Bullet List">
+                                    <i class="fas fa-list-ul"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="insertOrderedList" title="Numbered List">
+                                    <i class="fas fa-list-ol"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="createLink" title="Insert Link">
+                                    <i class="fas fa-link"></i>
+                                </button>
+                            </div>
+                            <div class="editor-content eligibility-editor" contenteditable="true" data-placeholder="Enter eligibility criteria"></div>
+                        </div>
+                    </div>
                     <button type="button" class="remove-vacancy-btn bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600">
                         <i class="fas fa-times"></i>
                     </button>
@@ -1906,16 +3364,15 @@ Error Correction Charges : ₹300/-"></textarea>
                 // Add event listener to the remove button
                 newVacancyItem.querySelector('.remove-vacancy-btn').addEventListener('click', function() {
                     newVacancyItem.remove();
+                    saveDataToStorage();
                     generateHTML();
                 });
                 
-                // Add event listeners to inputs
-                const inputs = newVacancyItem.querySelectorAll('input, textarea');
-                inputs.forEach(input => {
-                    input.addEventListener('input', generateHTML);
-                });
+                // Initialize text editor for new item
+                initTextEditors();
                 
                 vacancyContainer.appendChild(newVacancyItem);
+                saveDataToStorage();
                 generateHTML();
             });
             
@@ -1926,7 +3383,31 @@ Error Correction Charges : ₹300/-"></textarea>
                 newProcessItem.className = 'dynamic-item';
                 newProcessItem.innerHTML = `
                     <input type="text" class="process-icon-input px-3 py-2 border border-gray-300 rounded" placeholder="Icon Class (e.g., fas fa-user-check)">
-                    <textarea class="process-text-input px-3 py-2 border border-gray-300 rounded" placeholder="Process Text" rows="2"></textarea>
+                    <div class="flex-1">
+                        <div class="text-editor">
+                            <div class="editor-toolbar">
+                                <button type="button" class="editor-btn" data-command="bold" title="Bold">
+                                    <i class="fas fa-bold"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="italic" title="Italic">
+                                    <i class="fas fa-italic"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="underline" title="Underline">
+                                    <i class="fas fa-underline"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="insertUnorderedList" title="Bullet List">
+                                    <i class="fas fa-list-ul"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="insertOrderedList" title="Numbered List">
+                                    <i class="fas fa-list-ol"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="createLink" title="Insert Link">
+                                    <i class="fas fa-link"></i>
+                                </button>
+                            </div>
+                            <div class="editor-content process-text-editor" contenteditable="true" data-placeholder="Enter process text"></div>
+                        </div>
+                    </div>
                     <button type="button" class="remove-process-btn bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600">
                         <i class="fas fa-times"></i>
                     </button>
@@ -1935,16 +3416,15 @@ Error Correction Charges : ₹300/-"></textarea>
                 // Add event listener to the remove button
                 newProcessItem.querySelector('.remove-process-btn').addEventListener('click', function() {
                     newProcessItem.remove();
+                    saveDataToStorage();
                     generateHTML();
                 });
                 
-                // Add event listeners to inputs
-                const inputs = newProcessItem.querySelectorAll('input, textarea');
-                inputs.forEach(input => {
-                    input.addEventListener('input', generateHTML);
-                });
+                // Initialize text editor for new item
+                initTextEditors();
                 
                 formContainer.appendChild(newProcessItem);
+                saveDataToStorage();
                 generateHTML();
             });
             
@@ -1955,7 +3435,31 @@ Error Correction Charges : ₹300/-"></textarea>
                 newSelectionItem.className = 'dynamic-item';
                 newSelectionItem.innerHTML = `
                     <input type="text" class="selection-icon-input px-3 py-2 border border-gray-300 rounded" placeholder="Icon Class (e.g., fas fa-desktop)">
-                    <textarea class="selection-text-input px-3 py-2 border border-gray-300 rounded" placeholder="Selection Text" rows="2"></textarea>
+                    <div class="flex-1">
+                        <div class="text-editor">
+                            <div class="editor-toolbar">
+                                <button type="button" class="editor-btn" data-command="bold" title="Bold">
+                                    <i class="fas fa-bold"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="italic" title="Italic">
+                                    <i class="fas fa-italic"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="underline" title="Underline">
+                                    <i class="fas fa-underline"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="insertUnorderedList" title="Bullet List">
+                                    <i class="fas fa-list-ul"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="insertOrderedList" title="Numbered List">
+                                    <i class="fas fa-list-ol"></i>
+                                </button>
+                                <button type="button" class="editor-btn" data-command="createLink" title="Insert Link">
+                                    <i class="fas fa-link"></i>
+                                </button>
+                            </div>
+                            <div class="editor-content selection-text-editor" contenteditable="true" data-placeholder="Enter selection text"></div>
+                        </div>
+                    </div>
                     <button type="button" class="remove-selection-btn bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600">
                         <i class="fas fa-times"></i>
                     </button>
@@ -1964,16 +3468,15 @@ Error Correction Charges : ₹300/-"></textarea>
                 // Add event listener to the remove button
                 newSelectionItem.querySelector('.remove-selection-btn').addEventListener('click', function() {
                     newSelectionItem.remove();
+                    saveDataToStorage();
                     generateHTML();
                 });
                 
-                // Add event listeners to inputs
-                const inputs = newSelectionItem.querySelectorAll('input, textarea');
-                inputs.forEach(input => {
-                    input.addEventListener('input', generateHTML);
-                });
+                // Initialize text editor for new item
+                initTextEditors();
                 
                 selectionContainer.appendChild(newSelectionItem);
+                saveDataToStorage();
                 generateHTML();
             });
             
@@ -1981,6 +3484,7 @@ Error Correction Charges : ₹300/-"></textarea>
             document.querySelectorAll('.remove-link-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     this.closest('.dynamic-item').remove();
+                    saveDataToStorage();
                     generateHTML();
                 });
             });
@@ -1988,6 +3492,7 @@ Error Correction Charges : ₹300/-"></textarea>
             document.querySelectorAll('.remove-age-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     this.closest('.dynamic-item').remove();
+                    saveDataToStorage();
                     generateHTML();
                 });
             });
@@ -1995,6 +3500,7 @@ Error Correction Charges : ₹300/-"></textarea>
             document.querySelectorAll('.remove-date-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     this.closest('.dynamic-item').remove();
+                    saveDataToStorage();
                     generateHTML();
                 });
             });
@@ -2002,6 +3508,7 @@ Error Correction Charges : ₹300/-"></textarea>
             document.querySelectorAll('.remove-fee-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     this.closest('.dynamic-item').remove();
+                    saveDataToStorage();
                     generateHTML();
                 });
             });
@@ -2009,6 +3516,7 @@ Error Correction Charges : ₹300/-"></textarea>
             document.querySelectorAll('.remove-vacancy-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     this.closest('.dynamic-item').remove();
+                    saveDataToStorage();
                     generateHTML();
                 });
             });
@@ -2016,6 +3524,7 @@ Error Correction Charges : ₹300/-"></textarea>
             document.querySelectorAll('.remove-process-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     this.closest('.dynamic-item').remove();
+                    saveDataToStorage();
                     generateHTML();
                 });
             });
@@ -2023,7 +3532,82 @@ Error Correction Charges : ₹300/-"></textarea>
             document.querySelectorAll('.remove-selection-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     this.closest('.dynamic-item').remove();
+                    saveDataToStorage();
                     generateHTML();
+                });
+            });
+        }
+        
+        // Reattach event listeners after dynamic content changes
+        function reattachEventListeners() {
+            // Reattach event listeners to all dynamic inputs
+            document.querySelectorAll('.dynamic-item input').forEach(input => {
+                input.addEventListener('input', function() {
+                    saveDataToStorage();
+                    generateHTML();
+                });
+            });
+            
+            // Reattach event listeners to remove buttons
+            document.querySelectorAll('.remove-date-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.closest('.dynamic-item').remove();
+                    saveDataToStorage();
+                    generateHTML();
+                });
+            });
+            
+            document.querySelectorAll('.remove-fee-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.closest('.dynamic-item').remove();
+                    saveDataToStorage();
+                    generateHTML();
+                });
+            });
+            
+            document.querySelectorAll('.remove-link-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.closest('.dynamic-item').remove();
+                    saveDataToStorage();
+                    generateHTML();
+                });
+            });
+            
+            document.querySelectorAll('.remove-age-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.closest('.dynamic-item').remove();
+                    saveDataToStorage();
+                    generateHTML();
+                });
+            });
+            
+            document.querySelectorAll('.remove-vacancy-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.closest('.dynamic-item').remove();
+                    saveDataToStorage();
+                    generateHTML();
+                });
+            });
+            
+            document.querySelectorAll('.remove-process-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.closest('.dynamic-item').remove();
+                    saveDataToStorage();
+                    generateHTML();
+                });
+            });
+            
+            document.querySelectorAll('.remove-selection-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.closest('.dynamic-item').remove();
+                    saveDataToStorage();
+                    generateHTML();
+                });
+            });
+            
+            document.querySelectorAll('.remove-faq-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    removeFaqItem(this);
                 });
             });
         }
@@ -2036,17 +3620,18 @@ Error Correction Charges : ₹300/-"></textarea>
             const readTime = document.getElementById('readTime').value;
             const author = document.getElementById('author').value;
             const totalPosts = document.getElementById('totalPosts').value;
-            const summary = document.getElementById('summary').value;
-            const noteText = document.getElementById('noteText').value;
+            const summary = document.getElementById('summary').innerHTML;
+            const ageRelaxationText = document.getElementById('ageRelaxationText').innerHTML;
+            const noteText = document.getElementById('noteText').innerHTML;
             const castVacancyTitle = document.getElementById('castVacancyTitle').value;
             const modernParagraphTitle = document.getElementById('modernParagraphTitle').value;
             const modernParagraphIcon = document.getElementById('modernParagraphIcon').value;
             const paragraphHeading = document.getElementById('paragraphHeading').value;
-            const paragraphContent = document.getElementById('paragraphContent').value;
+            const paragraphContent = document.getElementById('paragraphContent').innerHTML;
             const tableTitle = document.getElementById('tableTitle').value;
             const faqTitle = document.getElementById('faqTitle').value;
             const faqIntroTitle = document.getElementById('faqIntroTitle').value;
-            const faqIntroText = document.getElementById('faqIntroText').value;
+            const faqIntroText = document.getElementById('faqIntroText').innerHTML;
             
             // Check which sections to include
             const includeBasicInfo = document.getElementById('basicInfoToggle').checked;
@@ -2132,9 +3717,9 @@ Error Correction Charges : ₹300/-"></textarea>
     <span class="bg-orange-400 text-white-500 px-3 py-1 rounded-lg text-lg font-extrabold shadow-md">
       Total Post : ${totalPosts}
     </span></h3>
-                    <p class="text-gray-700 leading-relaxed">
+                    <div class="text-gray-700 leading-relaxed">
                         ${summary}
-                    </p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2247,13 +3832,14 @@ Error Correction Charges : ₹300/-"></textarea>
                 
                 linkItems.forEach(item => {
                     const label = item.querySelector('.link-label-input').value;
+                    const url = item.querySelector('.link-url-input').value;
                     const buttonText = item.querySelector('.link-button-input').value;
                     
-                    if (label && buttonText) {
+                    if (label && url && buttonText) {
                         linksHTML += `
                         <div class="link-item">
                             <span class="link-label">${label}</span>
-                            <a href="#" class="link-button">${buttonText}</a>
+                            <a href="${url}" target="_blank" class="link-button">${buttonText}</a>
                         </div>
                         `;
                     }
@@ -2316,7 +3902,9 @@ Error Correction Charges : ₹300/-"></textarea>
                         ${ageHTML}
                         <div class="payment-methods">
                             <h4>Age Relaxation</h4>
-                            <p class="text-sm text-gray-600">PNB provides age relaxation for the Bank LBO as per their regulations.</p>
+                            <div class="text-sm text-gray-600">
+                                ${ageRelaxationText}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -2338,7 +3926,7 @@ Error Correction Charges : ₹300/-"></textarea>
                 vacancyItems.forEach(item => {
                     const postName = item.querySelector('.post-name-input').value;
                     const postCount = item.querySelector('.post-count-input').value;
-                    const eligibility = item.querySelector('.eligibility-input').value;
+                    const eligibility = item.querySelector('.eligibility-editor').innerHTML;
                     
                     if (postName && postCount && eligibility) {
                         vacancyHTML += `
@@ -2468,7 +4056,7 @@ Error Correction Charges : ₹300/-"></textarea>
                 
                 processItems.forEach(item => {
                     const icon = item.querySelector('.process-icon-input').value;
-                    const text = item.querySelector('.process-text-input').value;
+                    const text = item.querySelector('.process-text-editor').innerHTML;
                     
                     if (icon && text) {
                         processHTML += `
@@ -2516,7 +4104,7 @@ Error Correction Charges : ₹300/-"></textarea>
                 
                 selectionItems.forEach(item => {
                     const icon = item.querySelector('.selection-icon-input').value;
-                    const text = item.querySelector('.selection-text-input').value;
+                    const text = item.querySelector('.selection-text-editor').innerHTML;
                     
                     if (icon && text) {
                         selectionHTML += `
@@ -2593,7 +4181,7 @@ Error Correction Charges : ₹300/-"></textarea>
                     <div class="modern-paragraph-content">
                         <h2>${paragraphHeading}</h2>
                         
-                        <p>${paragraphContent}</p>
+                        <div>${paragraphContent}</div>
                         
                         ${tableHTML}
                     </div>
@@ -2607,8 +4195,8 @@ Error Correction Charges : ₹300/-"></textarea>
                 let faqHTML = '';
                 
                 faqItems.forEach(item => {
-                    const question = item.querySelector('.faq-question-input').value;
-                    const answer = item.querySelector('.faq-answer-input').value;
+                    const question = item.querySelector('.faq-question-editor').innerHTML;
+                    const answer = item.querySelector('.faq-answer-editor').innerHTML;
                     
                     if (question && answer) {
                         faqHTML += `
@@ -2619,7 +4207,7 @@ Error Correction Charges : ₹300/-"></textarea>
                         </div>
                         <div class="faq-answer">
                             <div class="answer-content">
-                                <p>${answer}</p>
+                                <div>${answer}</div>
                             </div>
                         </div>
                     </div>
@@ -2639,7 +4227,7 @@ Error Correction Charges : ₹300/-"></textarea>
                     <div class="faq-content">
                         <div class="faq-intro">
                             <h2>${faqIntroTitle}</h2>
-                            <p>${faqIntroText}</p>
+                            <div>${faqIntroText}</div>
                         </div>
 
                         <div class="faq-accordion">
@@ -2691,10 +4279,16 @@ Error Correction Charges : ₹300/-"></textarea>
             
             // Update HTML output
             document.getElementById('htmlOutput').value = htmlCode;
+            
+            // Enable copy button
+            document.getElementById('copyBtn').disabled = false;
         }
         
         // Event listeners
-        document.getElementById('generateBtn').addEventListener('click', generateHTML);
+        document.getElementById('generateBtn').addEventListener('click', function() {
+            saveDataToStorage();
+            generateHTML();
+        });
         
         document.getElementById('copyBtn').addEventListener('click', function() {
             const htmlOutput = document.getElementById('htmlOutput');
@@ -2724,15 +4318,18 @@ Error Correction Charges : ₹300/-"></textarea>
         });
         
         // Auto-generate HTML when inputs change
-        document.getElementById('blogForm').addEventListener('input', generateHTML);
+        document.getElementById('blogForm').addEventListener('input', function() {
+            saveDataToStorage();
+            generateHTML();
+        });
         
         // Add event listeners to section toggles
         document.querySelectorAll('.section-toggle input').forEach(toggle => {
-            toggle.addEventListener('change', generateHTML);
+            toggle.addEventListener('change', function() {
+                saveDataToStorage();
+                generateHTML();
+            });
         });
-        
-        // Add event listener for note text
-        document.getElementById('noteText').addEventListener('input', generateHTML);
     </script>
 </body>
 </html>
