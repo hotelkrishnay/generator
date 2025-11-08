@@ -1,0 +1,2135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Generator - Post Wise Eligibility</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #1e40af;
+            --light-blue: #dbeafe;
+            --light-gray: #f8fafc;
+            --border-color: #e2e8f0;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --accent-orange: #fc7f03;
+            --accent-green: #17f802;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f1f5f9;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        h1 {
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+        }
+        
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .tab-btn {
+            padding: 10px 20px;
+            background-color: #e2e8f0;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .tab-btn.active {
+            background-color: var(--primary-blue);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .form-section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .form-section h3 {
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .add-btn, .parse-btn {
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+        
+        .add-btn:hover, .parse-btn:hover {
+            background-color: #1e3a8a;
+        }
+        
+        .remove-btn {
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        
+        .format-example {
+            background-color: var(--light-gray);
+            border-left: 4px solid var(--primary-blue);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            font-size: 0.9rem;
+        }
+        
+        .preview-container {
+            border: 2px dashed var(--border-color);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            background-color: var(--light-gray);
+        }
+        
+        .copy-btn {
+            background-color: #10b981;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .copy-btn:hover {
+            background-color: #059669;
+        }
+        
+        .copy-btn.copied {
+            background-color: #6366f1;
+        }
+        
+        .parsed-preview {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #ecfdf5;
+            border-radius: 5px;
+            border: 1px solid #a7f3d0;
+        }
+        
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .dynamic-list {
+            margin-top: 15px;
+        }
+        
+        .dynamic-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: var(--light-gray);
+            border-radius: 5px;
+        }
+        
+        .dynamic-item input {
+            flex: 1;
+            margin-right: 10px;
+        }
+        
+        .eligibility-item {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: var(--light-gray);
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .eligibility-item .input-group {
+            margin-bottom: 10px;
+        }
+        
+        .bold-toggle {
+            background: none;
+            border: 1px solid var(--border-color);
+            border-radius: 3px;
+            padding: 5px 10px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        
+        .bold-toggle.active {
+            background-color: var(--primary-blue);
+            color: white;
+        }
+
+        /* Text formatting styles */
+        .text-formatting {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 5px;
+            flex-wrap: wrap;
+        }
+        
+        .format-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            border-radius: 3px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-weight: bold;
+            min-width: 36px;
+            text-align: center;
+        }
+        
+        .format-btn.active {
+            background-color: var(--primary-blue);
+            color: white;
+        }
+        
+        .link-input-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .link-input-group input {
+            flex: 1;
+        }
+
+        /* Section management styles */
+        .section-management {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+        
+        .section-management h3 {
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+        }
+        
+        .section-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .section-controls select {
+            flex: 1;
+        }
+        
+        .added-sections {
+            margin-top: 20px;
+        }
+        
+        .added-section-item {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            padding: 10px;
+            background-color: var(--light-gray);
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        
+        .added-section-item span {
+            flex: 1;
+            font-weight: 500;
+        }
+        
+        /* Section toggle styles */
+        .section-toggle {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .section-toggle label {
+            margin-bottom: 0;
+            margin-left: 8px;
+            cursor: pointer;
+        }
+        
+        .section-toggle input[type="checkbox"] {
+            width: auto;
+            transform: scale(1.2);
+        }
+        
+        /* Paragraph section styles */
+        .paragraph-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: var(--light-gray);
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .paragraph-section .input-group {
+            margin-bottom: 10px;
+        }
+        
+        /* Full section wide styles for preview */
+        .full-section-wide {
+            width: 100%;
+            margin: 30px 0;
+            padding: 25px;
+            background-color: #f8fafc;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid var(--primary-blue);
+        }
+        
+        .section-header {
+            color: var(--primary-blue);
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        .section-body {
+            padding: 15px 0;
+        }
+        
+        .post-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            line-height: 1.7;
+        }
+        
+        /* Column layout options */
+        .column-options {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .column-option {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .column-option input {
+            width: auto;
+        }
+        
+        .column-option label {
+            margin-bottom: 0;
+        }
+        
+        /* Eligibility item with column options */
+        .eligibility-item.three-column .input-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .eligibility-item.two-column .input-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .eligibility-item .input-group label {
+            grid-column: 1 / -1;
+        }
+        
+        @media (max-width: 768px) {
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .dynamic-item {
+                flex-direction: column;
+            }
+            
+            .dynamic-item input {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+            
+            .link-input-group {
+                flex-direction: column;
+            }
+            
+            .section-controls {
+                flex-direction: column;
+            }
+            
+            .eligibility-item.three-column .input-group,
+            .eligibility-item.two-column .input-group {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Blog Generator - Post Wise Eligibility</h1>
+            <p>
+                <button class="tab-btn" onclick="window.open('meta2metaai.html', '_blank')">Important Dates</button>
+            </p>
+        </header>
+        
+        <!-- Section Management -->
+        <div class="section-management">
+            <h3>Additional Sections (Optional)</h3>
+            <div class="section-controls">
+                <select id="section-select">
+                    <option value="">Select additional section to add</option>
+                    <option value="additional-info">Additional Information</option>
+                    <option value="exam-pattern">Exam Pattern</option>
+                    <option value="syllabus">Syllabus</option>
+                    <option value="preparation-tips">Preparation Tips</option>
+                    <option value="salary-structure">Salary Structure</option>
+                    <option value="paragraph">Custom Paragraph</option>
+                </select>
+                <button class="add-btn" onclick="addSection()">Add Section</button>
+            </div>
+            <div class="added-sections">
+                <h4>Additional Sections (will appear above FAQs):</h4>
+                <div id="added-sections-list"></div>
+            </div>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('basic-info')">Basic Info</button>
+            <button class="tab-btn" onclick="switchTab('important-dates')">Important Dates</button>
+            <button class="tab-btn" onclick="switchTab('fees')">Fees</button>
+            <button class="tab-btn" onclick="switchTab('total-posts')">Total Posts & Age Limit</button>
+            <button class="tab-btn" onclick="switchTab('vacancy')">Vacancy Details</button>
+            <button class="tab-btn" onclick="switchTab('selection')">Selection Process</button>
+            <button class="tab-btn" onclick="switchTab('eligibility')">Post Wise Eligibility</button>
+            <button class="tab-btn" onclick="switchTab('form-filling')">Form Filling</button>
+            <button class="tab-btn" onclick="switchTab('links')">Useful Links</button>
+            <button class="tab-btn" onclick="switchTab('paragraphs')">Paragraph Sections</button>
+            <button class="tab-btn" onclick="switchTab('faqs')">FAQs</button>
+            <button class="tab-btn" onclick="switchTab('preview')">Preview & Code</button>
+        </div>
+        
+        <!-- Basic Info Tab -->
+        <div id="basic-info" class="tab-content active">
+            <div class="section-toggle">
+                <input type="checkbox" id="basic-info-toggle" checked>
+                <label for="basic-info-toggle">Include Basic Info Section</label>
+            </div>
+            <div class="form-section">
+                <h3>Blog Title & Basic Information</h3>
+                <div class="input-group">
+                    <label for="blog-title">Blog Title (H1)</label>
+                    <input type="text" id="blog-title" value="MPESB Group 2 Recruitment 2025: Apply for 454 Posts">
+                </div>
+                <div class="input-group">
+                    <label for="post-date">Post Date</label>
+                    <input type="text" id="post-date" value="31 / October / 2025">
+                </div>
+                <div class="input-group">
+                    <label for="author">Author</label>
+                    <input type="text" id="author" value="SRK Team" readonly>
+                </div>
+                <div class="input-group">
+                    <label for="description">Blog Description</label>
+                    <div class="text-formatting">
+                        <button class="format-btn" onclick="formatText('description', 'bold')"><strong>B</strong></button>
+                        <button class="format-btn" onclick="formatText('description', 'italic')"><em>I</em></button>
+                        <button class="format-btn" onclick="formatText('description', 'underline')"><u>U</u></button>
+                        <button class="format-btn" onclick="formatText('description', 'link')">🔗</button>
+                    </div>
+                    <textarea id="description">Apply online for MPESB Group 2 Sub Group 3 Recruitment 2025. 454 JE & other posts. Application dates: 29 Oct - 12 Nov 2025. Check eligibility, age limit, and apply now!</textarea>
+                </div>
+                <div class="input-group">
+                    <label for="link-mp">Link Text for MPESB</label>
+                    <div class="link-input-group">
+                        <input type="text" id="link-mp" value="Madhya Pradesh Employee Selection Board MPESB - Visit Website">
+                        <input type="text" id="link-url" value="https://esb.mp.gov.in" placeholder="Enter URL">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Important Dates Tab -->
+        <div id="important-dates" class="tab-content">
+            <div class="section-toggle">
+                <input type="checkbox" id="important-dates-toggle" checked>
+                <label for="important-dates-toggle">Include Important Dates Section</label>
+            </div>
+            <div class="form-section">
+                <h3>Important Dates</h3>
+                <div class="input-group">
+                    <label for="dates-explanation">Section Explanation</label>
+                    <div class="text-formatting">
+                        <button class="format-btn" onclick="formatText('dates-explanation', 'bold')"><strong>B</strong></button>
+                        <button class="format-btn" onclick="formatText('dates-explanation', 'italic')"><em>I</em></button>
+                        <button class="format-btn" onclick="formatText('dates-explanation', 'underline')"><u>U</u></button>
+                    </div>
+                    <textarea id="dates-explanation">Keep track of key deadlines for the recruitment process.</textarea>
+                </div>
+                <p>Enter dates in the format: Description: Date</p>
+                <div class="format-example">
+Apply Online From: 29 October 2025
+Application Deadline: 12 November 2025
+Final Date for Transaction Fee: 12 November 2025
+Examination Schedule: To Be Announced
+Admit Card Availability: October 2025
+Declaration of Result: To Be Notified Shortly
+                </div>
+                <div class="input-group">
+                    <label for="dates-input">Dates Input</label>
+                    <div class="text-formatting">
+                        <button class="format-btn" onclick="formatText('dates-input', 'bold')"><strong>B</strong></button>
+                        <button class="format-btn" onclick="formatText('dates-input', 'italic')"><em>I</em></button>
+                        <button class="format-btn" onclick="formatText('dates-input', 'underline')"><u>U</u></button>
+                    </div>
+                    <textarea id="dates-input" placeholder="Enter dates in the format shown above">Apply Online From: 29 October 2025
+Application Deadline: 12 November 2025
+Final Date for Transaction Fee: 12 November 2025
+Examination Schedule: To Be Announced
+Admit Card Availability: October 2025
+Declaration of Result: To Be Notified Shortly</textarea>
+                </div>
+                <button class="parse-btn" onclick="parseDates()">Parse Dates</button>
+                <div id="dates-preview" class="parsed-preview"></div>
+            </div>
+        </div>
+        
+        <!-- Fees Tab -->
+        <div id="fees" class="tab-content">
+            <div class="section-toggle">
+                <input type="checkbox" id="fees-toggle" checked>
+                <label for="fees-toggle">Include Fees Section</label>
+            </div>
+            <div class="form-section">
+                <h3>Application Fees</h3>
+                <div class="input-group">
+                    <label for="fees-explanation">Section Explanation</label>
+                    <div class="text-formatting">
+                        <button class="format-btn" onclick="formatText('fees-explanation', 'bold')"><strong>B</strong></button>
+                        <button class="format-btn" onclick="formatText('fees-explanation', 'italic')"><em>I</em></button>
+                        <button class="format-btn" onclick="formatText('fees-explanation', 'underline')"><u>U</u></button>
+                    </div>
+                    <textarea id="fees-explanation">The application fee is non-refundable. Review the details below before payment.</textarea>
+                </div>
+                <p>Enter fees in the format: Category: Amount</p>
+                <div class="format-example">
+General & Other Categories: ₹ 560/-
+OBC / SC / ST Candidates: ₹ 310/-
+Portal & Processing Charges: Included
+                </div>
+                <div class="input-group">
+                    <label for="fees-input">Fees Input</label>
+                    <div class="text-formatting">
+                        <button class="format-btn" onclick="formatText('fees-input', 'bold')"><strong>B</strong></button>
+                        <button class="format-btn" onclick="formatText('fees-input', 'italic')"><em>I</em></button>
+                        <button class="format-btn" onclick="formatText('fees-input', 'underline')"><u>U</u></button>
+                    </div>
+                    <textarea id="fees-input" placeholder="Enter fees in the format shown above">General & Other Categories: ₹ 560/-
+OBC / SC / ST Candidates: ₹ 310/-
+Portal & Processing Charges: Included</textarea>
+                </div>
+                <button class="parse-btn" onclick="parseFees()">Parse Fees</button>
+                <div id="fees-preview" class="parsed-preview"></div>
+            </div>
+        </div>
+        
+        <!-- Total Posts & Age Limit Tab -->
+        <div id="total-posts" class="tab-content">
+            <div class="section-toggle">
+                <input type="checkbox" id="total-posts-toggle" checked>
+                <label for="total-posts-toggle">Include Total Posts & Age Limit Section</label>
+            </div>
+            <div class="form-section">
+                <h3>Total Posts</h3>
+                <div class="input-group">
+                    <label for="total-posts-count">Total Number of Posts</label>
+                    <input type="text" id="total-posts-count" value="454">
+                </div>
+                <div class="input-group">
+                    <label for="total-posts-explanation">Section Explanation</label>
+                    <div class="text-formatting">
+                        <button class="format-btn" onclick="formatText('total-posts-explanation', 'bold')"><strong>B</strong></button>
+                        <button class="format-btn" onclick="formatText('total-posts-explanation', 'italic')"><em>I</em></button>
+                        <button class="format-btn" onclick="formatText('total-posts-explanation', 'underline')"><u>U</u></button>
+                    </div>
+                    <textarea id="total-posts-explanation">Total number of available vacancies in this recruitment.</textarea>
+                </div>
+            </div>
+            
+            <div class="form-section">
+                <h3>Age Limit Criteria</h3>
+                <div class="input-group">
+                    <label for="age-explanation">Section Explanation</label>
+                    <div class="text-formatting">
+                        <button class="format-btn" onclick="formatText('age-explanation', 'bold')"><strong>B</strong></button>
+                        <button class="format-btn" onclick="formatText('age-explanation', 'italic')"><em>I</em></button>
+                        <button class="format-btn" onclick="formatText('age-explanation', 'underline')"><u>U</u></button>
+                    </div>
+                    <textarea id="age-explanation">Check the prescribed age limits for various categories as per MPESB rules.</textarea>
+                </div>
+                <div id="age-limit-container">
+                    <div class="dynamic-item">
+                        <input type="text" value="Minimum Age:" class="age-label">
+                        <input type="text" value="18 Years" class="age-value">
+                        <button class="remove-btn" onclick="removeItem(this)">Remove</button>
+                    </div>
+                    <div class="dynamic-item">
+                        <input type="text" value="Maximum Age (UR / EWS):" class="age-label">
+                        <input type="text" value="40 Years" class="age-value">
+                        <button class="remove-btn" onclick="removeItem(this)">Remove</button>
+                    </div>
+                    <div class="dynamic-item">
+                        <input type="text" value="Maximum Age (OBC / SC / ST / Female):" class="age-label">
+                        <input type="text" value="45 Years" class="age-value">
+                        <button class="remove-btn" onclick="removeItem(this)">Remove</button>
+                    </div>
+                </div>
+                <button class="add-btn" onclick="addAgeLimit()">Add Age Limit</button>
+                
+                <div class="input-group">
+                    <label for="age-note">Age Limit Note</label>
+                    <div class="text-formatting">
+                        <button class="format-btn" onclick="formatText('age-note', 'bold')"><strong>B</strong></button>
+                        <button class="format-btn" onclick="formatText('age-note', 'italic')"><em>I</em></button>
+                        <button class="format-btn" onclick="formatText('age-note', 'underline')"><u>U</u></button>
+                    </div>
+                    <textarea id="age-note">Age relaxation is applicable as per official MPESB recruitment rules for Group 2 Sub Group 3 positions.</textarea>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Vacancy Details Tab -->
+        <div id="vacancy" class="tab-content">
+            <div class="section-toggle">
+                <input type="checkbox" id="vacancy-toggle" checked>
+                <label for="vacancy-toggle">Include Vacancy Details Section</label>
+            </div>
+            <div class="form-section">
+                <h3>Vacancy Details</h3>
+                <div class="input-group">
+                    <label for="vacancy-explanation">Section Explanation</label>
+                    <div class="text-formatting">
+                        <button class="format-btn" onclick="formatText('vacancy-explanation', 'bold')"><strong>B</strong></button>
+                        <button class="format-btn" onclick="formatText('vacancy-explanation', 'italic')"><em>I</em></button>
+                        <button class="format-btn" onclick="formatText('vacancy-explanation', 'underline')"><u>U</u></button>
+                    </div>
+                    <textarea id="vacancy-explanation">Category Wise Vacancy Details</textarea>
+                </div>
+                
+                <div id="vacancy-container">
+                    <div class="dynamic-item">
+                        <input type="text" value="General Category" class="vacancy-category">
+                        <input type="text" value="152" class="vacancy-count">
+                        <button class="remove-btn" onclick="removeItem(this)">Remove</button>
+                    </div>
+                    <div class="dynamic-item">
+                        <input type="text" value="Economically Weaker Sections (EWS)" class="vacancy-category">
+                        <input type="text" value="146" class="vacancy-count">
+                        <button class="remove-btn" onclick="removeItem(this)">Remove</button>
+                    </div>
+                    <div class="dynamic-item">
+                        <input type="text" value="Scheduled Castes (SC)" class="vacancy-category">
+                        <input type="text" value="69" class="vacancy-count">
+                        <button class="remove-btn" onclick="removeItem(this)">Remove</button>
+                    </div>
+                    <div class="dynamic-item">
+                        <input type="text" value="Scheduled Tribes (ST)" class="vacancy-category">
+                        <input type="text" value="58" class="vacancy-count">
+                        <button class="remove-btn" onclick="removeItem(this)">Remove</button>
+                    </div>
+                    <div class="dynamic-item">
+                        <input type="text" value="Economically Backward Class (EBC)" class="vacancy-category">
+                        <input type="text" value="29" class="vacancy-count">
+                        <button class="remove-btn" onclick="removeItem(this)">Remove</button>
+                    </div>
+                </div>
+                <button class="add-btn" onclick="addVacancy()">Add Vacancy Category</button>
+            </div>
+        </div>
+        
+        <!-- Selection Process Tab -->
+        <div id="selection" class="tab-content">
+            <div class="section-toggle">
+                <input type="checkbox" id="selection-toggle" checked>
+                <label for="selection-toggle">Include Selection Process Section</label>
+            </div>
+            <div class="form-section">
+                <h3>Selection Process</h3>
+                <div class="input-group">
+                    <label for="selection-explanation">Section Explanation</label>
+                    <div class="text-formatting">
+                        <button class="format-btn" onclick="formatText('selection-explanation', 'bold')"><strong>B</strong></button>
+                        <button class="format-btn" onclick="formatText('selection-explanation', 'italic')"><em>I</em></button>
+                        <button class="format-btn" onclick="formatText('selection-explanation', 'underline')"><u>U</u></button>
+                    </div>
+                    <textarea id="selection-explanation">The selection process involves multiple stages designed to filter candidates based on merit and suitability for the job.</textarea>
+                </div>
+                
+                <div id="selection-container">
+                    <div class="dynamic-item">
+                        <input type="text" value="Screening Test" class="selection-step">
+                        <button class="remove-btn" onclick="removeItem(this)">Remove</button>
+                    </div>
+                    <div class="dynamic-item">
+                        <input type="text" value="Subject Knowledge Test" class="selection-step">
+                        <button class="remove-btn" onclick="removeItem(this)">Remove</button>
+                    </div>
+                    <div class="dynamic-item">
+                        <input type="text" value="Interview (Viva-Voce)" class="selection-step">
+                        <button class="remove-btn" onclick="removeItem(this)">Remove</button>
+                    </div>
+                    <div class="dynamic-item">
+                        <input type="text" value="Document Verification" class="selection-step">
+                        <button class="remove-btn" onclick="removeItem(this)">Remove</button>
+                    </div>
+                    <div class="dynamic-item">
+                        <input type="text" value="Medical Examination" class="selection-step">
+                        <button class="remove-btn" onclick="removeItem(this)">Remove</button>
+                    </div>
+                </div>
+                <button class="add-btn" onclick="addSelectionStep()">Add Selection Step</button>
+            </div>
+        </div>
+        
+        <!-- Post Wise Eligibility Tab -->
+        <div id="eligibility" class="tab-content">
+            <div class="section-toggle">
+                <input type="checkbox" id="eligibility-toggle" checked>
+                <label for="eligibility-toggle">Include Post Wise Eligibility Section</label>
+            </div>
+            <div class="form-section">
+                <h3>Post Wise Eligibility Details</h3>
+                <div class="input-group">
+                    <label for="eligibility-header">Section Header</label>
+                    <input type="text" id="eligibility-header" value="Post Wise Eligibility Details">
+                </div>
+                
+                <!-- Column Layout Options -->
+                <div class="column-options">
+                    <div class="column-option">
+                        <input type="radio" id="two-columns" name="eligibility-layout" value="two-columns" checked>
+                        <label for="two-columns">2 Columns (Post Title + Post Info)</label>
+                    </div>
+                    <div class="column-option">
+                        <input type="radio" id="three-columns" name="eligibility-layout" value="three-columns">
+                        <label for="three-columns">3 Columns (Post Title + Post Count + Post Info)</label>
+                    </div>
+                </div>
+                
+                <div id="eligibility-container">
+                    <div class="eligibility-item two-column">
+                        <div class="input-group">
+                            <label>Post Title</label>
+                            <input type="text" class="post-title" value="Junior Engineer (Civil, Electrical, Mechanical)">
+                        </div>
+                        <div class="input-group">
+                            <label>Post Information</label>
+                            <div class="text-formatting">
+                                <button class="format-btn" onclick="formatText(this.parentElement.nextElementSibling, 'bold')"><strong>B</strong></button>
+                                <button class="format-btn" onclick="formatText(this.parentElement.nextElementSibling, 'italic')"><em>I</em></button>
+                                <button class="format-btn" onclick="formatText(this.parentElement.nextElementSibling, 'underline')"><u>U</u></button>
+                            </div>
+                            <textarea class="post-info">Candidates must have a Diploma or a B.E./B.Tech degree in the relevant engineering field (Civil, Electrical, or Mechanical).</textarea>
+                        </div>
+                        <button class="remove-btn" onclick="removeEligibilityItem(this)">Remove Post</button>
+                    </div>
+                    
+                    <div class="eligibility-item two-column">
+                        <div class="input-group">
+                            <label>Post Title</label>
+                            <input type="text" class="post-title" value="Laboratory Technician">
+                        </div>
+                        <div class="input-group">
+                            <label>Post Information</label>
+                            <div class="text-formatting">
+                                <button class="format-btn" onclick="formatText(this.parentElement.nextElementSibling, 'bold')"><strong>B</strong></button>
+                                <button class="format-btn" onclick="formatText(this.parentElement.nextElementSibling, 'italic')"><em>I</em></button>
+                                <button class="format-btn" onclick="formatText(this.parentElement.nextElementSibling, 'underline')"><u>U</u></button>
+                            </div>
+                            <textarea class="post-info">Candidates must have a Bachelor's degree in Science is often the minimum requirement, sometimes with a specialization in a field like Chemistry, Microbiology, or Biology. A diploma or degree in Medical Laboratory Technology (DMLT/BMLT) is also common.</textarea>
+                        </div>
+                        <button class="remove-btn" onclick="removeEligibilityItem(this)">Remove Post</button>
+                    </div>
+                    
+                    <div class="eligibility-item two-column">
+                        <div class="input-group">
+                            <label>Post Title</label>
+                            <input type="text" class="post-title" value="Field Officer">
+                        </div>
+                        <div class="input-group">
+                            <label>Post Information</label>
+                            <div class="text-formatting">
+                                <button class="format-btn" onclick="formatText(this.parentElement.nextElementSibling, 'bold')"><strong>B</strong></button>
+                                <button class="format-btn" onclick="formatText(this.parentElement.nextElementSibling, 'italic')"><em>I</em></button>
+                                <button class="format-btn" onclick="formatText(this.parentElement.nextElementSibling, 'underline')"><u>U</u></button>
+                            </div>
+                            <textarea class="post-info">Candidates must have a Bachelor's degree in a relevant subject is typically required. For example, a Field Officer in agriculture may need a B.Sc. in Agriculture or Horticulture.</textarea>
+                        </div>
+                        <button class="remove-btn" onclick="removeEligibilityItem(this)">Remove Post</button>
+                    </div>
+                </div>
+                <button class="add-btn" onclick="addEligibilityItem()">Add Post Eligibility</button>
+            </div>
+        </div>
+        
+        <!-- Form Filling Tab -->
+        <div id="form-filling" class="tab-content">
+            <div class="section-toggle">
+                <input type="checkbox" id="form-filling-toggle" checked>
+                <label for="form-filling-toggle">Include Form Filling Section</label>
+            </div>
+            <div class="form-section">
+                <h3>Form Filling Process</h3>
+                <div class="input-group">
+                    <label for="form-explanation">Section Explanation</label>
+                    <div class="text-formatting">
+                        <button class="format-btn" onclick="formatText('form-explanation', 'bold')"><strong>B</strong></button>
+                        <button class="format-btn" onclick="formatText('form-explanation', 'italic')"><em>I</em></button>
+                        <button class="format-btn" onclick="formatText('form-explanation', 'underline')"><u>U</u></button>
+                    </div>
+                    <textarea id="form-explanation">Follow these steps carefully to complete your application successfully.</textarea>
+                </div>
+                
+                <div id="form-steps-container">
+                    <div class="dynamic-item">
+                        <div class="text-formatting">
+                            <button class="format-btn" onclick="formatText(this.parentElement.nextElementSibling, 'bold')"><strong>B</strong></button>
+                            <button class="format-btn" onclick="formatText(this.parentElement.nextElementSibling, 'italic')"><em>I</em></button>
+                            <button class="format-btn" onclick="formatText(this.parentElement.nextElementSibling, 'underline')"><u>U</u></button>
+                        </div>
+                        <textarea class="form-step">Use the "Click Here" link in Important Links section to open the official MPESB portal.</textarea>
+                        <button class="bold-toggle" onclick="toggleBold(this)">B</button>
+                        <button class="remove-btn" onclick="removeItem(this)">Remove</button>
+                    </div>
+                    <div class="dynamic-item">
+                        <div class="text-formatting">
+                            <button class="format-btn" onclick="formatText(this.parentElement.nextElementSibling, 'bold')"><strong>B</strong></button>
+                            <button class="format-btn" onclick="formatText(this.parentElement.nextElementSibling, 'italic')"><em>I</em></button>
+                            <button class="format-btn" onclick="formatText(this.parentElement.nextElementSibling, 'underline')"><u>U</u></button>
+                        </div>
+                        <textarea class="form-step">Visit the official MPESB website and complete the online application form.</textarea>
+                        <button class="bold-toggle" onclick="toggleBold(this)">B</button>
+                        <button class="remove-btn" onclick="removeItem(this)">Remove</button>
+                    </div>
+                    <div class="dynamic-item">
+                        <div class="text-formatting">
+                            <button class="format-btn" onclick="formatText(this.parentElement.nextElementSibling, 'bold')"><strong>B</strong></button>
+                            <button class="format-btn" onclick="formatText(this.parentElement.nextElementSibling, 'italic')"><em>I</em></button>
+                            <button class="format-btn" onclick="formatText(this.parentElement.nextElementSibling, 'underline')"><u>U</u></button>
+                        </div>
+                        <textarea class="form-step">Read the notification carefully, verify eligibility, confirm qualifications, and prepare all required documents.</textarea>
+                        <button class="bold-toggle" onclick="toggleBold(this)">B</button>
+                        <button class="remove-btn" onclick="removeItem(this)">Remove</button>
+                    </div>
+                    <div class="dynamic-item">
+                        <div class="text-formatting">
+                            <button class="format-btn" onclick="formatText(this.parentElement.nextElementSibling, 'bold')"><strong>B</strong></button>
+                            <button class="format-btn" onclick="formatText(this.parentElement.nextElementSibling, 'italic')"><em>I</em></button>
+                            <button class="format-btn" onclick="formatText(this.parentElement.nextElementSibling, 'underline')"><u>U</u></button>
+                        </div>
+                        <textarea class="form-step">Submit the application and payment before the last date — 20 November 2025.</textarea>
+                        <button class="bold-toggle" onclick="toggleBold(this)">B</button>
+                        <button class="remove-btn" onclick="removeItem(this)">Remove</button>
+                    </div>
+                </div>
+                <button class="add-btn" onclick="addFormStep()">Add Form Step</button>
+            </div>
+        </div>
+        
+        <!-- Useful Links Tab -->
+        <div id="links" class="tab-content">
+            <div class="section-toggle">
+                <input type="checkbox" id="links-toggle" checked>
+                <label for="links-toggle">Include Useful Links Section</label>
+            </div>
+            <div class="form-section">
+                <h3>Useful Links</h3>
+                <div class="input-group">
+                    <label for="links-explanation">Section Explanation</label>
+                    <div class="text-formatting">
+                        <button class="format-btn" onclick="formatText('links-explanation', 'bold')"><strong>B</strong></button>
+                        <button class="format-btn" onclick="formatText('links-explanation', 'italic')"><em>I</em></button>
+                        <button class="format-btn" onclick="formatText('links-explanation', 'underline')"><u>U</u></button>
+                    </div>
+                    <textarea id="links-explanation">Quick access to official resources and online application pages.</textarea>
+                </div>
+                
+                <div id="links-container">
+                    <div class="dynamic-item">
+                        <input type="text" value="Apply Online" class="link-description">
+                        <input type="text" value="https://www.mponline.gov.in/Portal/Examinations/MPPSC/Attestation/Home/Home.aspx" class="link-url">
+                        <button class="remove-btn" onclick="removeItem(this)">Remove</button>
+                    </div>
+                    <div class="dynamic-item">
+                        <input type="text" value="Official Notification" class="link-description">
+                        <input type="text" value="https://mppsc.mp.gov.in/uploads/advertisement/Advt_State_Eligibility_Test_(SET)_2025_Dated_15_10_2025.pdf" class="link-url">
+                        <button class="remove-btn" onclick="removeItem(this)">Remove</button>
+                    </div>
+                    <div class="dynamic-item">
+                        <input type="text" value="Syllabus & Exam Pattern" class="link-description">
+                        <input type="text" value="https://mppsc.mp.gov.in/Syllabus" class="link-url">
+                        <button class="remove-btn" onclick="removeItem(this)">Remove</button>
+                    </div>
+                    <div class="dynamic-item">
+                        <input type="text" value="MPPSC Official Website" class="link-description">
+                        <input type="text" value="https://mppsc.mp.gov.in/" class="link-url">
+                        <button class="remove-btn" onclick="removeItem(this)">Remove</button>
+                    </div>
+                </div>
+                <button class="add-btn" onclick="addLink()">Add Link</button>
+            </div>
+        </div>
+        
+        <!-- Paragraphs Tab -->
+        <div id="paragraphs" class="tab-content">
+            <div class="section-toggle">
+                <input type="checkbox" id="paragraphs-toggle" checked>
+                <label for="paragraphs-toggle">Include Paragraph Sections</label>
+            </div>
+            <div class="form-section">
+                <h3>Paragraph Sections</h3>
+                <div class="input-group">
+                    <label for="paragraphs-explanation">Section Explanation</label>
+                    <div class="text-formatting">
+                        <button class="format-btn" onclick="formatText('paragraphs-explanation', 'bold')"><strong>B</strong></button>
+                        <button class="format-btn" onclick="formatText('paragraphs-explanation', 'italic')"><em>I</em></button>
+                        <button class="format-btn" onclick="formatText('paragraphs-explanation', 'underline')"><u>U</u></button>
+                    </div>
+                    <textarea id="paragraphs-explanation">Add custom paragraph sections with titles and content.</textarea>
+                </div>
+                
+                <div id="paragraphs-container">
+                    <div class="paragraph-section">
+                        <div class="input-group">
+                            <label>Paragraph Title</label>
+                            <input type="text" class="paragraph-title" value="1. General Eligibility and Service Conditions">
+                        </div>
+                        <div class="input-group">
+                            <label>Paragraph Content</label>
+                            <div class="text-formatting">
+                                <button class="format-btn" onclick="formatText(this.parentElement.nextElementSibling, 'bold')"><strong>B</strong></button>
+                                <button class="format-btn" onclick="formatText(this.parentElement.nextElementSibling, 'italic')"><em>I</em></button>
+                                <button class="format-btn" onclick="formatText(this.parentElement.nextElementSibling, 'underline')"><u>U</u></button>
+                            </div>
+                            <textarea class="paragraph-content">All applicants must be a Citizen of India to qualify for the posts. Key conditions include a two-year Probation Period for all successful candidates, who must also pass a satisfactory medical fitness check and character verification. Crucially, reservation benefits (for SC/ST/OBC/EWS) are restricted to Delhi/NCT permanent residents; candidates from other states are classified under the General (UR) category. Any form of canvassing will result in disqualification, and selected employees should be prepared for potential postings anywhere in India. This section outlines the basic legal and mandatory requirements for service.</textarea>
+                        </div>
+                        <button class="remove-btn" onclick="removeParagraphItem(this)">Remove Paragraph</button>
+                    </div>
+                    
+                    <div class="paragraph-section">
+                        <div class="input-group">
+                            <label>Paragraph Title</label>
+                            <input type="text" class="paragraph-title" value="2. Examination Structure and Communication">
+                        </div>
+                        <div class="input-group">
+                            <label>Paragraph Content</label>
+                            <div class="text-formatting">
+                                <button class="format-btn" onclick="formatText(this.parentElement.nextElementSibling, 'bold')"><strong>B</strong></button>
+                                <button class="format-btn" onclick="formatText(this.parentElement.nextElementSibling, 'italic')"><em>I</em></button>
+                                <button class="format-btn" onclick="formatText(this.parentElement.nextElementSibling, 'underline')"><u>U</u></button>
+                            </div>
+                            <textarea class="paragraph-content">The core of the selection process is a Computer Based Test (CBT). This examination is designed to be accessible, offered in a bilingual format (English and Hindi), excluding the English language section itself. Depending on the specific post, the CBT will be followed by a possible Skill Test or Interview/Personal Interaction (Tier-II). Candidates are required to select three examination center preferences during application. All communication—including the Admit Card, interview call letters, and results—will be conducted online only via the NHAI official website and registered Email/SMS. No physical documents will be sent.</textarea>
+                        </div>
+                        <button class="remove-btn" onclick="removeParagraphItem(this)">Remove Paragraph</button>
+                    </div>
+                    
+                    <div class="paragraph-section">
+                        <div class="input-group">
+                            <label>Paragraph Title</label>
+                            <input type="text" class="paragraph-title" value="3. Mandatory Application Specifics">
+                        </div>
+                        <div class="input-group">
+                            <label>Paragraph Content</label>
+                            <div class="text-formatting">
+                                <button class="format-btn" onclick="formatText(this.parentElement.nextElementSibling, 'bold')"><strong>B</strong></button>
+                                <button class="format-btn" onclick="formatText(this.parentElement.nextElementSibling, 'italic')"><em>I</em></button>
+                                <button class="format-btn" onclick="formatText(this.parentElement.nextElementSibling, 'underline')"><u>U</u></button>
+                            </div>
+                            <textarea class="paragraph-content">Candidates must strictly adhere to the Application Specifics to ensure validity. The crucial date for meeting all eligibility requirements (age, qualification, caste status) is the closing date for online submission: December 15, 2025. It is paramount to fill the application accurately, as no request for corrections (including personal details or category changes) will be accepted after submission. Furthermore, applicants seeking multiple posts must submit a separate application form and separate fee payment for each one. The application is finalized only after successful payment, resulting in a mandatory Confirmation Page download.</textarea>
+                        </div>
+                        <button class="remove-btn" onclick="removeParagraphItem(this)">Remove Paragraph</button>
+                    </div>
+                </div>
+                <button class="add-btn" onclick="addParagraphItem()">Add Paragraph Section</button>
+            </div>
+        </div>
+        
+        <!-- FAQs Tab -->
+        <div id="faqs" class="tab-content">
+            <div class="section-toggle">
+                <input type="checkbox" id="faqs-toggle" checked>
+                <label for="faqs-toggle">Include FAQs Section</label>
+            </div>
+            <div class="form-section">
+                <h3>Frequently Asked Questions (FAQs)</h3>
+                <div class="input-group">
+                    <label for="faqs-explanation">Section Explanation</label>
+                    <div class="text-formatting">
+                        <button class="format-btn" onclick="formatText('faqs-explanation', 'bold')"><strong>B</strong></button>
+                        <button class="format-btn" onclick="formatText('faqs-explanation', 'italic')"><em>I</em></button>
+                        <button class="format-btn" onclick="formatText('faqs-explanation', 'underline')"><u>U</u></button>
+                    </div>
+                    <textarea id="faqs-explanation">Find answers to the most common queries regarding the recruitment drive.</textarea>
+                </div>
+                <p>Enter FAQs in the format: Q. Question? A. Answer</p>
+                <div class="format-example">
+Q. What is the official name of the MPESB exam detailed in the rulebook?
+A. The official exam is the Group-2 Subgroup-3 Joint Recruitment Exam-2025, which is conducted by the Madhya Pradesh Employees Selection Board (MPESB) in Bhopal.
+
+Q. When is the MP Group-2 Subgroup-3 Joint Recruitment 2025 application start date?
+A. The online application process for the MP Group-2 Subgroup-3 Joint Recruitment 2025 begins on 29.10.2025.
+                </div>
+                <div class="input-group">
+                    <label for="faqs-input">FAQs Input</label>
+                    <div class="text-formatting">
+                        <button class="format-btn" onclick="formatText('faqs-input', 'bold')"><strong>B</strong></button>
+                        <button class="format-btn" onclick="formatText('faqs-input', 'italic')"><em>I</em></button>
+                        <button class="format-btn" onclick="formatText('faqs-input', 'underline')"><u>U</u></button>
+                    </div>
+                    <textarea id="faqs-input" placeholder="Enter FAQs in the format shown above">Q. What is the official name of the MPESB exam detailed in the rulebook?
+A. The official exam is the Group-2 Subgroup-3 Joint Recruitment Exam-2025, which is conducted by the Madhya Pradesh Employees Selection Board (MPESB) in Bhopal.
+
+Q. When is the MP Group-2 Subgroup-3 Joint Recruitment 2025 application start date?
+A. The online application process for the MP Group-2 Subgroup-3 Joint Recruitment 2025 begins on 29.10.2025.</textarea>
+                </div>
+                <button class="parse-btn" onclick="parseFAQs()">Parse FAQs</button>
+                <div id="faqs-preview" class="parsed-preview"></div>
+            </div>
+        </div>
+        
+        <!-- Preview & Code Tab -->
+        <div id="preview" class="tab-content">
+            <div class="form-section">
+                <h3>Generated Blog Body HTML</h3>
+                <p>Click the button below to generate the HTML code for your blog body.</p>
+                <button class="copy-btn" onclick="generateBlogBody()">Generate Blog Body HTML</button>
+                
+                <div class="preview-container">
+                    <h4>Preview:</h4>
+                    <div id="blog-preview" style="background: white; padding: 20px; border-radius: 5px; margin-top: 15px;"></div>
+                    
+                    <h4 style="margin-top: 20px;">HTML Code:</h4>
+                    <pre id="generated-code" style="background: #f8fafc; padding: 15px; border-radius: 5px; overflow: auto; margin-top: 10px; white-space: pre-wrap;"></pre>
+                    
+                    <button id="copy-code-btn" class="copy-btn" onclick="copyCode()">Copy HTML Code</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variable to track added sections
+        let addedSections = [];
+
+        // Tab switching function
+        function switchTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Activate the clicked tab button
+            event.target.classList.add('active');
+        }
+        
+        // Remove item
+        function removeItem(button) {
+            button.parentElement.remove();
+        }
+        
+        // Remove eligibility item
+        function removeEligibilityItem(button) {
+            button.parentElement.remove();
+        }
+        
+        // Remove paragraph item
+        function removeParagraphItem(button) {
+            button.parentElement.remove();
+        }
+        
+        // Toggle bold for form steps
+        function toggleBold(button) {
+            button.classList.toggle('active');
+        }
+        
+        // Text formatting function
+        function formatText(elementOrId, format) {
+            let textarea;
+            if (typeof elementOrId === 'string') {
+                textarea = document.getElementById(elementOrId);
+            } else {
+                textarea = elementOrId;
+            }
+            
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const selectedText = textarea.value.substring(start, end);
+            
+            let formattedText = '';
+            
+            switch(format) {
+                case 'bold':
+                    formattedText = `<strong>${selectedText}</strong>`;
+                    break;
+                case 'italic':
+                    formattedText = `<em>${selectedText}</em>`;
+                    break;
+                case 'underline':
+                    formattedText = `<u>${selectedText}</u>`;
+                    break;
+                case 'link':
+                    const linkUrl = document.getElementById('link-url').value;
+                    const linkText = selectedText || document.getElementById('link-mp').value;
+                    formattedText = `<a href="${linkUrl}"><span class="link-mp">${linkText}</span></a>`;
+                    break;
+            }
+            
+            // Replace selected text with formatted text
+            textarea.value = textarea.value.substring(0, start) + formattedText + textarea.value.substring(end);
+            
+            // Set cursor position after the inserted text
+            textarea.selectionStart = start + formattedText.length;
+            textarea.selectionEnd = start + formattedText.length;
+            textarea.focus();
+        }
+        
+        // Add section to the list
+        function addSection() {
+            const sectionSelect = document.getElementById('section-select');
+            const selectedSection = sectionSelect.value;
+            
+            if (!selectedSection) {
+                alert('Please select a section to add.');
+                return;
+            }
+            
+            // Check if section is already added
+            if (addedSections.includes(selectedSection)) {
+                alert('This section is already added.');
+                return;
+            }
+            
+            // Add to the list
+            addedSections.push(selectedSection);
+            updateAddedSectionsList();
+            
+            // Reset dropdown
+            sectionSelect.value = '';
+        }
+        
+        // Remove section from the list
+        function removeAddedSection(section) {
+            addedSections = addedSections.filter(s => s !== section);
+            updateAddedSectionsList();
+        }
+        
+        // Update the displayed list of added sections
+        function updateAddedSectionsList() {
+            const container = document.getElementById('added-sections-list');
+            container.innerHTML = '';
+            
+            if (addedSections.length === 0) {
+                container.innerHTML = '<p>No additional sections added yet.</p>';
+                return;
+            }
+            
+            addedSections.forEach(section => {
+                const sectionDiv = document.createElement('div');
+                sectionDiv.className = 'added-section-item';
+                sectionDiv.innerHTML = `
+                    <span>${getSectionDisplayName(section)}</span>
+                    <button class="remove-btn" onclick="removeAddedSection('${section}')">Remove</button>
+                `;
+                container.appendChild(sectionDiv);
+            });
+        }
+        
+        // Get display name for sections
+        function getSectionDisplayName(section) {
+            const names = {
+                'additional-info': 'Additional Information',
+                'exam-pattern': 'Exam Pattern',
+                'syllabus': 'Syllabus',
+                'preparation-tips': 'Preparation Tips',
+                'salary-structure': 'Salary Structure',
+                'paragraph': 'Custom Paragraph'
+            };
+            return names[section] || section;
+        }
+        
+        // Add Age Limit
+        function addAgeLimit() {
+            const container = document.getElementById('age-limit-container');
+            const div = document.createElement('div');
+            div.className = 'dynamic-item';
+            div.innerHTML = `
+                <input type="text" placeholder="Age Label" class="age-label">
+                <input type="text" placeholder="Age Value" class="age-value">
+                <button class="remove-btn" onclick="removeItem(this)">Remove</button>
+            `;
+            container.appendChild(div);
+        }
+        
+        // Add Vacancy
+        function addVacancy() {
+            const container = document.getElementById('vacancy-container');
+            const div = document.createElement('div');
+            div.className = 'dynamic-item';
+            div.innerHTML = `
+                <input type="text" placeholder="Category" class="vacancy-category">
+                <input type="text" placeholder="Count" class="vacancy-count">
+                <button class="remove-btn" onclick="removeItem(this)">Remove</button>
+            `;
+            container.appendChild(div);
+        }
+        
+        // Add Selection Step
+        function addSelectionStep() {
+            const container = document.getElementById('selection-container');
+            const div = document.createElement('div');
+            div.className = 'dynamic-item';
+            div.innerHTML = `
+                <input type="text" placeholder="Selection Step" class="selection-step">
+                <button class="remove-btn" onclick="removeItem(this)">Remove</button>
+            `;
+            container.appendChild(div);
+        }
+        
+        // Add Eligibility Item
+        function addEligibilityItem() {
+            const container = document.getElementById('eligibility-container');
+            const layout = document.querySelector('input[name="eligibility-layout"]:checked').value;
+            const div = document.createElement('div');
+            div.className = `eligibility-item ${layout}`;
+            
+            if (layout === 'two-columns') {
+                div.innerHTML = `
+                    <div class="input-group">
+                        <label>Post Title</label>
+                        <input type="text" class="post-title" placeholder="Enter post title">
+                    </div>
+                    <div class="input-group">
+                        <label>Post Information</label>
+                        <div class="text-formatting">
+                            <button class="format-btn" onclick="formatText(this.parentElement.nextElementSibling, 'bold')"><strong>B</strong></button>
+                            <button class="format-btn" onclick="formatText(this.parentElement.nextElementSibling, 'italic')"><em>I</em></button>
+                            <button class="format-btn" onclick="formatText(this.parentElement.nextElementSibling, 'underline')"><u>U</u></button>
+                        </div>
+                        <textarea class="post-info" placeholder="Enter post eligibility information"></textarea>
+                    </div>
+                    <button class="remove-btn" onclick="removeEligibilityItem(this)">Remove Post</button>
+                `;
+            } else {
+                div.innerHTML = `
+                    <div class="input-group">
+                        <label>Post Title</label>
+                        <input type="text" class="post-title" placeholder="Enter post title">
+                    </div>
+                    <div class="input-group">
+                        <label>Post Count</label>
+                        <input type="text" class="post-count" placeholder="Enter post count">
+                    </div>
+                    <div class="input-group">
+                        <label>Post Information</label>
+                        <div class="text-formatting">
+                            <button class="format-btn" onclick="formatText(this.parentElement.nextElementSibling, 'bold')"><strong>B</strong></button>
+                            <button class="format-btn" onclick="formatText(this.parentElement.nextElementSibling, 'italic')"><em>I</em></button>
+                            <button class="format-btn" onclick="formatText(this.parentElement.nextElementSibling, 'underline')"><u>U</u></button>
+                        </div>
+                        <textarea class="post-info" placeholder="Enter post eligibility information"></textarea>
+                    </div>
+                    <button class="remove-btn" onclick="removeEligibilityItem(this)">Remove Post</button>
+                `;
+            }
+            
+            container.appendChild(div);
+        }
+        
+        // Update eligibility items layout when column option changes
+        function updateEligibilityLayout() {
+            const layout = document.querySelector('input[name="eligibility-layout"]:checked').value;
+            const eligibilityItems = document.querySelectorAll('.eligibility-item');
+            
+            eligibilityItems.forEach(item => {
+                // Remove existing classes
+                item.classList.remove('two-column', 'three-column');
+                
+                // Add the new layout class
+                item.classList.add(layout === 'two-columns' ? 'two-column' : 'three-column');
+                
+                // Update the HTML structure if needed
+                if (layout === 'three-columns' && !item.querySelector('.post-count')) {
+                    // Add post count field for 3-column layout
+                    const postTitleGroup = item.querySelector('.input-group:first-child');
+                    const postCountGroup = document.createElement('div');
+                    postCountGroup.className = 'input-group';
+                    postCountGroup.innerHTML = `
+                        <label>Post Count</label>
+                        <input type="text" class="post-count" placeholder="Enter post count">
+                    `;
+                    postTitleGroup.parentNode.insertBefore(postCountGroup, postTitleGroup.nextSibling);
+                } else if (layout === 'two-columns' && item.querySelector('.post-count')) {
+                    // Remove post count field for 2-column layout
+                    const postCountGroup = item.querySelector('.input-group:nth-child(2)');
+                    if (postCountGroup && postCountGroup.querySelector('.post-count')) {
+                        postCountGroup.remove();
+                    }
+                }
+            });
+        }
+        
+        // Add Form Step
+        function addFormStep() {
+            const container = document.getElementById('form-steps-container');
+            const div = document.createElement('div');
+            div.className = 'dynamic-item';
+            div.innerHTML = `
+                <div class="text-formatting">
+                    <button class="format-btn" onclick="formatText(this.parentElement.nextElementSibling, 'bold')"><strong>B</strong></button>
+                    <button class="format-btn" onclick="formatText(this.parentElement.nextElementSibling, 'italic')"><em>I</em></button>
+                    <button class="format-btn" onclick="formatText(this.parentElement.nextElementSibling, 'underline')"><u>U</u></button>
+                </div>
+                <textarea placeholder="Form Step" class="form-step"></textarea>
+                <button class="bold-toggle" onclick="toggleBold(this)">B</button>
+                <button class="remove-btn" onclick="removeItem(this)">Remove</button>
+            `;
+            container.appendChild(div);
+        }
+        
+        // Add Link
+        function addLink() {
+            const container = document.getElementById('links-container');
+            const div = document.createElement('div');
+            div.className = 'dynamic-item';
+            div.innerHTML = `
+                <input type="text" placeholder="Link Description" class="link-description">
+                <input type="text" placeholder="Link URL" class="link-url">
+                <button class="remove-btn" onclick="removeItem(this)">Remove</button>
+            `;
+            container.appendChild(div);
+        }
+        
+        // Add Paragraph Item
+        function addParagraphItem() {
+            const container = document.getElementById('paragraphs-container');
+            const div = document.createElement('div');
+            div.className = 'paragraph-section';
+            div.innerHTML = `
+                <div class="input-group">
+                    <label>Paragraph Title</label>
+                    <input type="text" class="paragraph-title" placeholder="Enter paragraph title">
+                </div>
+                <div class="input-group">
+                    <label>Paragraph Content</label>
+                    <div class="text-formatting">
+                        <button class="format-btn" onclick="formatText(this.parentElement.nextElementSibling, 'bold')"><strong>B</strong></button>
+                        <button class="format-btn" onclick="formatText(this.parentElement.nextElementSibling, 'italic')"><em>I</em></button>
+                        <button class="format-btn" onclick="formatText(this.parentElement.nextElementSibling, 'underline')"><u>U</u></button>
+                    </div>
+                    <textarea class="paragraph-content" placeholder="Enter paragraph content"></textarea>
+                </div>
+                <button class="remove-btn" onclick="removeParagraphItem(this)">Remove Paragraph</button>
+            `;
+            container.appendChild(div);
+        }
+        
+        // Parse Dates
+        function parseDates() {
+            const datesInput = document.getElementById('dates-input').value;
+            const datesPreview = document.getElementById('dates-preview');
+            
+            if (!datesInput.trim()) {
+                datesPreview.innerHTML = '<p class="text-red-500">Please enter dates.</p>';
+                return;
+            }
+            
+            // Split by new lines and filter out empty lines
+            const dateItems = datesInput.split('\n')
+                .filter(line => line.trim() !== '')
+                .map(line => {
+                    const parts = line.split(':');
+                    if (parts.length >= 2) {
+                        return {
+                            description: parts[0].trim(),
+                            date: parts.slice(1).join(':').trim()
+                        };
+                    }
+                    return null;
+                })
+                .filter(item => item !== null);
+            
+            // Display parsed dates
+            if (dateItems.length === 0) {
+                datesPreview.innerHTML = '<p class="text-red-500">No dates found. Please check your format.</p>';
+                return;
+            }
+            
+            let previewHTML = '<h4>Parsed Dates:</h4><ul>';
+            
+            dateItems.forEach(item => {
+                previewHTML += `<li><strong>${item.description}:</strong> ${item.date}</li>`;
+            });
+            
+            previewHTML += '</ul>';
+            datesPreview.innerHTML = previewHTML;
+            
+            // Store parsed dates for use in blog generation
+            window.parsedDates = dateItems;
+        }
+        
+        // Parse Fees
+        function parseFees() {
+            const feesInput = document.getElementById('fees-input').value;
+            const feesPreview = document.getElementById('fees-preview');
+            
+            if (!feesInput.trim()) {
+                feesPreview.innerHTML = '<p class="text-red-500">Please enter fees.</p>';
+                return;
+            }
+            
+            // Split by new lines and filter out empty lines
+            const feeItems = feesInput.split('\n')
+                .filter(line => line.trim() !== '')
+                .map(line => {
+                    const parts = line.split(':');
+                    if (parts.length >= 2) {
+                        return {
+                            category: parts[0].trim(),
+                            amount: parts.slice(1).join(':').trim()
+                        };
+                    }
+                    return null;
+                })
+                .filter(item => item !== null);
+            
+            // Display parsed fees
+            if (feeItems.length === 0) {
+                feesPreview.innerHTML = '<p class="text-red-500">No fees found. Please check your format.</p>';
+                return;
+            }
+            
+            let previewHTML = '<h4>Parsed Fees:</h4><ul>';
+            
+            feeItems.forEach(item => {
+                previewHTML += `<li><strong>${item.category}:</strong> ${item.amount}</li>`;
+            });
+            
+            previewHTML += '</ul>';
+            feesPreview.innerHTML = previewHTML;
+            
+            // Store parsed fees for use in blog generation
+            window.parsedFees = feeItems;
+        }
+        
+        // Parse FAQs
+        function parseFAQs() {
+            const faqsInput = document.getElementById('faqs-input').value;
+            const faqsPreview = document.getElementById('faqs-preview');
+            
+            if (!faqsInput.trim()) {
+                faqsPreview.innerHTML = '<p class="text-red-500">Please enter FAQs.</p>';
+                return;
+            }
+            
+            // Parse FAQs using regex
+            const faqRegex = /Q\.\s*(.*?)\s*A\.\s*(.*?)(?=Q\.|$)/gs;
+            const faqs = [];
+            let match;
+            
+            while ((match = faqRegex.exec(faqsInput)) !== null) {
+                const question = match[1].trim();
+                const answer = match[2].trim();
+                
+                if (question && answer) {
+                    faqs.push({ question, answer });
+                }
+            }
+            
+            // Display parsed FAQs
+            if (faqs.length === 0) {
+                faqsPreview.innerHTML = '<p class="text-red-500">No FAQs found. Please check your format.</p>';
+                return;
+            }
+            
+            let previewHTML = '<h4>Parsed FAQs:</h4><div class="space-y-4">';
+            
+            faqs.forEach((faq, index) => {
+                previewHTML += `
+                    <div class="p-3 bg-white rounded-lg border border-gray-200">
+                        <p class="font-semibold">Q${index + 1}: ${faq.question}</p>
+                        <p class="mt-1 text-gray-700">A: ${faq.answer}</p>
+                    </div>
+                `;
+            });
+            
+            previewHTML += '</div>';
+            faqsPreview.innerHTML = previewHTML;
+            
+            // Store parsed FAQs for use in blog generation
+            window.parsedFAQs = faqs;
+        }
+        
+        // Generate Blog Body HTML
+        function generateBlogBody() {
+            // Get all input values
+            const title = document.getElementById('blog-title').value;
+            const postDate = document.getElementById('post-date').value;
+            const author = document.getElementById('author').value;
+            const description = document.getElementById('description').value;
+            const linkMp = document.getElementById('link-mp').value;
+            const linkUrl = document.getElementById('link-url').value;
+            const totalPostsCount = document.getElementById('total-posts-count').value;
+            const eligibilityLayout = document.querySelector('input[name="eligibility-layout"]:checked').value;
+            
+            // Check which sections are enabled
+            const basicInfoEnabled = document.getElementById('basic-info-toggle').checked;
+            const importantDatesEnabled = document.getElementById('important-dates-toggle').checked;
+            const feesEnabled = document.getElementById('fees-toggle').checked;
+            const totalPostsEnabled = document.getElementById('total-posts-toggle').checked;
+            const vacancyEnabled = document.getElementById('vacancy-toggle').checked;
+            const selectionEnabled = document.getElementById('selection-toggle').checked;
+            const eligibilityEnabled = document.getElementById('eligibility-toggle').checked;
+            const formFillingEnabled = document.getElementById('form-filling-toggle').checked;
+            const linksEnabled = document.getElementById('links-toggle').checked;
+            const paragraphsEnabled = document.getElementById('paragraphs-toggle').checked;
+            const faqsEnabled = document.getElementById('faqs-toggle').checked;
+            
+            // Generate the default HTML structure
+            let html = `</head>
+<body class="pt-20">
+  <div id="header"></div>
+<div class="post-container">`;
+            
+            // Basic Info Section
+            if (basicInfoEnabled) {
+                html += `
+    <header class="post-intro-header">
+        <h1 class="header-title">
+            ${title}
+        </h1>
+        <p class="header-meta">
+            <span class="meta-date">Post Date: ${postDate}</span>
+            <span class="meta-separator">|</span>
+            <span class="meta-author">Author: ${author}</span>
+        </p>
+        <p class="header-summary">
+            <a href="${linkUrl}"><span class="link-mp">${linkMp}</span></a>, ${description}
+        </p>
+    </header>
+</div>`;
+            }
+            
+            // Important Dates and Fees Section
+            if (importantDatesEnabled || feesEnabled) {
+                html += `
+<!-- ROW 1: Important Dates + Fees -->
+<div class="content-wrapper">`;
+                
+                // Important Dates
+                if (importantDatesEnabled) {
+                    html += `
+  <!-- Important Dates -->
+  <section id="important-dates" class="content-section">
+    <h2 class="section-title">Important Dates</h2>
+    <p class="section-explanation">
+      Keep track of key deadlines for the recruitment process.
+    </p>
+
+    <div class="dates-list">`;
+            
+                    // Important Dates
+                    if (window.parsedDates && window.parsedDates.length > 0) {
+                        window.parsedDates.forEach(item => {
+                            html += `
+      <div class="date-item">
+        <span class="date-description">${item.description}:</span><br>
+        <span class="date">${item.date}</span>
+      </div>`;
+                        });
+                    }
+                    
+                    html += `
+    </div>
+  </section>`;
+                }
+                
+                // Fees
+                if (feesEnabled) {
+                    html += `
+  <!-- Fees -->
+  <section id="fees" class="content-section">
+    <h2 class="section-title">Application Fees</h2>
+    <p class="section-explanation">
+      The application fee is non-refundable. Review the details below before payment.
+    </p>
+
+    <div class="fee-details">`;
+            
+                    // Fees
+                    if (window.parsedFees && window.parsedFees.length > 0) {
+                        window.parsedFees.forEach(item => {
+                            html += `
+      <div class="fee-item">
+        <span class="fee-label">${item.category}:</span>
+        <span class="fee-amount">${item.amount}</span>
+      </div>`;
+                        });
+                    }
+                    
+                    html += `
+      <div class="payment-mode">
+        <h3 class="payment-title">Payment Mode (Online)</h3>
+        <p class="payment-desc">
+          You can pay using any of the following options:
+        </p>
+        <ul class="payment-list">
+          <li>💳 Debit Card</li>
+          <li>💰 Credit Card</li>
+          <li>🌐 Net Banking</li>
+          <li>⚡ IMPS</li>
+          <li>📱 UPI / Wallet</li>
+        </ul>
+      </div>
+    </div>
+  </section>`;
+                }
+                
+                html += `
+</div>`;
+            }
+            
+            // Total Posts and Age Limit Section
+            if (totalPostsEnabled) {
+                html += `
+<!-- ROW 2: Total Posts + Age Limit -->
+<div class="section-row two-column-layout">
+  
+  <!-- Total Posts -->
+  <section id="total-posts" class="content-section post-column">
+    <h2 class="section-title">Total Posts</h2>
+    <p class="section-explanation">Total number of available vacancies in this recruitment.</p>
+
+    <div class="posts-summary">
+      <span class="post-count">${totalPostsCount}</span>
+    </div>
+  </section>
+
+  <!-- Age Limit -->
+  <section id="age-limit" class="content-section age-column">
+    <h2 class="section-title">Age Limit</h2>
+    <p class="section-explanation">
+      Check the prescribed age limits for various categories as per MPESB rules.
+    </p>
+
+    <div class="age-details">`;
+            
+                // Age Limit
+                const ageLabels = Array.from(document.querySelectorAll('.age-label')).map(input => input.value);
+                const ageValues = Array.from(document.querySelectorAll('.age-value')).map(input => input.value);
+                const ageNote = document.getElementById('age-note').value;
+                
+                for (let i = 0; i < ageLabels.length; i++) {
+                    if (ageLabels[i] && ageValues[i]) {
+                        html += `
+      <div class="age-item">
+        <span class="age-label">${ageLabels[i]}</span><br>
+        <span class="age-value">${ageValues[i]}</span>
+      </div>`;
+                    }
+                }
+                
+                html += `
+      <div class="age-note">
+        ${ageNote}
+      </div>
+    </div>
+  </section>
+</div>`;
+            }
+            
+            // Vacancy and Selection Section
+            if (vacancyEnabled || selectionEnabled) {
+                html += `
+<!-- 🧾 Vacancy & Selection (Two-Column Layout like Dates + Fees) -->
+<div class="content-wrapper-vacancy">`;
+                
+                // Vacancy Details
+                if (vacancyEnabled) {
+                    html += `
+  <!-- Vacancy Details -->
+  <section id="vacancy-details" class="content-section-vacancy">
+    <h2 class="vacancy-section-title">Vacancy Details</h2>
+    <p class="vacancy-section-explanation">Category Wise Vacancy Details</p>
+    <div class="vacancy-list">`;
+            
+                    // Vacancy Details
+                    const vacancyCategories = Array.from(document.querySelectorAll('.vacancy-category')).map(input => input.value);
+                    const vacancyCounts = Array.from(document.querySelectorAll('.vacancy-count')).map(input => input.value);
+                    
+                    for (let i = 0; i < vacancyCategories.length; i++) {
+                        if (vacancyCategories[i] && vacancyCounts[i]) {
+                            html += `
+      <div class="vacancy-item"><span class="vacancy-category">${vacancyCategories[i]}</span><span class="vacancy-count">${vacancyCounts[i]}</span></div>`;
+                        }
+                    }
+                    
+                    html += `
+    </div>
+  </section>`;
+                }
+                
+                // Selection Process
+                if (selectionEnabled) {
+                    html += `
+  <!-- Selection Process -->
+  <section id="selection" class="content-section-vacancy">
+    <h2 class="vacancy-section-title">Selection Process</h2>
+    <p class="vacancy-section-explanation">
+      The selection process involves multiple stages designed to filter candidates based on merit and suitability for the job.
+    </p>
+    <div class="selection-steps">`;
+            
+                    // Selection Process
+                    const selectionSteps = Array.from(document.querySelectorAll('.selection-step')).map(input => input.value);
+                    
+                    selectionSteps.forEach(step => {
+                        if (step.trim()) {
+                            html += `
+      <div class="step-item">${step}</div>`;
+                        }
+                    });
+                    
+                    html += `
+    </div>
+  </section>`;
+                }
+                
+                html += `
+</div>`;
+            }
+            
+            // Post Eligibility Section
+            if (eligibilityEnabled) {
+                html += `
+<!-- 🧾 Full-Width Post Eligibility Section -->
+<section id="total-posts" class="full-section-wide">
+  <div class="section-header">Post Wise Eligibility Details</div>
+  <div class="section-body">`;
+            
+                // Post Eligibility
+                const postTitles = Array.from(document.querySelectorAll('.post-title')).map(input => input.value);
+                const postCounts = Array.from(document.querySelectorAll('.post-count')).map(input => input.value);
+                const postInfos = Array.from(document.querySelectorAll('.post-info')).map(textarea => textarea.value);
+                
+                for (let i = 0; i < postTitles.length; i++) {
+                    if (postTitles[i] && postInfos[i]) {
+                        if (eligibilityLayout === 'two-columns') {
+                            html += `
+    <div class="post-card">
+      <div class="post-title">${postTitles[i]}</div>
+      <div class="post-info">
+        ${postInfos[i]}
+      </div>
+    </div>`;
+                        } else {
+                            const postCount = postCounts[i] || 'Not specified';
+                            html += `
+    <div class="post-card">
+      <div class="post-title">${postTitles[i]}</div>
+      <div class="post-count">Posts: ${postCount}</div>
+      <div class="post-info">
+        ${postInfos[i]}
+      </div>
+    </div>`;
+                        }
+                    }
+                }
+                
+                html += `
+  </div>
+</section>`;
+            }
+            
+            // Form Filling and Useful Links Section
+            if (formFillingEnabled || linksEnabled) {
+                html += `
+<div class="content-wrapper-form">`;
+                
+                // Form Filling
+                if (formFillingEnabled) {
+                    html += `
+  <!-- Left Side: Form Filling -->
+  <section id="form-filling" class="content-section-box">
+    <h2 class="section-title">Form Filling</h2>
+    <div class="section-box">
+      <p class="section-note">
+        Follow these steps carefully to complete your application successfully.
+      </p>
+      <ul class="info-list">`;
+            
+                    // Form Steps
+                    const formSteps = Array.from(document.querySelectorAll('.form-step')).map(textarea => textarea.value);
+                    const formBold = Array.from(document.querySelectorAll('.bold-toggle')).map(button => button.classList.contains('active'));
+                    
+                    for (let i = 0; i < formSteps.length; i++) {
+                        if (formSteps[i].trim()) {
+                            const stepText = formBold[i] ? `<strong>${formSteps[i]}</strong>` : formSteps[i];
+                            html += `
+        <li>${stepText}</li>`;
+                        }
+                    }
+                    
+                    html += `
+      </ul>
+    </div>
+  </section>`;
+                }
+                
+                // Useful Links
+                if (linksEnabled) {
+                    html += `
+  <!-- Right Side: Useful Links -->
+  <section id="useful-links" class="content-section-box">
+    <h2 class="section-title">Useful Links</h2>
+    <div class="section-box">
+      <p class="section-note">Quick access to official resources and online application pages.</p>
+      <ul class="info-list">`;
+            
+                    // Useful Links
+                    const linkDescriptions = Array.from(document.querySelectorAll('.link-description')).map(input => input.value);
+                    const linkUrls = Array.from(document.querySelectorAll('.link-url')).map(input => input.value);
+                    
+                    for (let i = 0; i < linkDescriptions.length; i++) {
+                        if (linkDescriptions[i] && linkUrls[i]) {
+                            const linkText = linkDescriptions[i].includes('Apply Online') ? 'Click Here' : 
+                                           linkDescriptions[i].includes('Official Notification') ? 'View PDF' :
+                                           linkDescriptions[i].includes('Syllabus') ? 'Check Here' : 'Visit Now';
+                            html += `
+        <li><strong>${linkDescriptions[i]}:</strong> <a href="${linkUrls[i]}" target="_blank" class="action-link">${linkText}</a></li>`;
+                        }
+                    }
+                    
+                    html += `
+      </ul>
+    </div>
+  </section>`;
+                }
+                
+                html += `
+</div>`;
+            }
+            
+            // Paragraph Sections
+            if (paragraphsEnabled) {
+                const paragraphTitles = Array.from(document.querySelectorAll('.paragraph-title')).map(input => input.value);
+                const paragraphContents = Array.from(document.querySelectorAll('.paragraph-content')).map(textarea => textarea.value);
+                
+                for (let i = 0; i < paragraphTitles.length; i++) {
+                    if (paragraphTitles[i] && paragraphContents[i]) {
+                        html += `
+<!-- Paragraph Section -->
+<section class="full-section-wide">
+  <h2 class="section-header">${paragraphTitles[i]}</h2>
+  <div class="section-body">
+    <div class="post-card">
+      ${paragraphContents[i]}
+    </div>
+  </div>
+</section>`;
+                    }
+                }
+            }
+
+            // Add additional sections above FAQs if any
+            if (addedSections.length > 0) {
+                html += `\n<!-- Additional Sections -->`;
+                addedSections.forEach(section => {
+                    html += generateAdditionalSectionHTML(section);
+                });
+            }
+
+            // FAQs section
+            if (faqsEnabled) {
+                html += `
+<section id="important-faqs" class="faq-section">
+    <h2 class="faq-section-title">Important Frequently Asked Questions (FAQs)</h2>
+    <p class="faq-section-explanation">
+        Find answers to the most common queries regarding the recruitment drive.
+    </p>
+
+    <div class="faq-accordion">`;
+            
+                // FAQs
+                if (window.parsedFAQs && window.parsedFAQs.length > 0) {
+                    window.parsedFAQs.forEach(faq => {
+                        html += `
+        <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+                ${faq.question}
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <p>${faq.answer}</p>
+            </div>
+        </div>`;
+                    });
+                }
+                
+                html += `
+    </div>
+</section>`;
+            }
+            
+            html += `
+</div>`;
+            
+            // Update preview and code
+            document.getElementById('blog-preview').innerHTML = html;
+            document.getElementById('generated-code').textContent = html;
+            
+            // Switch to preview tab
+            switchTab('preview');
+        }
+
+        // Generate HTML for additional sections
+        function generateAdditionalSectionHTML(section) {
+            switch(section) {
+                case 'additional-info':
+                    return `
+<!-- Additional Information Section -->
+<section class="content-section">
+    <h2 class="section-title">Additional Information</h2>
+    <p class="section-explanation">
+        Important additional details about the recruitment process.
+    </p>
+    <div class="info-content">
+        <p>For any queries related to the MPESB Group 2 Recruitment 2025, candidates can contact the helpline number or email provided on the official website.</p>
+        <p>Candidates are advised to regularly check the official MPESB website for updates and notifications.</p>
+    </div>
+</section>`;
+
+                case 'exam-pattern':
+                    return `
+<!-- Exam Pattern Section -->
+<section class="content-section">
+    <h2 class="section-title">Exam Pattern</h2>
+    <p class="section-explanation">
+        Detailed structure of the examination process.
+    </p>
+    <div class="info-content">
+        <p><strong>Exam Mode:</strong> Online (Computer Based Test)</p>
+        <p><strong>Duration:</strong> 3 Hours</p>
+        <p><strong>Total Marks:</strong> 200</p>
+        <p><strong>Question Type:</strong> Multiple Choice Questions (MCQs)</p>
+        <p><strong>Negative Marking:</strong> No negative marking</p>
+    </div>
+</section>`;
+
+                case 'syllabus':
+                    return `
+<!-- Syllabus Section -->
+<section class="content-section">
+    <h2 class="section-title">Syllabus</h2>
+    <p class="section-explanation">
+        Comprehensive syllabus for the MPESB Group 2 examination.
+    </p>
+    <div class="info-content">
+        <p><strong>General Studies:</strong> Current Affairs, History, Geography, Polity, Economy, General Science</p>
+        <p><strong>Reasoning Ability:</strong> Verbal and Non-Verbal Reasoning</p>
+        <p><strong>Quantitative Aptitude:</strong> Arithmetic, Algebra, Geometry, Data Interpretation</p>
+        <p><strong>Technical Subjects:</strong> As per the specific post requirements</p>
+    </div>
+</section>`;
+
+                case 'preparation-tips':
+                    return `
+<!-- Preparation Tips Section -->
+<section class="content-section">
+    <h2 class="section-title">Preparation Tips</h2>
+    <p class="section-explanation">
+        Useful tips and strategies for effective preparation.
+    </p>
+    <div class="info-content">
+        <p>• Understand the complete syllabus and exam pattern</p>
+        <p>• Create a structured study plan</p>
+        <p>• Practice previous year question papers</p>
+        <p>• Take regular mock tests</p>
+        <p>• Focus on time management</p>
+        <p>• Revise regularly</p>
+    </div>
+</section>`;
+
+                case 'salary-structure':
+                    return `
+<!-- Salary Structure Section -->
+<section class="content-section">
+    <h2 class="section-title">Salary Structure</h2>
+    <p class="section-explanation">
+        Details of salary and benefits for selected candidates.
+    </p>
+    <div class="info-content">
+        <p><strong>Pay Scale:</strong> ₹35,400 - ₹1,12,400</p>
+        <p><strong>Grade Pay:</strong> As per MP Government rules</p>
+        <p><strong>Additional Benefits:</strong> DA, HRA, Medical Allowance, Travel Allowance</p>
+        <p><strong>Job Security:</strong> Permanent government position</p>
+        <p><strong>Promotional Avenues:</strong> Regular promotions based on performance</p>
+    </div>
+</section>`;
+
+                default:
+                    return '';
+            }
+        }
+        
+        // Copy code to clipboard
+        function copyCode() {
+            const code = document.getElementById('generated-code').textContent;
+            const copyBtn = document.getElementById('copy-code-btn');
+            
+            navigator.clipboard.writeText(code).then(() => {
+                // Change button text and style temporarily
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = 'Code Copied!';
+                copyBtn.classList.add('copied');
+                
+                // Reset button after 2 seconds
+                setTimeout(() => {
+                    copyBtn.textContent = originalText;
+                    copyBtn.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy code: ', err);
+                alert('Failed to copy code to clipboard. Please try again.');
+            });
+        }
+        
+        // Initialize by parsing content if there's any
+        document.addEventListener('DOMContentLoaded', function() {
+            // Parse all sections with default content
+            parseDates();
+            parseFees();
+            parseFAQs();
+            
+            // Set current date
+            const now = new Date();
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            document.getElementById('post-date').value = `${now.getDate()} / ${now.toLocaleDateString('en-US', { month: 'long' })} / ${now.getFullYear()}`;
+            
+            // Initialize added sections list
+            updateAddedSectionsList();
+            
+            // Add event listeners for column layout changes
+            document.querySelectorAll('input[name="eligibility-layout"]').forEach(radio => {
+                radio.addEventListener('change', updateEligibilityLayout);
+            });
+        });
+    </script>
+</body>
+</html>

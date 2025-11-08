@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Structured Blog Post Generator</title>
+    <style>
+        /* Styles for the Generator Form itself */
+        body { font-family: sans-serif; padding: 20px; background-color: #f7f9fc; color: #333; }
+        
+        /* New: Main two-column layout for generator and output */
+        .main-content-wrapper { display: flex; gap: 30px; max-width: 1400px; margin: 0 auto; }
+        .generator-form, .output-section { flex: 1; min-width: 0; }
+        .generator-container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08); margin-bottom: 20px; }
+        
+        h1 { color: #1a73e8; border-bottom: 3px solid #1a73e8; padding-bottom: 10px; margin-bottom: 30px; }
+        h3 { color: #000; margin-top: 30px; margin-bottom: 15px; border-left: 5px solid #ffcc00; padding-left: 10px; }
+        label { display: block; margin-top: 10px; font-weight: bold; color: #555; }
+        input[type="text"], textarea { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 16px; transition: border-color 0.3s; }
+        textarea { min-height: 100px; }
+        input[type="text"]:focus, textarea:focus { border-color: #1a73e8; outline: none; }
+        .field-group { margin-bottom: 20px; padding: 15px; border: 1px dashed #ddd; border-radius: 8px; }
+        .dynamic-field { background-color: #f9f9f9; padding: 15px; margin-bottom: 10px; border-radius: 6px; border-left: 3px solid #1a73e8; }
+        .dynamic-field label { font-weight: normal; margin-top: 5px; color: #333; }
+        button { padding: 10px 20px; margin-top: 15px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: background-color 0.3s; }
+        .add-btn { background-color: #4CAF50; color: white; margin-right: 10px; }
+        .remove-btn { background-color: #f44336; color: white; margin-left: 10px; float: right; }
+        .generate-btn { background-color: #1a73e8; color: white; width: 100%; font-size: 1.2em; margin-top: 30px; padding: 15px; }
+        .generate-btn:hover { background-color: #155bb5; }
+        
+        /* New: Output area styling */
+        .output-section { padding-top: 30px; } /* Align with generator container's top */
+        #html-output { width: 100%; min-height: 80vh; background-color: #2b2b2b; color: #f8f8f2; padding: 15px; font-family: monospace; border-radius: 8px; box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08); }
+        
+        /* New: Toggle for input sections */
+        .toggle-section { background-color: #f0f0f0; padding: 15px; cursor: pointer; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px; font-size: 1.1em; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
+        .toggle-section:hover { background-color: #e0e0e0; }
+        .section-content { 
+            /* Start hidden */
+            display: none; 
+            overflow: hidden; 
+            padding-top: 15px;
+            /* Remove border and padding from section-content to let field-group define them */
+        }
+        .toggle-icon { font-size: 1.2em; transition: transform 0.3s; }
+        .toggle-section[aria-expanded="true"] .toggle-icon { transform: rotate(90deg); }
+        
+        /* Media query for smaller screens: revert to single column */
+        @media (max-width: 1024px) {
+            .main-content-wrapper { flex-direction: column; }
+            .generator-container { max-width: 100%; }
+            .output-section { max-width: 100%; }
+            #html-output { min-height: 400px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-content-wrapper">
+
+    <div class="generator-form">
+        <div class="generator-container">
+            <h1>📝 Blog Post Content Generator</h1>
+            <p>Fill in the fields below to generate the structured HTML for your blog post body.</p>
+    
+            <div class="toggle-section" role="button" aria-expanded="true" onclick="toggleSection(this)">
+                A. Header & Intro
+                <span class="toggle-icon">▶</span>
+            </div>
+            <div class="section-content" style="display: block;">
+                <div class="field-group">
+                    <label for="post-title">Header Title (<code>.header-title</code>)</label>
+                    <input type="text" id="post-title" value="SSC CHSL 2025 Self Slot Booking: How to Book Exam Date and Time">
+                    
+                    <label for="post-date">Post Date (<code>.meta-date</code>)</label>
+                    <input type="text" id="post-date" value="27 / October / 2025">
+                    
+                    <label for="post-author">Author Name (<code>.meta-author</code>)</label>
+                    <input type="text" id="post-author" value="SRK Team">
+                    
+                    <label for="summary-text">Summary Text (Full, <code>.header-summary</code>)</label>
+                    <textarea id="summary-text">The Staff Selection Commission (SSC) has officially released the exam date notice for the Combined Higher Secondary Level (CHSL) Recruitment 2025 on its official website. This recruitment drive offers a total of 3131 vacancies across various government departments. The SSC CHSL 2025 application process began on 23 June 2025, and interested candidates can apply online until 18 July 2025. As per the notification, the age limit for applicants is 18 to 27 years as of 1 August 2025. Candidates planning to appear for the SSC CHSL 10+2 Exam 2025 are advised to go through the complete exam schedule, eligibility criteria, and official notice provided below before applying.</textarea>
+                    
+                    <label for="summary-highlight">Summary Highlight Phrase (<code>.summary-highlight</code>)</label>
+                    <input type="text" id="summary-highlight" value="The Staff Selection Commission (SSC)">
+                </div>
+            </div>
+            
+            <div class="toggle-section" role="button" aria-expanded="false" onclick="toggleSection(this)">
+                B. Navigation Tabs (Fixed structure)
+                <span class="toggle-icon">▶</span>
+            </div>
+            <div class="section-content">
+                <p>The navigation links (Important Dates, Fees, etc.) are fixed and match the Section IDs below.</p>
+            </div>
+            
+            <div class="toggle-section" role="button" aria-expanded="false" onclick="toggleSection(this)">
+                C1. Important Dates (#important-dates)
+                <span class="toggle-icon">▶</span>
+            </div>
+            <div class="section-content">
+                <div class="field-group">
+                    <button class="add-btn" onclick="addDateItem()">+ Add Date</button>
+                    <div id="dates-container"></div>
+                </div>
+            </div>
+        
+            <div class="toggle-section" role="button" aria-expanded="false" onclick="toggleSection(this)">
+                C2. Fees (#fees)
+                <span class="toggle-icon">▶</span>
+            </div>
+            <div class="section-content">
+                <div class="field-group">
+                    <button class="add-btn" onclick="addFeeItem()">+ Add Fee Row</button>
+                    <div id="fees-container"></div>
+                </div>
+            </div>
+    
+            <div class="toggle-section" role="button" aria-expanded="false" onclick="toggleSection(this)">
+                C3. Eligibility (#eligibility)
+                <span class="toggle-icon">▶</span>
+            </div>
+            <div class="section-content">
+                <div class="field-group">
+                    <button class="add-btn" onclick="addEligibilityItem()">+ Add Eligibility Post</button>
+                    <div id="eligibility-container"></div>
+                </div>
+            </div>
+    
+            <div class="toggle-section" role="button" aria-expanded="false" onclick="toggleSection(this)">
+                C4. Age Limit (#age-limit)
+                <span class="toggle-icon">▶</span>
+            </div>
+            <div class="section-content">
+                <div class="field-group">
+                    <button class="add-btn" onclick="addAgeItem()">+ Add List Item</button>
+                    <div id="age-limit-container"></div>
+                </div>
+            </div>
+            
+            <div class="toggle-section" role="button" aria-expanded="false" onclick="toggleSection(this)">
+                C5. Total Posts (#total-posts)
+                <span class="toggle-icon">▶</span>
+            </div>
+            <div class="section-content">
+                <div class="field-group">
+                    <label for="total-posts-text">Section Explanation Text (with &lt;strong&gt; for highlight)</label>
+                    <textarea id="total-posts-text">A grand total of <strong class="highlight-text">3131</strong> vacancies are available across various positions. Detailed breakdown is available below.</textarea>
+                    <label for="total-count">Total Post Count (<code>.post-count</code>)</label>
+                    <input type="text" id="total-count" value="3131">
+                </div>
+            </div>
+    
+            <div class="toggle-section" role="button" aria-expanded="false" onclick="toggleSection(this)">
+                C6. Vacancy Details (#vacancy-details)
+                <span class="toggle-icon">▶</span>
+            </div>
+            <div class="section-content">
+                <div class="field-group">
+                    <button class="add-btn" onclick="addVacancyItem()">+ Add Vacancy Row</button>
+                    <div id="vacancy-container"></div>
+                </div>
+            </div>
+    
+            <div class="toggle-section" role="button" aria-expanded="false" onclick="toggleSection(this)">
+                C7. Form Filling (#form-filling)
+                <span class="toggle-icon">▶</span>
+            </div>
+            <div class="section-content">
+                <div class="field-group">
+                    <label for="form-filling-explanation">Section Explanation</label>
+                    <textarea id="form-filling-explanation">Follow these sequential steps carefully to ensure your application form is submitted successfully without any errors.</textarea>
+                    <label for="form-filling-content">Step-by-Step Content (Paste entire &lt;ul&gt; or &lt;ol&gt; content here)</label>
+                    <textarea id="form-filling-content" style="min-height: 200px;">
+&lt;ol class="steps-list"&gt;
+    &lt;li&gt;&lt;strong class="list-title"&gt;&lt;ul&gt;
+        &lt;li&gt;Interested candidates who wish to apply for the &lt;strong&gt;SSC CHSL&lt;/strong&gt; post can submit their application online before &lt;strong&gt;18 July 2025&lt;/strong&gt;.&lt;/li&gt;
+        &lt;li&gt;Use the &lt;a href="#apply-link" id="important-apply-link" target="_blank" rel="noopener"&gt;Click here&lt;/a&gt; link provided below under the &lt;em&gt;Important Links&lt;/em&gt; section to apply directly.&lt;/li&gt;
+        &lt;li&gt;Alternatively:&lt;/strong&gt; &lt;/li&gt;
+        &lt;li&gt;&lt;strong class="list-title"&gt;visit the official &lt;a href="https://ssc.gov.in" target="_blank" rel="noopener"&gt;SSC CHSL website&lt;/a&gt; to complete the application process online.&lt;/li&gt;
+        &lt;li&gt;Make sure to complete the application before the deadline: &lt;strong&gt;18 July 2025&lt;/strong&gt;.&lt;/li&gt;
+    &lt;/ul&gt;
+    &lt;!-- Accessibility note for screen readers --&gt;
+    &lt;p aria-hidden="true" style="display:none;"&gt;Important link anchor id: important-apply-link&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+                    </textarea>
+                </div>
+            </div>
+            
+            <div class="toggle-section" role="button" aria-expanded="false" onclick="toggleSection(this)">
+                C8. Selection Process (#selection)
+                <span class="toggle-icon">▶</span>
+            </div>
+            <div class="section-content">
+                <div class="field-group">
+                    <label for="selection-title">Selection Block Title (<code>h2</code> inside <code>.flow-step</code>)</label>
+                    <input type="text" id="selection-title" value="SSC 10+2 CHSL Recruitment 2025: Mode of Selection">
+                    <label for="selection-content">Selection Process Description (Paste all &lt;p&gt; and &lt;ul&gt; content)</label>
+                    <textarea id="selection-content" style="min-height: 200px;">
+&lt;p&gt;The selection process for the &lt;strong&gt;SSC Combined Higher Secondary Level (CHSL) 2025&lt;/strong&gt; examination will be conducted in the following stages:&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;&lt;strong&gt;Tier-I Exam:&lt;/strong&gt; Computer-Based Examination (Objective Type)&lt;/li&gt;
+    &lt;li&gt;&lt;strong&gt;Tier-II Exam:&lt;/strong&gt; Descriptive Paper and Skill Test/Typing Test (as applicable)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;🔹 Candidates must qualify each stage as per the SSC rules to move forward in the selection process.&lt;/p&gt;
+                    </textarea>
+                </div>
+            </div>
+    
+            <div class="toggle-section" role="button" aria-expanded="false" onclick="toggleSection(this)">
+                C9. Useful Links (#useful-links)
+                <span class="toggle-icon">▶</span>
+            </div>
+            <div class="section-content">
+                <div class="field-group">
+                    <button class="add-btn" onclick="addLinkItem()">+ Add Simple Link</button>
+                    <button class="add-btn" onclick="addLinkGroupItem()">+ Add Apply Online Group</button>
+                    <div id="links-container"></div>
+                </div>
+            </div>
+    
+            <div class="toggle-section" role="button" aria-expanded="false" onclick="toggleSection(this)">
+                C10. Important FAQs (#important-faqs)
+                <span class="toggle-icon">▶</span>
+            </div>
+            <div class="section-content">
+                <div class="field-group">
+                    <button class="add-btn" onclick="addFAQItem()">+ Add FAQ Item</button>
+                    <div id="faq-container"></div>
+                </div>
+            </div>
+            
+            <div class="toggle-section" role="button" aria-expanded="false" onclick="toggleSection(this)">
+                D. Add New Custom Section
+                <span class="toggle-icon">▶</span>
+            </div>
+            <div class="section-content">
+                <p>Use this to add a new section that doesn't fit the standard templates above.</p>
+                <div id="custom-section-container"></div>
+                <button class="add-btn" onclick="addCustomSection()">+ Add Section</button>
+            </div>
+    
+            <button class="generate-btn" onclick="generateHTML()">Generate HTML</button>
+        </div>
+    </div>
+
+    <div class="output-section">
+        <h3 id="output">E. Generated HTML Output</h3>
+        <textarea id="html-output" readonly></textarea>
+    </div>
+
+</div>
+
+<script>
+    const navItems = [
+        { href: "#important-dates", text: "Important Dates" },
+        { href: "#fees", text: "Fees" },
+        { href: "#eligibility", text: "Eligibility" },
+        { href: "#age-limit", text: "Age Limit" },
+        { href: "#total-posts", text: "Total Posts" },
+        { href: "#vacancy-details", text: "Vacancy Details" },
+        { href: "#form-filling", text: "Form Filling" },
+        { href: "#selection", text: "Selection" },
+        { href: "#useful-links", text: "Useful Links" },
+        { href: "#important-faqs", text: "Important Faqs" }
+    ];
+
+    const defaultDates = [
+        { date: "23 June 2025", description: "Online Application Start Date:", highlight: false },
+        { date: "18 July 2025", description: "Last Date to Apply Online:", highlight: false },
+        { date: "19 July 2025", description: "Last Date for Fee Payment:", highlight: false },
+        { date: "25 to 26 July 2025", description: "Application Form Correction Dates:", highlight: false }, // Removed highlight as per your new structure
+        { date: "12 November 2025", description: "SSC CHSL Tier-I Exam Date:", highlight: false },
+        { date: "Available Before Exam", description: "Admit Card Release Date:", highlight: true }, // Added highlight back based on your new example
+        { date: "To Be Updated Soon", description: "Result Declaration Date:", highlight: true } // Added highlight back based on your new example
+    ];
+
+    const defaultFees = [
+        { category: "All Candidates :", fee: "₹ 100/-", method: "SSC CHSL 2025 Payment Mode (Online):  You can pay the application fee through any of the following secure online payment methods:  Debit Card  Credit Card  Internet Banking  IMPS (Immediate Payment Service)  Cash Card / Mobile Wallet  🔹 Ensure successful payment before the last date to complete your SSC CHSL 2025 application process." }
+    ];
+
+    const defaultEligibility = [
+        { post: "LDC & PA/ SA", criteria: "Candidates must have passed the 12th Class (Intermediate) Examination from a recognized board or university in India to be eligible for the SSC CHSL 10+2 Recruitment 2025.<br><br>🔹 Ensure that your educational qualification meets the eligibility criteria as mentioned in the official SSC notification before applying." },
+        { post: "DEO", criteria: "Candidates must have passed the 12th Standard (Science Stream) with Mathematics as one of the subjects from a recognized board or its equivalent to be eligible for certain SSC CHSL posts.<br><br>🔹 Applicants should verify the detailed post-wise qualification requirements mentioned in the official SSC CHSL 2025 notification before applying." }
+    ];
+
+    const defaultAgeLimits = [
+        { title: "Minimum Age:", value: "18 Years" },
+        { title: "Maximum Age :", value: "27 Years" },
+        { title: "Age Relaxation:", value: "ge relaxation varies based on the candidate’s category such as SC, ST, OBC, PwD, Ex-Servicemen, and other eligible groups as mentioned in the official notification." },
+        { title: "Cut-off Date:", value: "01/08/2025" },
+        { title: "Age Relaxation:", value: "Bihar BPSSC provides age relaxation for the Bihar Police SI position as per their regulations." }
+    ];
+
+    const defaultVacancy = [
+        { category: "SSC CHSL", count: "3131" }
+    ];
+
+    const defaultLinks = [
+        { description: "Online Self Slot Booking for Tier-I Exam:", href: "#slot-booking", text: "Click Here", group: false },
+        { description: "2025 Exam Calendar:", href: "#exam-calendar", text: "Click Here", group: false },
+        { description: "Exam Preparation Courses:", href: "#exam-courses", text: "Click Here", group: false },
+        { description: "Check Self Slot Booking Notice:", href: "#slot-notice", text: "Click Here", group: false },
+        { description: "Download Exam Date Notice:", href: "#exam-date-notice", text: "Click Here", group: false },
+        { description: "Download Tentative Vacancy Notice:", href: "#vacancy-notice", text: "Click Here", group: false },
+        { description: "Check Correction Notice:", href: "#correction-notice", text: "Click Here", group: false },
+        { description: "Apply Online:", href1: "#registration", text1: "Registration", href2: "#login", text2: "Login", group: true },
+        { description: "Download Official Notification:", href: "#official-notice", text: "Click Here", group: false },
+        { description: "SSC Official Website:", href: "https://ssc.gov.in", text: "Visit Now", isVisitNow: true, group: false },
+        { description: "SSC Online Coaching:", href: "#ssc-coaching", text: "Click Here", group: false }
+    ];
+
+    const defaultFAQs = [
+        { q: "What is the minimum qualification for SI post?", a: "You need a Bachelor's degree from a recognized university to be eligible for the Sub Inspector post." },
+        { q: "Is the PET test mandatory?", a: "Yes, the Physical Eligibility Test (PET) is a mandatory qualifying stage for all candidates who clear the Mains written exam." },
+        { q: "How many attempts are allowed for this exam?", a: "There is no official restriction on the number of attempts, provided you meet the specified age limits for your category." },
+        { q: "What is the last date to apply?", a: "The last date is 15/02/2026." }
+    ];
+
+
+    // --- Initialization Functions ---
+
+    function initializeDefaults() {
+        // Dates
+        defaultDates.forEach(item => addDateItem(item.date, item.description, item.highlight));
+        // Fees
+        defaultFees.forEach(item => addFeeItem(item.category, item.fee, item.method));
+        // Eligibility
+        defaultEligibility.forEach(item => addEligibilityItem(item.post, item.criteria));
+        // Age Limits
+        defaultAgeLimits.forEach(item => addAgeItem(item.title, item.value));
+        // Vacancy
+        defaultVacancy.forEach(item => addVacancyItem(item.category, item.count));
+        // Links
+        defaultLinks.forEach(item => {
+            if (item.group) {
+                addLinkGroupItem(item.description, item.href1, item.text1, item.href2, item.text2);
+            } else {
+                addLinkItem(item.description, item.href, item.text, item.isVisitNow);
+            }
+        });
+        // FAQs
+        defaultFAQs.forEach(item => addFAQItem(item.q, item.a));
+    }
+
+    // --- Dynamic Field Functions (same as original) ---
+
+    function createRemoveButton(element) {
+        const btn = document.createElement('button');
+        btn.className = 'remove-btn';
+        btn.textContent = 'Remove';
+        btn.onclick = () => element.remove();
+        return btn;
+    }
+
+    // C1. Dates (UPDATED for <span description> <br> <span date> structure)
+    function addDateItem(date = '', description = '', highlight = false) {
+        const container = document.getElementById('dates-container');
+        const item = document.createElement('div');
+        item.className = 'dynamic-field date-item';
+        item.innerHTML = `
+            <label>Description</label><input type="text" class="date-description-input" value="${description}">
+            <label>Date</label><input type="text" class="date-input" value="${date}">
+            <label><input type="checkbox" class="date-highlight-input" ${highlight ? 'checked' : ''}> Highlight? (Adds ' highlight' class)</label>
+        `;
+        item.appendChild(createRemoveButton(item));
+        container.appendChild(item);
+    }
+
+    // C2. Fees
+    function addFeeItem(category = '', fee = '', method = '') {
+        const container = document.getElementById('fees-container');
+        const item = document.createElement('div');
+        item.className = 'dynamic-field fee-item';
+        item.innerHTML = `
+            <label>Category</label><input type="text" class="fee-category-input" value="${category}">
+            <label>Fee Amount</label><input type="text" class="fee-amount-input" value="${fee}">
+            <label>Payment Method (Use &amp;nbsp; for spaces/breaks)</label><textarea class="fee-method-input">${method}</textarea>
+        `;
+        item.appendChild(createRemoveButton(item));
+        container.appendChild(item);
+    }
+
+    // C3. Eligibility
+    function addEligibilityItem(post = '', criteria = '') {
+        const container = document.getElementById('eligibility-container');
+        const item = document.createElement('div');
+        item.className = 'dynamic-field eligibility-item';
+        item.innerHTML = `
+            <label>Post Name</label><input type="text" class="eligibility-post-input" value="${post}">
+            <label>Criteria (Use &lt;br&gt; for breaks)</label><textarea class="eligibility-criteria-input">${criteria}</textarea>
+        `;
+        item.appendChild(createRemoveButton(item));
+        container.appendChild(item);
+    }
+
+    // C4. Age Limits
+    function addAgeItem(title = '', value = '') {
+        const container = document.getElementById('age-limit-container');
+        const item = document.createElement('div');
+        item.className = 'dynamic-field age-item';
+        item.innerHTML = `
+            <label>List Title (e.g., Minimum Age:)</label><input type="text" class="age-title-input" value="${title}">
+            <label>Value</label><input type="text" class="age-value-input" value="${value}">
+        `;
+        item.appendChild(createRemoveButton(item));
+        container.appendChild(item);
+    }
+
+    // C6. Vacancy Details
+    function addVacancyItem(category = '', count = '') {
+        const container = document.getElementById('vacancy-container');
+        const item = document.createElement('div');
+        item.className = 'dynamic-field vacancy-item';
+        item.innerHTML = `
+            <label>Category</label><input type="text" class="vacancy-category-input" value="${category}">
+            <label>No. Of Post</label><input type="text" class="vacancy-count-input" value="${count}">
+        `;
+        item.appendChild(createRemoveButton(item));
+        container.appendChild(item);
+    }
+
+    // C9. Links (Simple)
+    function addLinkItem(description = '', href = '', text = 'Click Here', isVisitNow = false) {
+        const container = document.getElementById('links-container');
+        const item = document.createElement('div');
+        item.className = 'dynamic-field link-item simple-link';
+        item.innerHTML = `
+            <label>Description</label><input type="text" class="link-description-input" value="${description}">
+            <label>URL/Anchor (href)</label><input type="text" class="link-href-input" value="${href}">
+            <label>Link Text</label><input type="text" class="link-text-input" value="${text}">
+            <label><input type="checkbox" class="link-visitnow-input" ${isVisitNow ? 'checked' : ''}> Add 'visit-now' class?</label>
+        `;
+        item.appendChild(createRemoveButton(item));
+        container.appendChild(item);
+    }
+
+    // C9. Links (Group)
+    function addLinkGroupItem(description = 'Apply Online:', href1 = '#registration', text1 = 'Registration', href2 = '#login', text2 = 'Login') {
+        const container = document.getElementById('links-container');
+        const item = document.createElement('div');
+        item.className = 'dynamic-field link-item wide-link group-link';
+        item.innerHTML = `
+            <label>Description</label><input type="text" class="link-description-input" value="${description}">
+            <label>Link 1 Text</label><input type="text" class="link-text1-input" value="${text1}">
+            <label>Link 1 URL/Anchor (href)</label><input type="text" class="link-href1-input" value="${href1}">
+            <label>Link 2 Text</label><input type="text" class="link-text2-input" value="${text2}">
+            <label>Link 2 URL/Anchor (href)</label><input type="text" class="link-href2-input" value="${href2}">
+        `;
+        item.appendChild(createRemoveButton(item));
+        container.appendChild(item);
+    }
+
+    // C10. FAQs
+    function addFAQItem(q = '', a = '') {
+        const container = document.getElementById('faq-container');
+        const item = document.createElement('div');
+        item.className = 'dynamic-field faq-item';
+        item.innerHTML = `
+            <label>Question</label><input type="text" class="faq-q-input" value="${q}">
+            <label>Answer (&lt;p&gt; content)</label><textarea class="faq-a-input">${a}</textarea>
+        `;
+        item.appendChild(createRemoveButton(item));
+        container.appendChild(item);
+    }
+    
+    // D. Custom Section
+    let customSectionCount = 0;
+    function addCustomSection() {
+        customSectionCount++;
+        const container = document.getElementById('custom-section-container');
+        const item = document.createElement('div');
+        item.className = 'field-group custom-section-item';
+        item.innerHTML = `
+            <h4 style="margin-top: 0; color: #1a73e8;">New Section ${customSectionCount}</h4>
+            <label>Section Title (<code>.section-title</code>)</label><input type="text" class="custom-title-input" value="Custom Section Title">
+            <label>Anchor ID (<code>id="..."</code>, e.g., new-section-name)</label><input type="text" class="custom-anchor-input" value="custom-section-${customSectionCount}">
+            <label>Section Explanation</label><textarea class="custom-explanation-input">This is the explanatory paragraph for the new section.</textarea>
+            <label>Full Content HTML (Paste tables, lists, etc. here)</label><textarea class="custom-content-input" style="min-height: 200px;"></textarea>
+        `;
+        item.appendChild(createRemoveButton(item));
+        container.appendChild(item);
+    }
+    
+    // New: Toggle function
+    function toggleSection(headerElement) {
+        const content = headerElement.nextElementSibling;
+        const icon = headerElement.querySelector('.toggle-icon');
+        const isExpanded = headerElement.getAttribute('aria-expanded') === 'true';
+
+        if (isExpanded) {
+            content.style.display = 'none';
+            headerElement.setAttribute('aria-expanded', 'false');
+            icon.textContent = '▶';
+        } else {
+            content.style.display = 'block';
+            headerElement.setAttribute('aria-expanded', 'true');
+            icon.textContent = '▼';
+        }
+    }
+
+
+    // --- Main Generator Function ---
+
+    function generateHTML() {
+        // --- A. Collect Header Data ---
+        const postTitle = document.getElementById('post-title').value.trim();
+        const postDate = document.getElementById('post-date').value.trim();
+        const postAuthor = document.getElementById('post-author').value.trim();
+        const fullSummary = document.getElementById('summary-text').value.trim();
+        const highlightPhrase = document.getElementById('summary-highlight').value.trim();
+
+        const summaryParts = fullSummary.split(highlightPhrase);
+        const summaryContent = fullSummary.includes(highlightPhrase) 
+            ? `${summaryParts[0]}<span class="summary-highlight color blue-600">${highlightPhrase}</span>${summaryParts.slice(1).join('')}`
+            : fullSummary;
+        
+        let contentHtml = '';
+        let navHtml = '';
+
+        // --- B. Navigation Bar (fixed) ---
+        navItems.forEach(item => {
+            navHtml += `\n            <a href="${item.href}" class="tab-link">${item.text}</a>`;
+        });
+        
+        // --- C. Build Core Sections ---
+
+        // 1. Dates
+        let datesListHtml = '';
+        document.querySelectorAll('#dates-container .date-item').forEach(item => {
+            const date = item.querySelector('.date-input').value.trim();
+            const desc = item.querySelector('.date-description-input').value.trim();
+            const highlight = item.querySelector('.date-highlight-input').checked;
+            const highlightClass = highlight ? ' highlight' : '';
+            if (date) {
+                datesListHtml += `
+                <div class="date-item${highlightClass}">
+                    <span class="date-description">${desc}</span><br>
+                    <span class="date">${date}</span>
+                </div>`;
+            }
+        });
+        contentHtml += `
+    <section id="important-dates" class="content-section">
+        <h2 class="section-title">Important Dates About SSC Recruitment</h2>
+        <p class="section-explanation">Keep track of the key deadlines for the recruitment process to ensure you don't miss any critical steps.</p>
+        <div class="dates-list">
+            ${datesListHtml.trim()}
+        </div>
+    </section>
+    ---
+    `;
+
+        // 2. Fees
+        let feesTableRows = '';
+        document.querySelectorAll('#fees-container .fee-item').forEach(item => {
+            const category = item.querySelector('.fee-category-input').value.trim();
+            const fee = item.querySelector('.fee-amount-input').value.trim();
+            const method = item.querySelector('.fee-method-input').value.trim().replace(/\n/g, ' '); // Clean up newlines for inline content
+            if (category) {
+                feesTableRows += `
+                    <tr>
+                    <td>${category}</td>
+                    <td>${fee}</td>
+                    <td>${method}</td>
+                </tr>`;
+            }
+        });
+        contentHtml += `
+    <section id="fees" class="content-section">
+        <h2 class="section-title">What Fees You Have to Pay For Applying SSC</h2>
+        <p class="section-explanation">The application fee is non-refundable. Please review the category-wise fees before proceeding with your payment.</p>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Application Fee</th>
+                    <th>Payment Method</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${feesTableRows.trim()}
+            </tbody>
+        </table>
+    </section>
+    ---
+    `;
+
+        // 3. Eligibility
+        let eligibilityTableRows = '';
+        document.querySelectorAll('#eligibility-container .eligibility-item').forEach(item => {
+            const post = item.querySelector('.eligibility-post-input').value.trim();
+            // Replace newlines with <br> for HTML rendering, then clean up extra spaces
+            const criteria = item.querySelector('.eligibility-criteria-input').value.trim().replace(/\n/g, '<br>');
+            if (post) {
+                eligibilityTableRows += `
+                    <tr>
+                    <td>${post}</td>
+                    <td>${criteria}</td>
+                </tr>`;
+            }
+        });
+        contentHtml += `
+    <section id="eligibility" class="content-section">
+        <h2 class="section-title">SSC : Eligibility Criteria</h2>
+        <p class="section-explanation">Check the minimum educational qualifications required for each post before applying.</p>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Post Name</th>
+                    <th>Eligibility Criteria</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${eligibilityTableRows.trim()}
+            </tbody>
+        </table>
+    </section>
+    ---
+    `;
+
+        // 4. Age Limit
+        let ageListHtml = '';
+        document.querySelectorAll('#age-limit-container .age-item').forEach(item => {
+            const title = item.querySelector('.age-title-input').value.trim();
+            const value = item.querySelector('.age-value-input').value.trim();
+            if (title) {
+                ageListHtml += `
+                <li><strong class="list-title">${title}</strong> ${value}</li>`;
+            }
+        });
+        const ageLimitSection = `
+    <section id="age-limit" class="content-section">
+        <h2 class="section-title">Age Limit Criteria for SSC Recruitment</h2>
+        <p class="section-explanation">Candidates must meet the age requirements as of the specified cutoff date.</p>
+        <ul class="data-list">
+            ${ageListHtml.trim()}
+        </ul>
+    </section>`;
+
+        // 5. Total Posts
+        const totalPostsText = document.getElementById('total-posts-text').value.trim();
+        const totalCount = document.getElementById('total-count').value.trim();
+        const totalPostsSection = `
+    <section id="total-posts" class="content-section">
+        <h2 class="section-title">Total Posts for SSC</h2>
+        <p class="section-explanation">${totalPostsText}</p>
+        <div class="posts-summary">
+            Total Number of Posts: <span class="post-count">${totalCount}</span>
+        </div>
+    </section>`;
+    
+        // New: Combine Age Limit and Total Posts into a two-column group
+        contentHtml += `
+    <div class="two-column-group">
+        ${ageLimitSection}
+        ${totalPostsSection}
+    </div>
+    ---
+    `;
+
+        // 6. Vacancy Details
+        let vacancyTableRows = '';
+        document.querySelectorAll('#vacancy-container .vacancy-item').forEach(item => {
+            const category = item.querySelector('.vacancy-category-input').value.trim();
+            const count = item.querySelector('.vacancy-count-input').value.trim();
+            if (category) {
+                vacancyTableRows += `
+                    <tr>
+                    <td>${category}</td>
+                    <td>${count}</td>
+                </tr>`;
+            }
+        });
+        contentHtml += `
+    <section id="vacancy-details" class="content-section">
+        <h2 class="section-title">SSC : Vacancy Details</h2>
+        <p class="section-explanation">SSC : Category Wise Vacancy Details</p>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>No. Of Post</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${vacancyTableRows.trim()}
+            </tbody>
+        </table>
+    </section>
+    ---
+    `;
+
+        // 7. Form Filling
+        const formFillingExplanation = document.getElementById('form-filling-explanation').value.trim();
+        // NOTE: Uses innerHTML directly as the content is complex list structure
+        const formFillingContent = document.getElementById('form-filling-content').value.trim();
+        contentHtml += `
+    <section id="form-filling" class="content-section">
+        <h2 class="section-title">Step-by-Step Guide for SSC Form Filling</h2>
+        <p class="section-explanation">${formFillingExplanation}</p>
+        ${formFillingContent}
+    </section>
+    ---
+    `;
+
+        // 8. Selection Process
+        const selectionTitle = document.getElementById('selection-title').value.trim();
+        const selectionContent = document.getElementById('selection-content').value.trim();
+        contentHtml += `
+    <section id="selection" class="content-section">
+        <h2 class="section-title">Stages of the SSC Selection Process</h2>
+        <p class="section-explanation">The selection process involves multiple stages designed to filter candidates based on merit and suitability for the job.</p>
+        <div class="selection-flow">
+            <div class="flow-step"><h2>${selectionTitle}</h2>
+${selectionContent}</div>
+        </div>
+    </section>
+    ---
+    `;
+
+        // 9. Useful Links
+        let linksGridHtml = '';
+        document.querySelectorAll('#links-container .link-item').forEach(item => {
+            const description = item.querySelector('.link-description-input').value.trim();
+            if (item.classList.contains('group-link')) {
+                // Group Link (Apply Online)
+                const href1 = item.querySelector('.link-href1-input').value.trim();
+                const text1 = item.querySelector('.link-text1-input').value.trim();
+                const href2 = item.querySelector('.link-href2-input').value.trim();
+                const text2 = item.querySelector('.link-text2-input').value.trim();
+                
+                linksGridHtml += `
+        <div class="link-item wide-link">
+            <span class="link-description">${description}:</span>
+            <div class="action-group">
+                <a href="${href1}" target="_blank" rel="noopener" class="action-link">${text1}</a>
+                <a href="${href2}" target="_blank" rel="noopener" class="action-link">${text2}</a>
+            </div>
+        </div>`;
+            } else {
+                // Simple Link
+                const href = item.querySelector('.link-href-input').value.trim();
+                const text = item.querySelector('.link-text-input').value.trim();
+                const visitNowClass = item.querySelector('.link-visitnow-input').checked ? ' visit-now' : '';
+
+                linksGridHtml += `
+        <div class="link-item">
+            <span class="link-description">${description}</span>
+            <a href="${href}" target="_blank" rel="noopener" class="action-link${visitNowClass}">${text}</a>
+        </div>`;
+            }
+        });
+        contentHtml += `
+    <section id="useful-links" class="content-section">
+        <h2 class="section-title">Quick Access to Useful Links</h2>
+        <p class="section-explanation">Direct links to the official portal, notification, and application form for your convenience.</p>
+        
+        <div class="links-grid">
+            ${linksGridHtml.trim()}
+        </div>
+    </section>
+    ---
+    `;
+
+        // 10. FAQs
+        let faqAccordionHtml = '';
+        document.querySelectorAll('#faq-container .faq-item').forEach(item => {
+            const q = item.querySelector('.faq-q-input').value.trim();
+            const a = item.querySelector('.faq-a-input').value.trim();
+            if (q) {
+                faqAccordionHtml += `
+            <div class="accordion-item">
+                <button class="accordion-header" aria-expanded="false">
+                    ${q}
+                    <span class="icon">+</span>
+                </button>
+                <div class="accordion-content">
+                    <p>${a}</p>
+                </div>
+            </div>`;
+            }
+        });
+        contentHtml += `
+    <section id="important-faqs" class="content-section">
+        <h2 class="section-title">Important Frequently Asked Questions (FAQs)</h2>
+        <p class="section-explanation">Find answers to the most common queries regarding the recruitment drive.</p>
+        <div class="faq-accordion">
+            ${faqAccordionHtml.trim()}
+        </div>
+    </section>`;
+    
+        // D. Custom Sections
+        document.querySelectorAll('.custom-section-item').forEach(item => {
+            const customTitle = item.querySelector('.custom-title-input').value.trim();
+            const customAnchor = item.querySelector('.custom-anchor-input').value.trim();
+            const customExplanation = item.querySelector('.custom-explanation-input').value.trim();
+            const customContent = item.querySelector('.custom-content-input').value.trim();
+
+            if (customAnchor && customTitle) {
+                contentHtml += `
+    ---
+    <section id="${customAnchor}" class="content-section">
+        <h2 class="section-title">${customTitle}</h2>
+        <p class="section-explanation">${customExplanation}</p>
+        ${customContent}
+    </section>`;
+            }
+        });
+
+
+        // Final clean-up: remove the last '---' if it exists.
+        contentHtml = contentHtml.replace(/---(\s*)$/, '$1').trim();
+
+
+        // --- Final Assembly ---
+
+        const headerHtml = `
+<div class="post-container">
+    <header class="post-intro-header">
+        <h1 class="header-title">
+            ${postTitle}
+        </h1>
+        <p class="header-meta">
+            <span class="meta-date">Post Date: ${postDate}</span>
+            <span class="meta-separator">|</span>
+            <span class="meta-author">Author: ${postAuthor}</span>
+        </p>
+        <p class="header-summary">
+            ${summaryContent}
+        </p>
+    </header>
+</div>`;
+
+        const mainHtml = `
+<main class="post-container">
+    <nav class="sticky-nav-bar">
+        <div class="tabs">
+            ${navHtml.trim()}
+        </div>
+    </nav>
+${contentHtml}
+</main>`;
+
+        document.getElementById('html-output').value = headerHtml + '\n' + mainHtml;
+        document.getElementById('output').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Run initialization on load
+    window.onload = initializeDefaults;
+
+</script>
+</body>
+</html>

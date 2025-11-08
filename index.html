@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meta Tag Generator - Sarkari Rojgar Kendra</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        /* Custom Styles for a Better Look */
+        .btn-primary {
+            background-color: #10B981; /* Tailwind green-500 */
+        }
+        .btn-primary:hover {
+            background-color: #059669; /* Tailwind green-600 */
+        }
+        .btn-secondary {
+            background-color: #3B82F6; /* Tailwind blue-500 */
+        }
+        .btn-secondary:hover {
+            background-color: #2563EB; /* Tailwind blue-600 */
+        }
+        .btn-copy {
+            background-color: #D1D5DB; /* Tailwind gray-300 */
+        }
+        .btn-copy:hover {
+            background-color: #9CA3AF; /* Tailwind gray-400 */
+        }
+        .code-block {
+            background-color: #F3F4F6; /* Tailwind gray-100 */
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: #1F2937; /* Tailwind gray-800 */
+            border: 1px solid #E5E7EB; /* Tailwind gray-200 */
+        }
+        .char-count {
+            text-align: right;
+            font-size: 0.8rem;
+            color: #6B7280;
+            margin-top: 0.25rem;
+        }
+        .parse-example {
+            background-color: #FEF3C7; /* Tailwind amber-50 */
+            border: 1px dashed #F59E0B; /* Tailwind amber-500 */
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            color: #92400E; /* Tailwind amber-900 */
+        }
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 p-4 sm:p-8">
+
+<div class="container mx-auto max-w-5xl bg-white p-6 sm:p-10 rounded-xl shadow-2xl">
+    <h1 class="text-3xl font-bold text-gray-800 mb-2">Meta Tag Generator 🛠️</h1>
+    <p class="text-gray-600 mb-8">Enter the details below to generate the complete set of <strong>cleaned and optimized</strong> meta tags for your Sarkari Rojgar Kendra posts.</p>
+    
+    <!-- New Parse Box Section -->
+    <div class="section mb-8 p-6 border border-amber-200 rounded-lg bg-amber-50">
+        <h2 class="text-xl font-semibold text-amber-700 mb-4 border-b border-amber-300 pb-2">Quick Parse Box 📝</h2>
+        <p class="text-sm text-amber-600 mb-4">Paste your structured data here to automatically fill all fields below.</p>
+        
+        <label for="parseBox" class="block font-semibold text-gray-700">Paste Data (Titles, Descriptions, URL):</label>
+        <textarea id="parseBox" name="parseBox" placeholder="Paste your structured data here (see example format)" class="w-full p-3 mt-1 border border-amber-300 rounded-md focus:ring-amber-500 focus:border-amber-500 h-32 resize-y"></textarea>
+        
+        <div class="parse-example">
+            <strong>Example Format:</strong><br>
+            <br>
+            <strong>Titles</strong><br>
+            DFCCIL Result 2025 Out! Download Your Scorecard Now<br>
+            DFCCIL MTS, Executive, Jr. Manager Scores Released<br>
+            Check Your DFCCIL 2025 Result & Cut-Off Marks<br>
+            <br>
+            <strong>Descriptions</strong><br>
+            DFCCIL Result 2025 Out! Download your scorecard for MTS, Executive, and Junior Manager posts. Check your marks and cut-off via the direct link here.<br>
+            DFCCIL MTS, Executive, Jr. Manager Score Card Released. The DFCCIL 2025 result with marks is now available online. Follow these steps to check and download your result PDF.<br>
+            DFCCIL Result & Scorecard 2025 is Declared. Candidates can now check their results for the Multi-Tasking Staff, Executive, and Junior Manager posts on the official portal.<br>
+            <br>
+            <strong>URLs</strong><br>
+            dfccil-result-2025.html
+        </div>
+        
+        <button id="parseButton" class="mt-4 btn-secondary text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out shadow-md hover:shadow-lg">
+            Parse & Auto-Fill All Fields
+        </button>
+    </div>
+    
+    <form id="metaForm">
+
+        <div class="section mb-8 p-6 border border-blue-200 rounded-lg bg-blue-50">
+            <h2 class="text-xl font-semibold text-blue-700 mb-4 border-b border-blue-300 pb-2">Primary SEO (Search Engine Optimization)</h2>
+            
+            <label for="title" class="block mt-4 font-semibold text-gray-700">Title (&lt;title&gt;):</label>
+            <input type="text" id="title" name="title" required placeholder="The main page title (Max ~60 chars)" class="w-full p-3 mt-1 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+            <div id="title-count" class="char-count">0/60</div>
+
+            <label for="description" class="block mt-4 font-semibold text-gray-700">Description (&lt;meta name="description"&gt;):</label>
+            <textarea id="description" name="description" required placeholder="A short, compelling page summary (Max ~160 chars)" class="w-full p-3 mt-1 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 h-20 resize-y"></textarea>
+            <div id="description-count" class="char-count">0/160</div>
+
+            <label for="url" class="block mt-4 font-semibold text-gray-700">Canonical URL Slug:</label>
+            <div class="flex">
+                <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-100 text-gray-500 text-sm">https://www.sarkarirojgarkendra.com/posts/</span>
+                <input type="text" id="url" name="url" required placeholder="e.g., dfccil-result-2025.html" class="flex-1 w-full p-3 mt-1 border border-gray-300 rounded-r-md focus:ring-blue-500 focus:border-blue-500">
+            </div>
+        </div>
+
+        <div class="section mb-8 p-6 border border-green-200 rounded-lg bg-green-50">
+            <h2 class="text-xl font-semibold text-green-700 mb-4 border-b border-green-300 pb-2">Open Graph (Social Sharing - Facebook, LinkedIn, WhatsApp)</h2>
+            <p class="text-sm text-green-600 mb-4"><strong>Note:</strong> Leave these blank to automatically use the <strong>Primary SEO</strong> tags above.</p>
+            
+            <label for="ogTitle" class="block mt-4 font-semibold text-gray-700">OG Title:</label>
+            <input type="text" id="ogTitle" name="ogTitle" placeholder="Title for social media shares" class="w-full p-3 mt-1 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500">
+            <div id="ogTitle-count" class="char-count">0/60</div>
+
+            <label for="ogDescription" class="block mt-4 font-semibold text-gray-700">OG Description:</label>
+            <textarea id="ogDescription" name="ogDescription" placeholder="Description for social media shares" class="w-full p-3 mt-1 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 h-20 resize-y"></textarea>
+            <div id="ogDescription-count" class="char-count">0/160</div>
+
+            <label for="ogUrl" class="block mt-4 font-semibold text-gray-700">OG URL Slug:</label>
+            <div class="flex">
+                <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-100 text-gray-500 text-sm">https://www.sarkarirojgarkendra.com/posts/</span>
+                <input type="text" id="ogUrl" name="ogUrl" placeholder="e.g., dfccil-result-2025.html" class="flex-1 w-full p-3 mt-1 border border-gray-300 rounded-r-md focus:ring-green-500 focus:border-green-500">
+            </div>
+        </div>
+
+        <div class="section mb-8 p-6 border border-purple-200 rounded-lg bg-purple-50">
+            <h2 class="text-xl font-semibold text-purple-700 mb-4 border-b border-purple-300 pb-2">Twitter Card Tags</h2>
+            <p class="text-sm text-purple-600 mb-4"><strong>Note:</strong> Leave these blank to automatically use the <strong>Open Graph</strong> (or Primary SEO) tags.</p>
+
+            <label for="twitterTitle" class="block mt-4 font-semibold text-gray-700">Twitter Card Title:</label>
+            <input type="text" id="twitterTitle" name="twitterTitle" placeholder="Title for Twitter/X shares" class="w-full p-3 mt-1 border border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500">
+            <div id="twitterTitle-count" class="char-count">0/60</div>
+
+            <label for="twitterDescription" class="block mt-4 font-semibold text-gray-700">Twitter Card Description:</label>
+            <textarea id="twitterDescription" name="twitterDescription" placeholder="Description for Twitter/X shares" class="w-full p-3 mt-1 border border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500 h-20 resize-y"></textarea>
+            <div id="twitterDescription-count" class="char-count">0/160</div>
+            
+            <p class="text-sm mt-4 text-purple-600">Twitter Image URL is permanent: <code>https://www.sarkarirojgarkendra.com/images/sarkari-rojgar-kendra-og-image.webp</code></p>
+        </div>
+
+        <button type="submit" class="w-full btn-primary text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out shadow-md hover:shadow-lg">
+            Generate Optimized Meta Tags
+        </button>
+    </form>
+
+    <h2 class="text-2xl font-bold text-gray-800 mt-10 mb-4 border-b-2 border-gray-200 pb-2">Generated Meta Tags 👇</h2>
+    <div class="relative">
+        <button id="copyButton" class="absolute top-2 right-2 btn-copy text-gray-900 text-sm font-semibold py-2 px-4 rounded transition duration-200" style="display: none;">
+            Copy to Clipboard
+        </button>
+        <pre id="output" class="code-block">
+            Enter your details and click "Generate Optimized Meta Tags."
+        </pre>
+    </div>
+</div>
+
+<script>
+// --- Helper function for character counting ---
+function setupCharCounter(inputId, counterId, max) {
+    const input = document.getElementById(inputId);
+    const counter = document.getElementById(counterId);
+
+    if (input && counter) {
+        const updateCount = () => {
+            const current = input.value.length;
+            counter.textContent = `${current}/${max}`;
+            counter.style.color = current > max ? 'red' : '#6B7280';
+        };
+
+        input.addEventListener('input', updateCount);
+        updateCount(); // Initial count
+    }
+}
+
+// Setup character counters for all relevant fields
+setupCharCounter('title', 'title-count', 60);
+setupCharCounter('description', 'description-count', 160);
+setupCharCounter('ogTitle', 'ogTitle-count', 60);
+setupCharCounter('ogDescription', 'ogDescription-count', 160);
+setupCharCounter('twitterTitle', 'twitterTitle-count', 60);
+setupCharCounter('twitterDescription', 'twitterDescription-count', 160);
+
+// --- Parse Box Logic ---
+document.getElementById('parseButton').addEventListener('click', function() {
+    const parseBox = document.getElementById('parseBox');
+    const content = parseBox.value.trim();
+    
+    if (!content) {
+        alert('Please paste some content in the parse box first.');
+        return;
+    }
+    
+    // Parse the content
+    const lines = content.split('\n').filter(line => line.trim() !== '');
+    
+    // Initialize arrays for different content types
+    let titles = [];
+    let descriptions = [];
+    let urls = [];
+    
+    // Current section being processed
+    let currentSection = null;
+    
+    // Process each line to categorize content
+    lines.forEach(line => {
+        const trimmedLine = line.trim();
+        
+        // Check for section headers
+        if (trimmedLine.toLowerCase().includes('title')) {
+            currentSection = 'titles';
+            return;
+        } else if (trimmedLine.toLowerCase().includes('description')) {
+            currentSection = 'descriptions';
+            return;
+        } else if (trimmedLine.toLowerCase().includes('url')) {
+            currentSection = 'urls';
+            return;
+        }
+        
+        // Add content to appropriate section
+        if (currentSection === 'titles' && trimmedLine) {
+            titles.push(trimmedLine);
+        } else if (currentSection === 'descriptions' && trimmedLine) {
+            descriptions.push(trimmedLine);
+        } else if (currentSection === 'urls' && trimmedLine) {
+            urls.push(trimmedLine);
+        }
+    });
+    
+    // If no explicit sections found, try to infer from structure
+    if (titles.length === 0 && descriptions.length === 0 && urls.length === 0) {
+        // Try to identify sections by looking for empty lines
+        let sectionIndex = 0;
+        let currentSectionLines = [];
+        
+        for (let i = 0; i < lines.length; i++) {
+            if (lines[i].trim() === '' || i === lines.length - 1) {
+                // End of section
+                if (i === lines.length - 1 && lines[i].trim() !== '') {
+                    currentSectionLines.push(lines[i].trim());
+                }
+                
+                if (currentSectionLines.length > 0) {
+                    if (sectionIndex === 0) {
+                        titles = [...currentSectionLines];
+                    } else if (sectionIndex === 1) {
+                        descriptions = [...currentSectionLines];
+                    } else if (sectionIndex === 2) {
+                        urls = [...currentSectionLines];
+                    }
+                    sectionIndex++;
+                    currentSectionLines = [];
+                }
+            } else {
+                currentSectionLines.push(lines[i].trim());
+            }
+        }
+    }
+    
+    // Fill the form fields with parsed content
+    if (titles.length > 0) {
+        document.getElementById('title').value = titles[0];
+        document.getElementById('ogTitle').value = titles.length > 1 ? titles[1] : titles[0];
+        document.getElementById('twitterTitle').value = titles.length > 2 ? titles[2] : (titles.length > 1 ? titles[1] : titles[0]);
+    }
+    
+    if (descriptions.length > 0) {
+        document.getElementById('description').value = descriptions[0];
+        document.getElementById('ogDescription').value = descriptions.length > 1 ? descriptions[1] : descriptions[0];
+        document.getElementById('twitterDescription').value = descriptions.length > 2 ? descriptions[2] : (descriptions.length > 1 ? descriptions[1] : descriptions[0]);
+    }
+    
+    if (urls.length > 0) {
+        // Remove .html if already present to avoid duplication
+        const url = urls[0].replace('.html', '');
+        document.getElementById('url').value = url;
+        document.getElementById('ogUrl').value = url;
+    }
+    
+    // Update character counts
+    document.getElementById('title').dispatchEvent(new Event('input'));
+    document.getElementById('description').dispatchEvent(new Event('input'));
+    document.getElementById('ogTitle').dispatchEvent(new Event('input'));
+    document.getElementById('ogDescription').dispatchEvent(new Event('input'));
+    document.getElementById('twitterTitle').dispatchEvent(new Event('input'));
+    document.getElementById('twitterDescription').dispatchEvent(new Event('input'));
+    
+    // Show success message
+    alert('All form fields have been auto-filled! Review and adjust as needed, then click "Generate Optimized Meta Tags".');
+});
+
+// --- Meta Tag Generation Logic ---
+document.getElementById('metaForm').addEventListener('submit', function(e) {
+    e.preventDefault(); 
+
+    const form = e.target;
+    // Base post URL prefix as requested
+    const baseUrl = 'https://www.sarkarirojgarkendra.com/posts/';
+
+    // 1. Get all dynamic input values
+    const data = {
+        title: form.title.value.trim(),
+        description: form.description.value.trim(),
+        // Corrected URL generation: takes the slug and appends .html if not present
+        urlSlug: form.url.value.trim().replace(/^\/+/, '').endsWith('.html') ? form.url.value.trim().replace(/^\/+/, '') : form.url.value.trim().replace(/^\/+/, '') + '.html',
+        ogUrlSlug: form.ogUrl.value.trim().replace(/^\/+/, '').endsWith('.html') ? form.ogUrl.value.trim().replace(/^\/+/, '') : form.ogUrl.value.trim().replace(/^\/+/, '') + '.html',
+
+        ogTitle: form.ogTitle.value.trim(),
+        ogDescription: form.ogDescription.value.trim(),
+        twitterTitle: form.twitterTitle.value.trim(),
+        twitterDescription: form.twitterDescription.value.trim(),
+    };
+    
+    // Construct final canonical URL
+    const finalCanonicalUrl = baseUrl + data.urlSlug;
+
+    // 2. Implement Fallback Logic
+    const finalOgTitle = data.ogTitle || data.title;
+    const finalOgDesc = data.ogDescription || data.description;
+    
+    // OG URL falls back to Canonical URL
+    const finalOgUrl = data.ogUrlSlug === '.html' ? finalCanonicalUrl : baseUrl + data.ogUrlSlug; 
+    
+    // Twitter tags fall back to OG tags
+    const finalTwTitle = data.twitterTitle || finalOgTitle;
+    const finalTwDesc = data.twitterDescription || finalOgDesc;
+
+    // 3. Static values (kept only the necessary ones)
+    const static = {
+        author: "Sarkari Rojgar Kendra",
+        siteName: "Sarkari Rojgar Kendra",
+        twitterHandle: "@SarkariRKendra",
+        ogImage: "https://www.sarkarirojgarkendra.com/images/sarkari-rojgar-kendra-og-image.webp",
+        imageAlt: "Sarkari Rojgar Kendra - India's Trusted Government Job Portal",
+        imageWidth: "1200",
+        imageHeight: "630",
+        imageType: "image/webp",
+        locale: "en_IN",
+    };
+
+    // 4. Construct the CLEANED and OPTIMIZED Meta Tag Block
+    const tags = `
+<title>${data.title}</title>
+<link rel="canonical" href="${finalCanonicalUrl}" />
+<meta name="description" content="${data.description}" />
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+<meta name="author" content="${static.author}" />
+<meta name="referrer" content="origin-when-cross-origin" />
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="alternate" hreflang="en-in" href="${finalCanonicalUrl}" />
+<link rel="alternate" hreflang="x-default" href="${finalCanonicalUrl}" />
+
+<meta property="og:site_name" content="${static.siteName}" />
+<meta property="og:title" content="${finalOgTitle}" />
+<meta property="og:description" content="${finalOgDesc}" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="${finalOgUrl}" />
+<meta property="og:image" content="${static.ogImage}" />
+<meta property="og:image:alt" content="${static.imageAlt}" />
+<meta property="og:image:width" content="${static.imageWidth}" />
+<meta property="og:image:height" content="${static.imageHeight}" />
+<meta property="og:image:type" content="${static.imageType}" />
+<meta property="og:image:secure_url" content="${static.ogImage}" />
+<meta property="og:locale" content="${static.locale}" />
+<meta property="og:locale:alternate" content="hi_IN" />
+<meta property="og:locale:alternate" content="en_US" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content="${static.twitterHandle}" />
+<meta name="twitter:creator" content="${static.twitterHandle}" />
+<meta name="twitter:title" content="${finalTwTitle}" />
+<meta name="twitter:description" content="${finalTwDesc}" />
+<meta name="twitter:image" content="${static.ogImage}" />
+<meta name="twitter:image:alt" content="${static.imageAlt}" />
+
+<link rel="dns-prefetch" href="https://www.sarkarirojgarkendra.com" />
+<link rel="preconnect" href="https://www.sarkarirojgarkendra.com" crossorigin />
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
+<link rel="preconnect" href="https://www.google-analytics.com" crossorigin />
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" as="style" />
+<link rel="preload" href="style.css" as="style" />
+<link rel="preload" href="/images/sarkari-rojgar-kendra-og-image.webp" as="image" />
+<link rel="preload" href="/fonts/roboto-regular.woff2" as="font" type="font/woff2" crossorigin />
+
+<meta name="theme-color" content="#FFC107" />
+<meta name="mobile-web-app-capable" content="yes" />
+<link rel="manifest" href="/manifest.json" />
+
+<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-icon-180x180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/images/favicon/android-icon-192x192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+
+<link rel="alternate" type="application/rss+xml" title="${static.siteName} - Latest Job Updates" href="/rss/latest-jobs.xml" />
+`;
+
+    // Output the generated tags
+    document.getElementById('output').textContent = tags.trim();
+    
+    // Show copy button
+    document.getElementById('copyButton').style.display = 'block';
+});
+
+
+// --- Copy to Clipboard Functionality ---
+document.getElementById('copyButton').addEventListener('click', function() {
+    const outputElement = document.getElementById('output');
+    const textToCopy = outputElement.textContent.trim();
+    const copyButton = this;
+
+    // Use the modern Clipboard API
+    navigator.clipboard.writeText(textToCopy)
+        .then(() => {
+            // Success feedback
+            const originalText = 'Copy to Clipboard'; 
+            copyButton.textContent = '✅ Copied!';
+            setTimeout(() => {
+                copyButton.textContent = originalText;
+            }, 2000);
+        })
+        .catch(err => {
+            // Fallback for older browsers
+            console.error('Failed to copy text using Clipboard API. Falling back.', err);
+            alert('Failed to copy. Please copy the text manually.');
+        });
+});
+</script>
+
+</body>
+</html>

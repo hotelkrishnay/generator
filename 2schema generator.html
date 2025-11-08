@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schema Generator Tool</title>
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #6b8cbc;
+            --accent-color: #ff7e5f;
+            --light-color: #f5f7fa;
+            --dark-color: #2c3e50;
+            --success-color: #2ecc71;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: var(--secondary-color);
+            font-size: 1.1rem;
+        }
+        
+        .schema-selector {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .schema-btn {
+            padding: 10px 20px;
+            background: white;
+            border: 2px solid var(--primary-color);
+            border-radius: var(--border-radius);
+            color: var(--primary-color);
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .schema-btn.active {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .schema-form {
+            display: none;
+            background: white;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 30px;
+        }
+        
+        .schema-form.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: border 0.3s ease;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        .generate-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            margin-top: 20px;
+        }
+        
+        .generate-btn:hover {
+            background: var(--secondary-color);
+        }
+        
+        .schema-output {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 20px;
+            position: relative;
+            display: none;
+        }
+        
+        .schema-output.active {
+            display: block;
+        }
+        
+        pre {
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            overflow-x: auto;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 8px 15px;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s ease;
+        }
+        
+        .copy-btn:hover {
+            background: #ff6b4a;
+        }
+        
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background: var(--success-color);
+            color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .notification.show {
+            opacity: 1;
+        }
+        
+        .faq-item {
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+        
+        .faq-question {
+            padding: 12px 15px;
+            background: #f9f9f9;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .faq-answer {
+            padding: 15px;
+            background: white;
+            display: none;
+        }
+        
+        .faq-answer.active {
+            display: block;
+        }
+        
+        .add-faq-btn {
+            background: var(--success-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            margin-bottom: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .remove-faq-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        .bulk-faq-input {
+            width: 100%;
+            min-height: 200px;
+            margin-bottom: 15px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .parse-faq-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Schema Generator Tool</h1>
+            <p class="subtitle">Generate structured data markup for your website</p>
+        </header>
+        
+        <div class="schema-selector">
+            <button class="schema-btn active" data-schema="structured">Structured Data</button>
+            <button class="schema-btn" data-schema="job">Job Posting</button>
+            <button class="schema-btn" data-schema="article">Article Schema</button>
+            <button class="schema-btn" data-schema="faq">FAQ Schema</button>
+        </div>
+        
+        <!-- Structured Data Schema Form -->
+        <div id="structured-form" class="schema-form active">
+            <h2>Structured Data Schema</h2>
+            
+            <div class="form-group">
+                <label for="page-name">Page Name</label>
+                <input type="text" id="page-name" value="MPPSC SET 2025 Application Form | State Eligibility Test Registration Online">
+            </div>
+            
+            <div class="form-group">
+                <label for="page-slug">Page Slug (URL Path)</label>
+                <input type="text" id="page-slug" value="mppsc-set-form-2025.html">
+            </div>
+            
+            <div class="form-group">
+                <label for="page-url">Page URL</label>
+                <input type="text" id="page-url" value="https://www.sarkarirojgarkendra.com/" readonly>
+            </div>
+            
+            <div class="form-group">
+                <label for="page-description">Page Description</label>
+                <textarea id="page-description" rows="3">MPPSC has released the SET 2025 notification. Apply online for the Madhya Pradesh State Eligibility Test from 25 Oct to 20 Nov 2025. Check details here.</textarea>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="image-url">Image URL</label>
+                    <input type="text" id="image-url" value="https://www.sarkarirojgarkendra.com/images/sarkari-rojgar-kendra-og-image.webp">
+                </div>
+                
+                <div class="form-group">
+                    <label for="image-width">Image Width</label>
+                    <input type="number" id="image-width" value="1200">
+                </div>
+                
+                <div class="form-group">
+                    <label for="image-height">Image Height</label>
+                    <input type="number" id="image-height" value="630">
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="date-published">Date Published</label>
+                    <input type="date" id="date-published">
+                </div>
+                
+                <div class="form-group">
+                    <label for="date-modified">Date Modified</label>
+                    <input type="date" id="date-modified">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="organization-name">Organization Name</label>
+                <input type="text" id="organization-name" value="Sarkari Rojgar Kendra">
+            </div>
+            
+            <div class="form-group">
+                <label for="logo-url">Logo URL</label>
+                <input type="text" id="logo-url" value="https://www.sarkarirojgarkendra.com/images/logo.png">
+            </div>
+            
+            <h3>Event Information</h3>
+            
+            <div class="form-group">
+                <label for="event-name">Event Name</label>
+                <input type="text" id="event-name" value="Madhya Pradesh State Eligibility Test (SET) 2025">
+            </div>
+            
+            <div class="form-group">
+                <label for="event-description">Event Description</label>
+                <textarea id="event-description" rows="3">State Eligibility Test conducted by MPPSC for Assistant Professor eligibility in Madhya Pradesh universities and colleges</textarea>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="event-start-date">Event Start Date</label>
+                    <input type="datetime-local" id="event-start-date">
+                </div>
+                
+                <div class="form-group">
+                    <label for="event-end-date">Event End Date</label>
+                    <input type="datetime-local" id="event-end-date">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="event-location">Event Location</label>
+                <input type="text" id="event-location" value="Examination Centers across Madhya Pradesh">
+            </div>
+            
+            <div class="form-group">
+                <label for="event-organizer">Event Organizer</label>
+                <input type="text" id="event-organizer" value="Madhya Pradesh Public Service Commission">
+            </div>
+            
+            <div class="form-group">
+                <label for="event-organizer-url">Event Organizer URL</label>
+                <input type="text" id="event-organizer-url" value="https://mppsc.mp.gov.in">
+            </div>
+            
+            <div class="form-group">
+                <label for="event-price">Event Price (INR)</label>
+                <input type="number" id="event-price" value="500">
+            </div>
+            
+            <button class="generate-btn" id="generate-structured">Generate Structured Data Schema</button>
+        </div>
+        
+        <!-- Job Posting Schema Form -->
+        <div id="job-form" class="schema-form">
+            <h2>Job Posting Schema</h2>
+            
+            <div class="form-group">
+                <label for="job-title">Job Title</label>
+                <input type="text" id="job-title" value="Software Engineer">
+            </div>
+            
+            <div class="form-group">
+                <label for="job-description">Job Description</label>
+                <textarea id="job-description" rows="4">We are looking for a skilled software engineer to join our team. The ideal candidate will have experience in modern web technologies and a passion for creating high-quality software solutions.</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="hiring-organization">Hiring Organization</label>
+                <input type="text" id="hiring-organization" value="Tech Solutions Inc.">
+            </div>
+            
+            <div class="form-group">
+                <label for="hiring-organization-url">Hiring Organization URL</label>
+                <input type="text" id="hiring-organization-url" value="https://www.techsolutions.com">
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="date-posted">Date Posted</label>
+                    <input type="date" id="date-posted">
+                </div>
+                
+                <div class="form-group">
+                    <label for="valid-through">Valid Through</label>
+                    <input type="date" id="valid-through">
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="employment-type">Employment Type</label>
+                    <select id="employment-type">
+                        <option value="FULL_TIME">Full Time</option>
+                        <option value="PART_TIME">Part Time</option>
+                        <option value="CONTRACTOR">Contractor</option>
+                        <option value="TEMPORARY">Temporary</option>
+                        <option value="INTERN">Intern</option>
+                        <option value="VOLUNTEER">Volunteer</option>
+                        <option value="PER_DIEM">Per Diem</option>
+                        <option value="OTHER">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="base-salary">Base Salary (INR)</label>
+                    <input type="number" id="base-salary" value="500000">
+                </div>
+            </div>
+            
+            <h3>Job Location</h3>
+            
+            <div class="form-group">
+                <label for="street-address">Street Address</label>
+                <input type="text" id="street-address" value="123 Main Street">
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="address-locality">Address Locality (City)</label>
+                    <input type="text" id="address-locality" value="Mumbai">
+                </div>
+                
+                <div class="form-group">
+                    <label for="address-region">Address Region (State)</label>
+                    <input type="text" id="address-region" value="Maharashtra">
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="postal-code">Postal Code</label>
+                    <input type="text" id="postal-code" value="400001">
+                </div>
+                
+                <div class="form-group">
+                    <label for="address-country">Address Country</label>
+                    <input type="text" id="address-country" value="IN">
+                </div>
+            </div>
+            
+            <button class="generate-btn" id="generate-job">Generate Job Posting Schema</button>
+        </div>
+        
+        <!-- Article Schema Form -->
+        <div id="article-form" class="schema-form">
+            <h2>Article Schema</h2>
+            
+            <div class="form-group">
+                <label for="article-type">Article Type</label>
+                <select id="article-type">
+                    <option value="Article">Article</option>
+                    <option value="BlogPosting">BlogPosting</option>
+                    <option value="NewsArticle">NewsArticle</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="article-headline">Headline</label>
+                <input type="text" id="article-headline" placeholder="Enter headline">
+            </div>
+
+            <div class="form-group">
+                <label for="article-description">Description</label>
+                <textarea id="article-description" rows="3" placeholder="Enter description"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="article-image">Image URL</label>
+                <input type="text" id="article-image" placeholder="https://example.com/image.jpg">
+            </div>
+
+            <div class="form-group">
+                <label for="article-author">Author</label>
+                <input type="text" id="article-author" placeholder="Enter author name">
+            </div>
+
+            <div class="form-group">
+                <label for="article-author-url">Author URL</label>
+                <input type="text" id="article-author-url" placeholder="https://www.sarkarirojgarkendra.com/pages/contact.html" value="https://www.sarkarirojgarkendra.com/pages/contact.html">
+            </div>
+
+            <div class="form-group">
+                <label for="article-publisher">Publisher</label>
+                <input type="text" id="article-publisher" placeholder="Enter publisher name">
+            </div>
+
+            <div class="form-group">
+                <label for="article-publisher-logo">Publisher Logo URL</label>
+                <input type="text" id="article-publisher-logo" placeholder="https://example.com/logo.png">
+            </div>
+
+            <div class="form-group">
+                <label for="article-url">Article URL</label>
+                <input type="text" id="article-url" placeholder="https://example.com/article.html">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="article-date-published">Date Published</label>
+                    <input type="date" id="article-date-published">
+                </div>
+                <div class="form-group">
+                    <label for="article-date-modified">Date Modified</label>
+                    <input type="date" id="article-date-modified">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="article-keywords">Keywords (comma separated)</label>
+                <input type="text" id="article-keywords" placeholder="keyword1, keyword2">
+            </div>
+
+            <button class="generate-btn" id="generate-article">Generate Article Schema</button>
+        </div>
+        
+        <!-- FAQ Schema Form -->
+        <div id="faq-form" class="schema-form">
+            <h2>FAQ Schema</h2>
+            
+            <div class="form-group">
+                <label for="bulk-faq-input">Paste FAQ Text (Q: Question? A: Answer)</label>
+                <textarea id="bulk-faq-input" class="bulk-faq-input" placeholder="Paste your FAQ text in the format:
+Q: Who can apply for the Prime Minister's Fellowship for Doctoral Research (PMFDR)?
+A: One doctoral fellow (applicant) jointly with one industry partner (co-applicant); the fellow must be enrolled/admitted for PhD within the last 14 months at a recognized Indian university/institute/research lab.
+Department of Science &amp; Technology
+
+Q: Is Indian citizenship required?
+A: Yes — the scheme is for scholars enrolled in Indian institutions (applicants must be eligible under the scheme's criteria as given in the PDF).
+Department of Science &amp; Technology"></textarea>
+            </div>
+            
+            <button class="parse-faq-btn" id="parse-faq">Parse FAQ Text</button>
+            
+            <h3>FAQ Items</h3>
+            <div id="faq-container">
+                <!-- FAQ items will be added here -->
+            </div>
+            
+            <button class="add-faq-btn" id="add-faq">+ Add FAQ</button>
+            
+            <button class="generate-btn" id="generate-faq">Generate FAQ Schema</button>
+        </div>
+        
+        <!-- Schema Output -->
+        <div id="schema-output" class="schema-output">
+            <button class="copy-btn" id="copy-btn">Copy to Clipboard</button>
+            <pre id="schema-code"></pre>
+        </div>
+        
+        <!-- Notification -->
+        <div class="notification" id="notification">
+            Schema copied to clipboard!
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const schemaBtns = document.querySelectorAll('.schema-btn');
+        const schemaForms = document.querySelectorAll('.schema-form');
+        const schemaOutput = document.getElementById('schema-output');
+        const schemaCode = document.getElementById('schema-code');
+        const copyBtn = document.getElementById('copy-btn');
+        const notification = document.getElementById('notification');
+        const addFaqBtn = document.getElementById('add-faq');
+        const faqContainer = document.getElementById('faq-container');
+        const generateStructuredBtn = document.getElementById('generate-structured');
+        const generateJobBtn = document.getElementById('generate-job');
+        const generateArticleBtn = document.getElementById('generate-article');
+        const generateFaqBtn = document.getElementById('generate-faq');
+        const parseFaqBtn = document.getElementById('parse-faq');
+        const bulkFaqInput = document.getElementById('bulk-faq-input');
+        
+        // Schema Type Selection
+        schemaBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const schemaType = btn.getAttribute('data-schema');
+                
+                // Update active button
+                schemaBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // Show corresponding form
+                schemaForms.forEach(form => form.classList.remove('active'));
+                document.getElementById(`${schemaType}-form`).classList.add('active');
+                
+                // Hide output
+                schemaOutput.classList.remove('active');
+            });
+        });
+        
+        // Auto-update event name and description based on page name and description
+        document.getElementById('page-name').addEventListener('input', function() {
+            document.getElementById('event-name').value = this.value;
+        });
+        
+        document.getElementById('page-description').addEventListener('input', function() {
+            document.getElementById('event-description').value = this.value;
+        });
+        
+        // FAQ Functionality
+        addFaqBtn.addEventListener('click', () => {
+            addFaqItem('New Question', '');
+        });
+        
+        // Parse FAQ text
+        parseFaqBtn.addEventListener('click', () => {
+            const faqText = bulkFaqInput.value.trim();
+            if (!faqText) {
+                alert('Please paste FAQ text to parse');
+                return;
+            }
+            
+            // Clear existing FAQ items
+            faqContainer.innerHTML = '';
+            
+            // Parse FAQ text
+            const faqPattern = /Q:\s*(.*?)\s*A:\s*([\s\S]*?)(?=Q:|$)/g;
+            let match;
+            let count = 0;
+            
+            while ((match = faqPattern.exec(faqText)) !== null) {
+                const question = match[1].trim();
+                const answer = match[2].trim();
+                
+                if (question && answer) {
+                    addFaqItem(question, answer);
+                    count++;
+                }
+            }
+            
+            if (count === 0) {
+                alert('No FAQ items found. Please check your format.');
+            } else {
+                alert(`Successfully parsed ${count} FAQ items`);
+            }
+        });
+        
+        // Function to add FAQ item
+        function addFaqItem(question, answer) {
+            const faqItem = document.createElement('div');
+            faqItem.className = 'faq-item';
+            faqItem.innerHTML = `
+                <div class="faq-question">
+                    <span>${question}</span>
+                    <span>▼</span>
+                </div>
+                <div class="faq-answer">
+                    <input type="text" class="faq-question-input" placeholder="Enter question" value="${question}">
+                    <textarea class="faq-answer-text" rows="3" placeholder="Enter answer">${answer}</textarea>
+                    <button class="remove-faq-btn">Remove FAQ</button>
+                </div>
+            `;
+            
+            faqContainer.appendChild(faqItem);
+            
+            // Add event listeners to new FAQ
+            const questionEl = faqItem.querySelector('.faq-question');
+            const answerEl = faqItem.querySelector('.faq-answer');
+            const removeBtn = faqItem.querySelector('.remove-faq-btn');
+            const questionInput = faqItem.querySelector('.faq-question-input');
+            
+            questionEl.addEventListener('click', () => {
+                answerEl.classList.toggle('active');
+            });
+            
+            removeBtn.addEventListener('click', () => {
+                faqItem.remove();
+            });
+            
+            questionInput.addEventListener('input', () => {
+                questionEl.querySelector('span').textContent = questionInput.value || 'New Question';
+            });
+        }
+        
+        // Initialize existing FAQ functionality
+        document.querySelectorAll('.faq-item').forEach(item => {
+            const questionEl = item.querySelector('.faq-question');
+            const answerEl = item.querySelector('.faq-answer');
+            const removeBtn = item.querySelector('.remove-faq-btn');
+            const questionInput = item.querySelector('.faq-question-input');
+            
+            if (questionInput) {
+                questionInput.addEventListener('input', () => {
+                    questionEl.querySelector('span').textContent = questionInput.value || 'New Question';
+                });
+            }
+            
+            questionEl.addEventListener('click', () => {
+                answerEl.classList.toggle('active');
+            });
+            
+            removeBtn.addEventListener('click', () => {
+                item.remove();
+            });
+        });
+        
+        // Generate Structured Data Schema
+        generateStructuredBtn.addEventListener('click', () => {
+            // Get form values
+            const pageName = document.getElementById('page-name').value;
+            const pageSlug = document.getElementById('page-slug').value;
+            const pageUrl = document.getElementById('page-url').value + pageSlug;
+            const pageDescription = document.getElementById('page-description').value;
+            const imageUrl = document.getElementById('image-url').value;
+            const imageWidth = document.getElementById('image-width').value;
+            const imageHeight = document.getElementById('image-height').value;
+            const datePublished = document.getElementById('date-published').value;
+            const dateModified = document.getElementById('date-modified').value;
+            const organizationName = document.getElementById('organization-name').value;
+            const logoUrl = document.getElementById('logo-url').value;
+            const eventName = document.getElementById('event-name').value;
+            const eventDescription = document.getElementById('event-description').value;
+            const eventStartDate = document.getElementById('event-start-date').value;
+            const eventEndDate = document.getElementById('event-end-date').value;
+            const eventLocation = document.getElementById('event-location').value;
+            const eventOrganizer = document.getElementById('event-organizer').value;
+            const eventOrganizerUrl = document.getElementById('event-organizer-url').value;
+            const eventPrice = document.getElementById('event-price').value;
+            
+            // Generate schema
+            const schema = {
+                "@context": "https://schema.org",
+                "@graph": [
+                    {
+                        "@type": "WebPage",
+                        "name": pageName || "Page Name",
+                        "url": pageUrl,
+                        "description": pageDescription || "Page Description",
+                        "primaryImageOfPage": {
+                            "@type": "ImageObject",
+                            "url": imageUrl || "https://example.com/image.jpg",
+                            "width": parseInt(imageWidth) || 1200,
+                            "height": parseInt(imageHeight) || 630
+                        },
+                        "datePublished": datePublished || "2025-01-01",
+                        "dateModified": dateModified || "2025-01-01",
+                        "author": {
+                            "@type": "Organization",
+                            "name": organizationName || "Organization Name"
+                        },
+                        "publisher": {
+                            "@type": "Organization",
+                            "name": organizationName || "Organization Name",
+                            "url": "https://www.sarkarirojgarkendra.com",
+                            "logo": { 
+                                "@type": "ImageObject",
+                                "url": logoUrl || "https://example.com/logo.png",
+                                "width": 180,
+                                "height": 180
+                            }
+                        },
+                        "inLanguage": "en-IN"
+                    },
+                    {
+                        "@type": "EducationEvent",
+                        "name": eventName || "Event Name",
+                        "description": eventDescription || "Event Description",
+                        "image": imageUrl || "https://example.com/image.jpg",
+                        "startDate": eventStartDate ? new Date(eventStartDate).toISOString() : "2025-01-01T09:00:00+05:30",
+                        "endDate": eventEndDate ? new Date(eventEndDate).toISOString() : "2025-01-01T12:00:00+05:30",
+                        "eventStatus": "https://schema.org/EventScheduled",
+                        "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+                        "location": {
+                            "@type": "Place",
+                            "name": eventLocation || "Event Location",
+                            "address": {
+                                "@type": "PostalAddress",
+                                "addressCountry": "IN",
+                                "addressRegion": "Madhya Pradesh"
+                            }
+                        },
+                        "organizer": {
+                            "@type": "Organization",
+                            "name": eventOrganizer || "Event Organizer",
+                            "url": eventOrganizerUrl || "https://example.com"
+                        },
+                        "performer": {
+                            "@type": "Organization",
+                            "name": eventOrganizer || "Event Organizer"
+                        },
+                        "offers": {
+                            "@type": "Offer",
+                            "price": eventPrice || "500",
+                            "priceCurrency": "INR",
+                            "validFrom": datePublished || "2025-01-01",
+                            "availability": "https://schema.org/InStock",
+                            "url": pageUrl
+                        }
+                    },
+                    {
+                        "@type": "BreadcrumbList",
+                        "itemListElement": [
+                            {
+                                "@type": "ListItem",
+                                "position": 1,
+                                "name": "Home",
+                                "item": "https://www.sarkarirojgarkendra.com"
+                            },
+                            {
+                                "@type": "ListItem",
+                                "position": 2,
+                                "name": "MPPSC Exams",
+                                "item": "https://www.sarkarirojgarkendra.com/mppsc-exams"
+                            },
+                            {
+                                "@type": "ListItem",
+                                "position": 3,
+                                "name": pageName || "Current Page"
+                            }
+                        ]
+                    }
+                ]
+            };
+            
+            // Display schema wrapped in script tag
+            schemaCode.textContent = `<script type="application/ld+json">\n${JSON.stringify(schema, null, 2)}\n<\/script>`;
+            schemaOutput.classList.add('active');
+        });
+        
+        // Generate Job Posting Schema
+        generateJobBtn.addEventListener('click', () => {
+            // Get form values
+            const jobTitle = document.getElementById('job-title').value;
+            const jobDescription = document.getElementById('job-description').value;
+            const hiringOrganization = document.getElementById('hiring-organization').value;
+            const hiringOrganizationUrl = document.getElementById('hiring-organization-url').value;
+            const datePosted = document.getElementById('date-posted').value;
+            const validThrough = document.getElementById('valid-through').value;
+            const employmentType = document.getElementById('employment-type').value;
+            const baseSalary = document.getElementById('base-salary').value;
+            const streetAddress = document.getElementById('street-address').value;
+            const addressLocality = document.getElementById('address-locality').value;
+            const addressRegion = document.getElementById('address-region').value;
+            const postalCode = document.getElementById('postal-code').value;
+            const addressCountry = document.getElementById('address-country').value;
+            
+            // Generate schema
+            const schema = {
+                "@context": "https://schema.org/",
+                "@type": "JobPosting",
+                "title": jobTitle || "Job Title",
+                "description": jobDescription || "Job Description",
+                "hiringOrganization": {
+                    "@type": "Organization",
+                    "name": hiringOrganization || "Hiring Organization",
+                    "url": hiringOrganizationUrl || "https://example.com"
+                },
+                "datePosted": datePosted || "2025-01-01",
+                "validThrough": validThrough || "2025-12-31",
+                "employmentType": employmentType,
+                "baseSalary": {
+                    "@type": "MonetaryAmount",
+                    "currency": "INR",
+                    "value": {
+                        "@type": "QuantitativeValue",
+                        "minValue": baseSalary,
+                        "maxValue": baseSalary,
+                        "unitText": "YEAR"
+                    }
+                },
+                "jobLocation": {
+                    "@type": "Place",
+                    "address": {
+                        "@type": "PostalAddress",
+                        "streetAddress": streetAddress || "123 Main Street",
+                        "addressLocality": addressLocality || "City",
+                        "addressRegion": addressRegion || "State",
+                        "postalCode": postalCode || "12345",
+                        "addressCountry": addressCountry || "Country Code"
+                    }
+                },
+                "applicantLocationRequirements": {
+                    "@type": "Country",
+                    "name": "India"
+                }
+            };
+            
+            // Display schema wrapped in script tag
+            schemaCode.textContent = `<script type="application/ld+json">\n${JSON.stringify(schema, null, 2)}\n<\/script>`;
+            schemaOutput.classList.add('active');
+        });
+        
+        // Generate Article Schema
+        generateArticleBtn.addEventListener('click', () => {
+            const type = document.getElementById('article-type').value;
+            const headline = document.getElementById('article-headline').value.trim();
+            const description = document.getElementById('article-description').value.trim();
+            const image = document.getElementById('article-image').value.trim();
+            const author = document.getElementById('article-author').value.trim();
+            const authorUrl = document.getElementById('article-author-url').value.trim();
+            const publisher = document.getElementById('article-publisher').value.trim();
+            const publisherLogo = document.getElementById('article-publisher-logo').value.trim();
+            const url = document.getElementById('article-url').value.trim();
+            const datePublished = document.getElementById('article-date-published').value;
+            const dateModified = document.getElementById('article-date-modified').value;
+            const keywords = document.getElementById('article-keywords').value.trim();
+
+            // Validation
+            if(!headline || !description || !image || !author || !publisher || !publisherLogo || !url || !datePublished || !dateModified) {
+                alert('Please fill in all required fields!');
+                return;
+            }
+
+            // Build schema
+            const schema = {
+                "@context": "https://schema.org",
+                "@type": type,
+                "headline": headline,
+                "description": description,
+                "image": image,
+                "author": {
+                    "@type": "Person",
+                    "name": author,
+                    "url": authorUrl || "https://www.sarkarirojgarkendra.com/pages/contact.html"
+                },
+                "publisher": {
+                    "@type": "Organization",
+                    "name": publisher,
+                    "logo": {
+                        "@type": "ImageObject",
+                        "url": publisherLogo
+                    }
+                },
+                "url": url,
+                "datePublished": new Date(datePublished).toISOString(),
+                "dateModified": new Date(dateModified).toISOString()
+            };
+
+            if(keywords) {
+                schema.keywords = keywords.split(',').map(k => k.trim());
+            }
+
+            // Display schema wrapped in script tag
+            schemaCode.textContent = `<script type="application/ld+json">\n${JSON.stringify(schema, null, 2)}\n<\/script>`;
+            schemaOutput.classList.add('active');
+        });
+        
+        // Generate FAQ Schema
+        generateFaqBtn.addEventListener('click', () => {
+            // Get FAQ data
+            const faqItems = [];
+            document.querySelectorAll('.faq-item').forEach(item => {
+                const questionInput = item.querySelector('.faq-question-input');
+                const answerTextarea = item.querySelector('.faq-answer-text');
+                
+                const question = questionInput ? questionInput.value : item.querySelector('.faq-question span').textContent;
+                const answer = answerTextarea.value;
+                
+                if (question && answer) {
+                    faqItems.push({
+                        question,
+                        answer
+                    });
+                }
+            });
+            
+            if (faqItems.length === 0) {
+                alert('Please add at least one FAQ item');
+                return;
+            }
+            
+            // Generate schema
+            const schema = {
+                "@context": "https://schema.org",
+                "@type": "FAQPage",
+                "mainEntity": faqItems.map(item => ({
+                    "@type": "Question",
+                    "name": item.question,
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": item.answer
+                    }
+                }))
+            };
+            
+            // Display schema wrapped in script tag
+            schemaCode.textContent = `<script type="application/ld+json">\n${JSON.stringify(schema, null, 2)}\n<\/script>`;
+            schemaOutput.classList.add('active');
+        });
+        
+        // Copy to Clipboard
+        copyBtn.addEventListener('click', () => {
+            const textToCopy = schemaCode.textContent;
+            
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                // Show notification
+                notification.classList.add('show');
+                
+                // Hide notification after 3 seconds
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+                alert('Failed to copy schema to clipboard');
+            });
+        });
+        
+        // Set default dates
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 30);
+        
+        document.getElementById('date-published').value = today.toISOString().split('T')[0];
+        document.getElementById('date-modified').value = today.toISOString().split('T')[0];
+        document.getElementById('date-posted').value = today.toISOString().split('T')[0];
+        document.getElementById('valid-through').value = tomorrow.toISOString().split('T')[0];
+        document.getElementById('article-date-published').value = today.toISOString().split('T')[0];
+        document.getElementById('article-date-modified').value = today.toISOString().split('T')[0];
+        
+        // Set default event dates (one month from now)
+        const eventStart = new Date(today);
+        eventStart.setMonth(eventStart.getMonth() + 1);
+        eventStart.setHours(9, 0, 0);
+        
+        const eventEnd = new Date(eventStart);
+        eventEnd.setHours(12, 0, 0);
+        
+        document.getElementById('event-start-date').value = eventStart.toISOString().slice(0, 16);
+        document.getElementById('event-end-date').value = eventEnd.toISOString().slice(0, 16);
+    </script>
+</body>
+</html>
