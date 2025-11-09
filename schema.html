@@ -288,15 +288,74 @@
             font-weight: bold;
         }
         
+        /* Header Navigation Styles */
+        .header-nav {
+            margin-bottom: 30px;
+        }
+        
+        .header-nav .container {
+            max-width: 5xl;
+            margin: 0 auto;
+            padding: 1rem;
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border-top: 4px solid #3b82f6;
+        }
+        
+        .header-nav nav {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            font-size: 1.125rem;
+            font-weight: 500;
+        }
+        
+        .header-nav a {
+            color: #374151;
+            transition: color 0.15s ease-in-out;
+        }
+        
+        .header-nav a:hover {
+            color: #2563eb;
+        }
+        
+        .header-nav span {
+            color: #d1d5db;
+        }
+        
         @media (max-width: 768px) {
             .form-row {
                 flex-direction: column;
                 gap: 0;
             }
+            
+            .header-nav nav {
+                flex-direction: column;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            
+            .header-nav span {
+                display: none;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Added Header Navigation -->
+    <div class="header-nav">
+        <header class="container mx-auto max-w-5xl mb-6 p-4 sm:p-6 bg-white rounded-xl shadow-lg border-t-4 border-blue-500">
+            <nav class="flex justify-center sm:justify-start space-x-4 sm:space-x-8 text-lg font-medium">
+                <a href="index.html" class="text-gray-700 hover:text-blue-600 transition duration-150 ease-in-out">Home</a>
+                <span class="text-gray-300">|</span>
+                <a href="schema.html" class="text-gray-700 hover:text-blue-600 transition duration-150 ease-in-out">Schema Generator</a>
+                <span class="text-gray-300">|</span>
+                <a href="blog.html" class="text-gray-700 hover:text-blue-600 transition duration-150 ease-in-out">Blog Generator</a>
+            </nav>
+        </header>
+    </div>
+
     <div class="container">
         <header>
             <h1>Schema Generator Tool</h1>
@@ -453,7 +512,7 @@ Line 3: Article Description (This article gives 10 essential tips...)"></textare
             
             <div class="form-group">
                 <label for="hiring-organization">Hiring Organization</label>
-                <input type="text" id="hiring-organization" value="Tech Solutions Inc.">
+                <input type="text" id="hiring-organization" value="Structure Data Event Organizer">
             </div>
             
             <div class="form-group">
@@ -552,12 +611,12 @@ Line 3: Article Description (This article gives 10 essential tips...)"></textare
 
             <div class="form-group">
                 <label for="article-image">Image URL</label>
-                <input type="text" id="article-image" placeholder="https://example.com/image.jpg">
+                <input type="text" id="article-image" value="https://www.sarkarirojgarkendra.com/images/sarkari-rojgar-kendra-og-image.webp">
             </div>
 
             <div class="form-group">
                 <label for="article-author">Author</label>
-                <input type="text" id="article-author" placeholder="Enter author name">
+                <input type="text" id="article-author" value="SRK TEAM">
             </div>
 
             <div class="form-group">
@@ -823,7 +882,7 @@ Department of Science &amp; Technology"></textarea>
                 "description": jobDescription || "Job Description",
                 "hiringOrganization": {
                     "@type": "Organization",
-                    "name": hiringOrganization || "Hiring Organization",
+                    "name": hiringOrganization || "Structure Data Event Organizer",
                     "url": hiringOrganizationUrl || "https://example.com"
                 },
                 "datePosted": datePosted || "2025-01-01",
@@ -888,7 +947,7 @@ Department of Science &amp; Technology"></textarea>
                 "image": image,
                 "author": {
                     "@type": "Person",
-                    "name": author,
+                    "name": author || "SRK TEAM",
                     "url": authorUrl || "https://www.sarkarirojgarkendra.com/pages/contact.html"
                 },
                 "publisher": {
