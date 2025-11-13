@@ -494,6 +494,30 @@ Line 3: Article Description (This article gives 10 essential tips...)"></textare
                 <input type="number" id="event-price" value="500">
             </div>
             
+            <!-- UPDATED BREADCRUMB DROPDOWN SECTION -->
+            <h3>Breadcrumb Configuration</h3>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="breadcrumb-second-option">Breadcrumb Second Option</label>
+                    <select id="breadcrumb-second-option">
+                        <option value="sarkari-jobs">Sarkari Jobs</option>
+                        <option value="results">Results</option>
+                        <option value="answer-key">Answer Key</option>
+                        <option value="admit-card">Admit Card</option>
+                        <option value="private-job">Private Job</option>
+                        <option value="admission">Admission</option>
+                        <option value="new-yojna">New Yojna</option>
+                        <option value="loans">Loans</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="breadcrumb-second-name">Breadcrumb Display Name</label>
+                    <input type="text" id="breadcrumb-second-name" value="Sarkari Jobs" placeholder="Enter display name for breadcrumb">
+                </div>
+            </div>
+            
             <button class="generate-btn" id="generate-structured">Generate Structured Data Schema</button>
         </div>
         
@@ -721,6 +745,10 @@ Department of Science &amp; Technology"></textarea>
         const masterTitlesInput = document.getElementById('master-titles');
         const masterDescriptionsInput = document.getElementById('master-descriptions');
 
+        // BREADCRUMB ELEMENTS
+        const breadcrumbSecondOption = document.getElementById('breadcrumb-second-option');
+        const breadcrumbSecondName = document.getElementById('breadcrumb-second-name');
+
         // --- CORE UTILITY FUNCTIONS ---
 
         function copyToClipboard(text, message = "Schema copied to clipboard!") {
@@ -759,6 +787,22 @@ Department of Science &amp; Technology"></textarea>
             const eventOrganizer = document.getElementById('event-organizer').value;
             const eventOrganizerUrl = document.getElementById('event-organizer-url').value;
             const eventPrice = document.getElementById('event-price').value;
+            
+            // Get breadcrumb dropdown values
+            const breadcrumbSecondOption = document.getElementById('breadcrumb-second-option').value;
+            const breadcrumbSecondName = document.getElementById('breadcrumb-second-name').value;
+            
+            // UPDATED URL mappings for breadcrumb options
+            const breadcrumbUrlMap = {
+                'sarkari-jobs': 'sarkari-jobs.html',
+                'results': 'result.html',
+                'answer-key': 'answer-key.html',
+                'admit-card': 'admit-card.html',
+                'private-job': 'private-job.html',
+                'admission': 'admission.html',
+                'new-yojna': 'new-yojna.html',
+                'loans': 'loans.html'
+            };
             
             // Generate schema object
             const schema = {
@@ -842,8 +886,8 @@ Department of Science &amp; Technology"></textarea>
                             {
                                 "@type": "ListItem",
                                 "position": 2,
-                                "name": "MPPSC Exams",
-                                "item": document.getElementById('page-url').value + "mppsc-exams"
+                                "name": breadcrumbSecondName || "Sarkari Jobs",
+                                "item": document.getElementById('page-url').value + (breadcrumbUrlMap[breadcrumbSecondOption] || "sarkari-jobs.html")
                             },
                             {
                                 "@type": "ListItem",
@@ -1177,6 +1221,12 @@ Department of Science &amp; Technology"></textarea>
         }
 
         autoFillCommonFields();
+
+        // BREADCRUMB DROPDOWN FUNCTIONALITY
+        breadcrumbSecondOption.addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex].text;
+            breadcrumbSecondName.value = selectedOption;
+        });
 
         // FAQ Functionality
         addFaqBtn.addEventListener('click', () => {
