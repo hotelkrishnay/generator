@@ -87,6 +87,119 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* Modern Paragraph Styles */
+        .modern-paragraph-section {
+            margin: 30px 0;
+        }
+
+        .modern-paragraph-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .modern-paragraph-header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 18px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .modern-paragraph-content {
+            padding: 25px;
+        }
+
+        .modern-paragraph-content h2 {
+            color: #2d3748;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+
+        .modern-paragraph-content h3 {
+            color: #4a5568;
+            font-size: 20px;
+            font-weight: 600;
+            margin: 25px 0 15px 0;
+        }
+
+        .modern-paragraph-content div {
+            color: #4a5568;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        .responsive-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .responsive-table thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .responsive-table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .responsive-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #4a5568;
+        }
+
+        .responsive-table tbody tr:hover {
+            background-color: #f7fafc;
+        }
+
+        .responsive-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        @media (max-width: 768px) {
+            .responsive-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+
+        .table-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .table-row input {
+            flex: 1;
+        }
+
+        .remove-row {
+            color: #e53e3e;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        .remove-row:hover {
+            color: #c53030;
+        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -99,7 +212,7 @@
                     <div class="hidden md:flex space-x-6">
                         <a href="index.html" class="text-gray-600 hover:text-blue-600 transition">Home</a>
                         <a href="age-and-links.html" class="text-gray-600 hover:text-blue-600 transition">Age & Links</a>
-                        <a href="schema.html" class="text-blue-600 font-semibold">Schema</a>
+                        <a href="vacancy-details.html" class="text-blue-600 font-semibold">Vacancy Details</a>
                     </div>
                 </div>
             </div>
@@ -212,6 +325,55 @@
             <textarea id="selection" class="border border-gray-300 p-3 w-full h-32 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder='Online AFCAT Examination&#10;Engineering Knowledge Test (EKT)&#10;Air Force Selection Board (AFSB) Testing&#10;Medical Examination'></textarea>
         </div>
 
+        <!-- Modern Paragraph Section -->
+        <div class="mb-6 p-4 border border-gray-300 rounded-lg bg-gray-50">
+            <div class="flex items-center mb-4">
+                <input type="checkbox" id="includeParagraph" class="h-5 w-5 text-blue-600 rounded focus:ring-blue-500">
+                <label for="includeParagraph" class="ml-2 text-lg font-medium text-gray-700">Include Modern Paragraph Section</label>
+            </div>
+            
+            <div id="paragraphSection" class="hidden">
+                <!-- Paragraph Header -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Paragraph Header Title</label>
+                    <input type="text" id="paragraphHeader" class="border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., Odisha OTET Notification 2025 Out">
+                </div>
+
+                <!-- Main Heading -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Main Heading (H2)</label>
+                    <input type="text" id="paragraphMainHeading" class="border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., Understanding Odisha OTET Notification 2025">
+                </div>
+
+                <!-- Paragraph Content -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Paragraph Content</label>
+                    <textarea id="paragraphContent" class="border border-gray-300 p-3 w-full h-32 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter paragraph content here..."></textarea>
+                </div>
+
+                <!-- Sub Heading -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Sub Heading (H3 - Optional)</label>
+                    <input type="text" id="paragraphSubHeading" class="border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., Key Points">
+                </div>
+
+                <!-- Table Section -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Table Data (2 columns)</label>
+                    <div class="mb-2">
+                        <div class="grid grid-cols-2 gap-2 mb-2 font-medium">
+                            <span>Column 1 Header</span>
+                            <span>Column 2 Header</span>
+                        </div>
+                        <div id="tableRowsContainer">
+                            <!-- Table rows will be added here -->
+                        </div>
+                        <button type="button" onclick="addTableRow()" class="mt-2 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-200">Add Table Row</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- FAQs Parse Box -->
         <div class="mb-6">
             <label class="block text-sm font-medium text-gray-700 mb-2">FAQs (Parse Box: One Q&A pair per block, separated by blank lines. Format: Q: Question?&#10;A: Answer text. Use &#10; for line breaks within Q or A.)</label>
@@ -240,6 +402,18 @@
     document.getElementById('dateInput').value = defaultDate;
 
     let castRowIndex = 0;
+    let tableRowIndex = 0;
+
+    // Toggle paragraph section visibility
+    document.getElementById('includeParagraph').addEventListener('change', function() {
+        const paragraphSection = document.getElementById('paragraphSection');
+        if (this.checked) {
+            paragraphSection.classList.remove('hidden');
+        } else {
+            paragraphSection.classList.add('hidden');
+        }
+        saveFormData();
+    });
 
     // Add a new cast row
     function addCastRow() {
@@ -275,6 +449,31 @@
         saveFormData(); // Save after removing
     }
 
+    // Add a new table row
+    function addTableRow() {
+        const container = document.getElementById('tableRowsContainer');
+        const row = document.createElement('div');
+        row.className = 'table-row';
+        row.id = `tableRow_${tableRowIndex}`;
+        row.innerHTML = `
+            <input type="text" placeholder="Column 1 data" class="border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" id="tableCol1_${tableRowIndex}">
+            <input type="text" placeholder="Column 2 data" class="border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" id="tableCol2_${tableRowIndex}">
+            <button type="button" onclick="removeTableRow('${tableRowIndex}')" class="remove-row"><i class="fas fa-trash"></i></button>
+        `;
+        container.appendChild(row);
+        tableRowIndex++;
+        saveFormData(); // Save after adding
+    }
+
+    // Remove a table row
+    function removeTableRow(index) {
+        const row = document.getElementById(`tableRow_${index}`);
+        if (row) {
+            row.remove();
+        }
+        saveFormData(); // Save after removing
+    }
+
     // Function to save form data to localStorage
     function saveFormData() {
         const formData = {
@@ -293,6 +492,12 @@
             formNotes: document.getElementById('formNotes').value,
             selection: document.getElementById('selection').value,
             faqs: document.getElementById('faqs').value,
+            includeParagraph: document.getElementById('includeParagraph').checked,
+            paragraphHeader: document.getElementById('paragraphHeader').value,
+            paragraphMainHeading: document.getElementById('paragraphMainHeading').value,
+            paragraphContent: document.getElementById('paragraphContent').value,
+            paragraphSubHeading: document.getElementById('paragraphSubHeading').value,
+            tableRows: collectTableRows(),
             castRows: collectCastRows()
         };
         localStorage.setItem('htmlGeneratorData', JSON.stringify(formData));
@@ -310,6 +515,19 @@
             const st = document.getElementById(`st_${i}`)?.value || '';
             if (postName.trim()) {
                 rows.push({ postName, general, ews, obc, sc, st });
+            }
+        }
+        return rows;
+    }
+
+    // Collect all table rows data
+    function collectTableRows() {
+        const rows = [];
+        for (let i = 0; i < tableRowIndex; i++) {
+            const col1 = document.getElementById(`tableCol1_${i}`)?.value || '';
+            const col2 = document.getElementById(`tableCol2_${i}`)?.value || '';
+            if (col1.trim() || col2.trim()) {
+                rows.push({ col1, col2 });
             }
         }
         return rows;
@@ -335,6 +553,21 @@
             document.getElementById('formNotes').value = formData.formNotes || '';
             document.getElementById('selection').value = formData.selection || '';
             document.getElementById('faqs').value = formData.faqs || '';
+            
+            // Load paragraph section data
+            document.getElementById('includeParagraph').checked = formData.includeParagraph || false;
+            document.getElementById('paragraphHeader').value = formData.paragraphHeader || '';
+            document.getElementById('paragraphMainHeading').value = formData.paragraphMainHeading || '';
+            document.getElementById('paragraphContent').value = formData.paragraphContent || '';
+            document.getElementById('paragraphSubHeading').value = formData.paragraphSubHeading || '';
+            
+            // Toggle paragraph section visibility
+            const paragraphSection = document.getElementById('paragraphSection');
+            if (formData.includeParagraph) {
+                paragraphSection.classList.remove('hidden');
+            } else {
+                paragraphSection.classList.add('hidden');
+            }
 
             // Load cast rows
             const castRows = formData.castRows || [];
@@ -349,6 +582,17 @@
                 document.getElementById(`obc_${index}`).value = rowData.obc;
                 document.getElementById(`sc_${index}`).value = rowData.sc;
                 document.getElementById(`st_${index}`).value = rowData.st;
+            });
+
+            // Load table rows
+            const tableRows = formData.tableRows || [];
+            tableRowIndex = 0;
+            document.getElementById('tableRowsContainer').innerHTML = '';
+            tableRows.forEach(rowData => {
+                addTableRow();
+                const index = tableRowIndex - 1;
+                document.getElementById(`tableCol1_${index}`).value = rowData.col1;
+                document.getElementById(`tableCol2_${index}`).value = rowData.col2;
             });
         }
     }
@@ -382,8 +626,16 @@
             document.getElementById('formNotes').value = '';
             document.getElementById('selection').value = '';
             document.getElementById('faqs').value = '';
+            document.getElementById('includeParagraph').checked = false;
+            document.getElementById('paragraphHeader').value = '';
+            document.getElementById('paragraphMainHeading').value = '';
+            document.getElementById('paragraphContent').value = '';
+            document.getElementById('paragraphSubHeading').value = '';
             document.getElementById('castRowsContainer').innerHTML = '';
+            document.getElementById('tableRowsContainer').innerHTML = '';
+            document.getElementById('paragraphSection').classList.add('hidden');
             castRowIndex = 0;
+            tableRowIndex = 0;
             document.getElementById('output').classList.add('hidden');
             alert('Data cleared successfully.');
         }
@@ -402,6 +654,12 @@
             const totalPosts = document.getElementById('totalPosts').value || '0';
             const ageRelaxation = document.getElementById('ageRelaxation').value.trim();
             const castRows = collectCastRows();
+            const includeParagraph = document.getElementById('includeParagraph').checked;
+            const paragraphHeader = document.getElementById('paragraphHeader').value.trim();
+            const paragraphMainHeading = document.getElementById('paragraphMainHeading').value.trim();
+            const paragraphContent = document.getElementById('paragraphContent').value.trim();
+            const paragraphSubHeading = document.getElementById('paragraphSubHeading').value.trim();
+            const tableRows = collectTableRows();
 
             if (!title) {
                 alert('Please enter a title.');
@@ -557,6 +815,48 @@
                             </div>
                         </li>`;
             }).join('\n                        ');
+
+            // Generate modern paragraph section
+            let modernParagraphSection = '';
+            if (includeParagraph && (paragraphHeader || paragraphMainHeading || paragraphContent || tableRows.length > 0)) {
+                let tableHtml = '';
+                if (tableRows.length > 0) {
+                    tableHtml = `
+                    <h3>${paragraphSubHeading || ''}</h3>
+                    <table class="responsive-table">
+                        <thead>
+                            <tr>
+                                <th>Section</th><th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${tableRows.map(row => `
+                                <tr>
+                                    <td>${row.col1}</td><td>${row.col2}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>`;
+                }
+
+                modernParagraphSection = `
+        <!-- ===== MODERN PARAGRAPH ===== -->       
+        <div class="modern-paragraph-section">
+            <div class="modern-paragraph-card">
+                <div class="modern-paragraph-header">
+                    <i class="fas fa-chart-line"></i>
+                    <span>${paragraphHeader}</span>
+                </div>
+                <div class="modern-paragraph-content">
+                    <h2>${paragraphMainHeading}</h2>
+                    
+                    <div>${paragraphContent}</div>
+                    
+                    ${tableHtml}
+                </div>
+            </div>
+        </div>`;
+            }
 
             // Parse FAQs - group by blank lines
             const faqText = document.getElementById('faqs').value;
@@ -903,6 +1203,8 @@ ${processSection}
                 
 ${selectionSection}
                 
+${modernParagraphSection}
+                
 ${faqSection}
                 
 ${postsSections}</main>`;
@@ -937,9 +1239,9 @@ ${postsSections}</main>`;
         // Explicitly do nothing to form data - it persists via localStorage
     }
 
-    // Add initial row
+    // Add initial rows
     addCastRow();
+    addTableRow();
 </script>
 </body>
-
 </html>
