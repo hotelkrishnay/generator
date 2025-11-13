@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vacancy Details</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .posts-sections-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 40px;
+        }
+        
+        .posts-section {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .posts-header, .related-posts-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .related-posts-header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .posts-content {
+            padding: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .post-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+            display: block;
+            color: #333;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .post-item:hover {
+            background-color: #f9f9f9;
+            padding-left: 10px;
+            color: #4a5568;
+        }
+        
+        .post-item:last-child {
+            border-bottom: none;
+        }
+        
+        .post-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .post-date {
+            font-size: 12px;
+            color: #718096;
+        }
+        
+        .no-posts {
+            text-align: center;
+            color: #718096;
+            font-style: italic;
+            padding: 20px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .posts-sections-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header with Navbar -->
+    <header class="bg-white shadow-md">
+        <nav class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-8">
+                    <h1 class="text-2xl font-bold text-gray-800">Home</h1>
+                    <div class="hidden md:flex space-x-6">
+                        <a href="index.html" class="text-gray-600 hover:text-blue-600 transition">Home</a>
+                        <a href="age-and-links.html" class="text-gray-600 hover:text-blue-600 transition">Age & Links</a>
+                        <a href="vacancy-details.html" class="text-blue-600 font-semibold">Vacancy Details</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+<div class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-6 mt-8">
+    <h2 class="text-3xl font-bold mb-8 text-center text-gray-800">HTML Generator for Posts</h2>
+    
+    <form id="generatorForm">
+        <!-- Category Dropdown -->
+        <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Category (for Breadcrumb & Meta)</label>
+            <select id="category" class="border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="Sarkari Jobs|sarkari-jobs.html">Sarkari Jobs</option>
+                <option value="Result|result.html">Result</option>
+                <option value="Admit Card|admit-card.html">Admit Card</option>
+                <option value="Answer Key|answer-key.html">Answer Key</option>
+                <option value="Private|private-job.html">Private</option>
+                <option value="Admission|admission.html">Admission</option>
+                <option value="New Yojna|new-yojna.html">New Yojna</option>
+                <option value="Loans|loans.html">Loans</option>
+            </select>
+        </div>
+
+        <!-- H1 Title -->
+        <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">H1 Title</label>
+            <input type="text" id="title" class="border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter post title (e.g., Indian Railway Apprentice Recruitment 2025 Gorakhpur)" required>
+        </div>
+
+        <!-- Date -->
+        <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Date (Editable, Default: Current)</label>
+            <input type="text" id="dateInput" class="border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., November 13, 2025">
+        </div>
+
+        <!-- Post Summary Text -->
+        <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Post Summary (Paste or write paragraph, include HTML like <b> or <span> if needed)</label>
+            <textarea id="summary" class="border border-gray-300 p-3 w-full h-32 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Paste or write the summary paragraph here..."></textarea>
+        </div>
+
+        <!-- Total Posts -->
+        <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Total Posts</label>
+            <input type="number" id="totalPosts" value="0" class="border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., 1104">
+        </div>
+
+        <!-- Important Dates Parse Box -->
+        <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Important Dates (Parse Box: One per line, format "Label : Value")</label>
+            <textarea id="dates" class="border border-gray-300 p-3 w-full h-32 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder='Notification Issue : October 16, 2025&#10;Start Date for Online Application : October 16, 2025&#10;Last Date for Online Application : November 15, 2025'></textarea>
+        </div>
+
+        <!-- Application Fees Parse Box -->
+        <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Application Fees (Parse Box: One per line, format "Label : Value", values auto-formatted to ₹)</label>
+            <textarea id="fees" class="border border-gray-300 p-3 w-full h-32 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder='General : 100&#10;OBC : 100&#10;ST : 0&#10;EWS : 0'></textarea>
+        </div>
+
+        <!-- Important Links Parse Box -->
+        <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Important Links (Parse Box: One per line, format "Label : URL : Button Text")</label>
+            <textarea id="links" class="border border-gray-300 p-3 w-full h-32 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder='Official Website : https://ner.indianrailways.gov.in/ : Click Here&#10;Direct Application Link : https://apprentice.rrcner.net/ : Click Here'></textarea>
+        </div>
+
+        <!-- Age Limit Parse Box -->
+        <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Age Limit (Parse Box: One per line, format "Label : Value")</label>
+            <textarea id="age" class="border border-gray-300 p-3 w-full h-32 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder='Minimum Age : 15 Years&#10;Maximum Age : 24 Years&#10;SC : 29 Years'></textarea>
+        </div>
+
+        <!-- Age Relaxation Text Box -->
+        <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Age Relaxation (Paste the relaxation details here, include HTML like <br> if needed)</label>
+            <textarea id="ageRelaxation" class="border border-gray-300 p-3 w-full h-32 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., SC (Scheduled Caste): 5 years relaxation – Maximum age limit 29 years<br>ST (Scheduled Tribe): 5 years relaxation – Maximum age limit 29 years<br>..."></textarea>
+        </div>
+
+        <!-- Vacancy Details Parse Box -->
+        <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Vacancy Details (Parse Box: Multi-line blocks separated by blank lines, first line format "Post Name : No. Of Post : Eligibility Start")</label>
+            <textarea id="vacancy" class="border border-gray-300 p-3 w-full h-32 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder='Flying Branch (AFCAT Entry) SSC Men : 34 Posts : 50% marks each in Maths and Physics at 10+2 level.&#10;Graduation (3-year degree) in any stream with 60% marks, OR&#10;BE/B.Tech (4-year degree) with 60% marks, OR&#10;Passed Section A & B of AMIE or Aeronautical Society of India with 60% marks.&#10;&#10;Flying Branch (AFCAT Entry) SSC Women : 4 Posts : 50% marks each in Maths and Physics at 10+2 level.&#10;Graduation (3-year degree) in any stream with 60% marks, OR&#10;BE/B.Tech (4-year degree) with 60% marks, OR&#10;Passed Section A & B of AMIE or Aeronautical Society of India with 60% marks.'></textarea>
+        </div>
+
+        <!-- Cast Wise Vacancy Dynamic Rows -->
+        <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Cast Wise Vacancy Details (Add multiple posts category-wise)</label>
+            <div id="castRowsContainer">
+                <!-- Dynamic rows will be added here -->
+            </div>
+            <button type="button" onclick="addCastRow()" class="mt-2 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition duration-200">Add Post Row</button>
+        </div>
+
+        <!-- How To Fill Online Form Steps Parse Box -->
+        <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">How To Fill Online Form Steps (Parse Box: One per line)</label>
+            <textarea id="formSteps" class="border border-gray-300 p-3 w-full h-32 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder='Go to the official website afcat.cdcil.co.in and click on "New Candidate" to start your registration.&#10;Enter your Aadhaar number (last 4 digits), email ID, and mobile number, then verify them using the OTP sent to your phone or email.&#10;Create a password and log in to your account after successful registration.&#10;Choose the branch and entry type you wish to apply for, such as Flying or Ground Duty.'></textarea>
+        </div>
+
+        <!-- How To Fill Online Form Notes Text Box -->
+        <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">How To Fill Online Form Notes (Paste notes, one per line, will be joined with <br>)</label>
+            <textarea id="formNotes" class="border border-gray-300 p-3 w-full h-32 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder='Applications are online only via https://afcat.edcil.co.in.&#10;Aadhaar Card is mandatory for registration.&#10;Multiple applications result in only the latest being considered (extra fees non-refundable).'></textarea>
+        </div>
+
+        <!-- Mode Of Selection Parse Box -->
+        <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Mode Of Selection (Parse Box: One per line)</label>
+            <textarea id="selection" class="border border-gray-300 p-3 w-full h-32 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder='Online AFCAT Examination&#10;Engineering Knowledge Test (EKT)&#10;Air Force Selection Board (AFSB) Testing&#10;Medical Examination'></textarea>
+        </div>
+
+        <!-- FAQs Parse Box -->
+        <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">FAQs (Parse Box: One Q&A pair per block, separated by blank lines. Format: Q: Question?&#10;A: Answer text. Use &#10; for line breaks within Q or A.)</label>
+            <textarea id="faqs" class="border border-gray-300 p-3 w-full h-32 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder='Q: When does the online application for AFCAT 01/2026 start and end?&#10;A: The online application process begins on 17 November 2025 at 1100 hrs and ends on 14 December 2025 at 2330 hrs.&#10;&#10;Q: What is the date of the AFCAT online examination?&#10;A: The AFCAT examination is scheduled for 31 January 2026, which is a Saturday.'></textarea>
+        </div>
+
+        <button type="button" onclick="generateHTML()" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg transition duration-200 mb-4">Generate HTML</button>
+    </form>
+
+    <!-- Output Section -->
+    <div id="output" class="hidden mt-8 p-4 bg-gray-100 rounded-lg">
+        <h3 class="text-lg font-bold mb-4 text-gray-800">Generated HTML:</h3>
+        <textarea id="htmlOutput" class="w-full h-96 border border-gray-300 p-3 rounded-lg font-mono text-sm focus:outline-none focus:ring-2 focus:ring-green-500" readonly placeholder="Generated HTML will appear here..."></textarea>
+        <button onclick="copyToClipboard()" class="mt-4 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-lg transition duration-200">Copy to Clipboard</button>
+    </div>
+
+    <!-- Clear Data Button (Optional, for manual reset) -->
+    <div class="mt-4 text-center">
+        <button onclick="clearData()" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-lg transition duration-200">Clear All Data</button>
+    </div>
+</div>
+
+<script>
+    // Set default date to current date
+    const defaultDate = 'November 13, 2025';
+    document.getElementById('dateInput').value = defaultDate;
+
+    let castRowIndex = 0;
+
+    // Add a new cast row
+    function addCastRow() {
+        const container = document.getElementById('castRowsContainer');
+        const row = document.createElement('div');
+        row.className = 'cast-row mb-4 p-4 border border-gray-300 rounded-lg';
+        row.id = `castRow_${castRowIndex}`;
+        row.innerHTML = `
+            <div class="flex justify-between items-center mb-2">
+                <h4 class="font-medium">Post Row ${castRowIndex + 1}</h4>
+                <button type="button" onclick="removeCastRow('${castRowIndex}')" class="text-red-500 hover:text-red-700"><i class="fas fa-trash"></i></button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-6 gap-2">
+                <input type="text" placeholder="Post Name (e.g., Flying Branch)" class="border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" id="castPostName_${castRowIndex}">
+                <input type="number" placeholder="General" class="border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" id="general_${castRowIndex}" min="0">
+                <input type="number" placeholder="EWS" class="border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" id="ews_${castRowIndex}" min="0">
+                <input type="number" placeholder="OBC" class="border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" id="obc_${castRowIndex}" min="0">
+                <input type="number" placeholder="SC" class="border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" id="sc_${castRowIndex}" min="0">
+                <input type="number" placeholder="ST" class="border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" id="st_${castRowIndex}" min="0">
+            </div>
+        `;
+        container.appendChild(row);
+        castRowIndex++;
+        saveFormData(); // Save after adding
+    }
+
+    // Remove a cast row
+    function removeCastRow(index) {
+        const row = document.getElementById(`castRow_${index}`);
+        if (row) {
+            row.remove();
+        }
+        saveFormData(); // Save after removing
+    }
+
+    // Function to save form data to localStorage
+    function saveFormData() {
+        const formData = {
+            category: document.getElementById('category').value,
+            title: document.getElementById('title').value,
+            dateInput: document.getElementById('dateInput').value,
+            summary: document.getElementById('summary').value,
+            totalPosts: document.getElementById('totalPosts').value,
+            dates: document.getElementById('dates').value,
+            fees: document.getElementById('fees').value,
+            links: document.getElementById('links').value,
+            age: document.getElementById('age').value,
+            ageRelaxation: document.getElementById('ageRelaxation').value,
+            vacancy: document.getElementById('vacancy').value,
+            formSteps: document.getElementById('formSteps').value,
+            formNotes: document.getElementById('formNotes').value,
+            selection: document.getElementById('selection').value,
+            faqs: document.getElementById('faqs').value,
+            castRows: collectCastRows()
+        };
+        localStorage.setItem('htmlGeneratorData', JSON.stringify(formData));
+    }
+
+    // Collect all cast rows data
+    function collectCastRows() {
+        const rows = [];
+        for (let i = 0; i < castRowIndex; i++) {
+            const postName = document.getElementById(`castPostName_${i}`)?.value || '';
+            const general = document.getElementById(`general_${i}`)?.value || '';
+            const ews = document.getElementById(`ews_${i}`)?.value || '';
+            const obc = document.getElementById(`obc_${i}`)?.value || '';
+            const sc = document.getElementById(`sc_${i}`)?.value || '';
+            const st = document.getElementById(`st_${i}`)?.value || '';
+            if (postName.trim()) {
+                rows.push({ postName, general, ews, obc, sc, st });
+            }
+        }
+        return rows;
+    }
+
+    // Function to load form data from localStorage
+    function loadFormData() {
+        const saved = localStorage.getItem('htmlGeneratorData');
+        if (saved) {
+            const formData = JSON.parse(saved);
+            document.getElementById('category').value = formData.category || 'Sarkari Jobs|sarkari-jobs.html';
+            document.getElementById('title').value = formData.title || '';
+            document.getElementById('dateInput').value = formData.dateInput || defaultDate;
+            document.getElementById('summary').value = formData.summary || '';
+            document.getElementById('totalPosts').value = formData.totalPosts || '0';
+            document.getElementById('dates').value = formData.dates || '';
+            document.getElementById('fees').value = formData.fees || '';
+            document.getElementById('links').value = formData.links || '';
+            document.getElementById('age').value = formData.age || '';
+            document.getElementById('ageRelaxation').value = formData.ageRelaxation || '';
+            document.getElementById('vacancy').value = formData.vacancy || '';
+            document.getElementById('formSteps').value = formData.formSteps || '';
+            document.getElementById('formNotes').value = formData.formNotes || '';
+            document.getElementById('selection').value = formData.selection || '';
+            document.getElementById('faqs').value = formData.faqs || '';
+
+            // Load cast rows
+            const castRows = formData.castRows || [];
+            castRowIndex = 0;
+            document.getElementById('castRowsContainer').innerHTML = '';
+            castRows.forEach(rowData => {
+                addCastRow();
+                const index = castRowIndex - 1;
+                document.getElementById(`castPostName_${index}`).value = rowData.postName;
+                document.getElementById(`general_${index}`).value = rowData.general;
+                document.getElementById(`ews_${index}`).value = rowData.ews;
+                document.getElementById(`obc_${index}`).value = rowData.obc;
+                document.getElementById(`sc_${index}`).value = rowData.sc;
+                document.getElementById(`st_${index}`).value = rowData.st;
+            });
+        }
+    }
+
+    // Load data on page load
+    loadFormData();
+
+    // Save data on input changes
+    const inputs = document.querySelectorAll('#generatorForm input, #generatorForm select, #generatorForm textarea');
+    inputs.forEach(input => {
+        input.addEventListener('input', saveFormData);
+        input.addEventListener('change', saveFormData);
+    });
+
+    // Function to clear data
+    function clearData() {
+        if (confirm('Are you sure you want to clear all saved data? This will reset the form.')) {
+            localStorage.removeItem('htmlGeneratorData');
+            document.getElementById('category').value = 'Sarkari Jobs|sarkari-jobs.html';
+            document.getElementById('title').value = '';
+            document.getElementById('dateInput').value = defaultDate;
+            document.getElementById('summary').value = '';
+            document.getElementById('totalPosts').value = '0';
+            document.getElementById('dates').value = '';
+            document.getElementById('fees').value = '';
+            document.getElementById('links').value = '';
+            document.getElementById('age').value = '';
+            document.getElementById('ageRelaxation').value = '';
+            document.getElementById('vacancy').value = '';
+            document.getElementById('formSteps').value = '';
+            document.getElementById('formNotes').value = '';
+            document.getElementById('selection').value = '';
+            document.getElementById('faqs').value = '';
+            document.getElementById('castRowsContainer').innerHTML = '';
+            castRowIndex = 0;
+            document.getElementById('output').classList.add('hidden');
+            alert('Data cleared successfully.');
+        }
+    }
+
+    function generateHTML() {
+        try {
+            saveFormData(); // Ensure latest data is saved
+
+            // Collect form values
+            const catFull = document.getElementById('category').value;
+            const [catText, catLink] = catFull.split('|');
+            const title = document.getElementById('title').value.trim();
+            const date = document.getElementById('dateInput').value.trim();
+            const summary = document.getElementById('summary').value.trim();
+            const totalPosts = document.getElementById('totalPosts').value || '0';
+            const ageRelaxation = document.getElementById('ageRelaxation').value.trim();
+            const castRows = collectCastRows();
+
+            if (!title) {
+                alert('Please enter a title.');
+                return;
+            }
+
+            // Parse dates
+            const dateLines = document.getElementById('dates').value.split('\n').filter(l => l.trim());
+            const dateItems = dateLines.map(line => {
+                const parts = line.split(':');
+                const label = parts[0].trim();
+                const value = parts.slice(1).join(':').trim();
+                return `
+                <div class="date-item">
+                    <span class="date-label">${label}</span>
+                    <span class="date-value">${value}</span>
+                </div>`;
+            }).join('\n                        ');
+
+            // Parse fees with formatting
+            const feeLines = document.getElementById('fees').value.split('\n').filter(l => l.trim());
+            const feeItems = feeLines.map(line => {
+                const parts = line.split(':');
+                const label = parts[0].trim();
+                const valStr = parts.slice(1).join(':').trim();
+                const val = parseInt(valStr);
+                let formattedValue = valStr;
+                if (!isNaN(val)) {
+                    formattedValue = val === 0 ? '₹0/- (Nil)' : `₹${val}/-`;
+                }
+                return `
+                <div class="fee-item">
+                    <span class="fee-label">${label}</span>
+                    <span class="fee-value ">${formattedValue}</span>
+                </div>`;
+            }).join('\n                        ');
+
+            // Parse links
+            const linkLines = document.getElementById('links').value.split('\n').filter(l => l.trim());
+            const linkItems = linkLines.map(line => {
+                const parts = line.split(':');
+                const label = parts[0].trim();
+                const url = (parts[1] || '').trim();
+                const button = parts.slice(2).join(':').trim() || 'Click Here';
+                return `
+                <div class="link-item">
+                    <span class="link-label">${label} </span>
+                    <a href="${url}" target="_blank" class="link-button">${button}</a>
+                </div>`;
+            }).join('\n                        ');
+
+            // Parse age
+            const ageLines = document.getElementById('age').value.split('\n').filter(l => l.trim());
+            const ageItems = ageLines.map(line => {
+                const parts = line.split(':');
+                const label = parts[0].trim();
+                const value = parts.slice(1).join(':').trim();
+                return `
+                <div class="age-item">
+                    <span class="age-label">${label}</span>
+                    <span class="age-value">${value}</span>
+                </div>`;
+            }).join('\n                        ');
+
+            // Parse vacancy - group by blank lines
+            const vacancyText = document.getElementById('vacancy').value;
+            const blocks = vacancyText.split(/\n\s*\n/).filter(b => b.trim());
+            const vacancyRows = blocks.map(block => {
+                const lines = block.split('\n').map(l => l.trim()).filter(l => l);
+                if (lines.length === 0) return '';
+                const firstLine = lines[0];
+                const parts = firstLine.split(':').map(p => p.trim()).filter(p => p);
+                let postName = '';
+                let postCount = '';
+                let eligibility = '';
+                if (parts.length >= 2) {
+                    postName = parts[0];
+                    postCount = parts[1];
+                    eligibility = parts.slice(2).join(': ');
+                    if (lines.length > 1) {
+                        eligibility += '\n' + lines.slice(1).join('\n');
+                    }
+                } else {
+                    postName = firstLine;
+                    postCount = '';
+                    eligibility = lines.slice(1).join('\n');
+                }
+                return `
+                        <tr>
+                            <td>
+                                <div class="post-name">${postName}</div>
+                            </td>
+                            <td>
+                                <div class="post-count">${postCount}</div>
+                            </td>
+                            <td>
+                                <div class="eligibility-criteria">
+                                    ${eligibility}
+                                </div>
+                            </td>
+                        </tr>`;
+            }).join('\n                        ');
+
+            // Generate cast rows HTML
+            let castPostRows = '';
+            let castCategoryRows = '';
+            castRows.forEach(rowData => {
+                const { postName, general, ews, obc, sc, st } = rowData;
+                castPostRows += `
+                            <div class="cast-row">
+                                <div class="post-name-cell">${postName}</div>
+                            </div>`;
+                castCategoryRows += `
+                            <div class="cast-row">
+                                <div class="category-grid">
+                                    <div class="category-cell data">${general}</div>
+                                    <div class="category-cell data">${ews}</div>
+                                    <div class="category-cell data">${obc}</div>
+                                    <div class="category-cell data">${sc}</div>
+                                    <div class="category-cell data">${st}</div>
+                                </div>
+                            </div>`;
+            });
+
+            // Parse form steps
+            const formStepLines = document.getElementById('formSteps').value.split('\n').filter(l => l.trim());
+            const formStepItems = formStepLines.map(step => {
+                return `
+                        <li class="process-item">
+                            <div class="process-icon">
+                                <i class="fas fa-user-check"></i>
+                            </div>
+                            <div class="process-text">
+                                ${step.trim()}
+                            </div>
+                        </li>`;
+            }).join('\n                        ');
+
+            // Parse form notes
+            const formNoteLines = document.getElementById('formNotes').value.split('\n').filter(l => l.trim());
+            const formNotesHtml = formNoteLines.map(note => note.trim()).join('<br>');
+
+            // Parse selection
+            const selectionLines = document.getElementById('selection').value.split('\n').filter(l => l.trim());
+            const selectionItems = selectionLines.map(item => {
+                return `
+                        <li class="selection-item">
+                            <div class="selection-icon">
+                                <i class="fas fa-tasks"></i>
+                            </div>
+                            <div class="selection-text">
+                                <div>${item.trim()}</div>
+                            </div>
+                        </li>`;
+            }).join('\n                        ');
+
+            // Parse FAQs - group by blank lines
+            const faqText = document.getElementById('faqs').value;
+            const faqBlocks = faqText.split(/\n\s*\n/).filter(b => b.trim());
+            const faqItems = faqBlocks.map(block => {
+                const lines = block.split('\n').map(l => l.trim()).filter(l => l);
+                let question = '';
+                let answer = '';
+                lines.forEach(line => {
+                    if (line.startsWith('Q:')) {
+                        question = line.substring(2).trim();
+                    } else if (line.startsWith('A:')) {
+                        answer = line.substring(2).trim();
+                    }
+                });
+                if (question && answer) {
+                    return `
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span class="question-text">
+                                ${question}
+                            </span>
+                            <span class="question-icon"></span>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="answer-content">
+                                <div>
+                                ${answer}
+                            </div>
+                            </div>
+                        </div>
+                    </div>`;
+                }
+                return '';
+            }).join('\n                        ');
+
+            // Build HTML sections
+            const breadcrumb = `
+            <nav class="flex mb-8 text-sm text-gray-600" aria-label="Breadcrumb">
+                <ol class="flex items-center space-x-2">
+                    <li>
+                        <a href="index.html" class="hover:text-blue-600 transition">Home</a>
+                    </li>
+                    <li class="flex items-center">
+                        <span class="mx-2">/</span>
+                        <a href="${catLink}" class="hover:text-blue-600 transition">${catText}</a>
+                    </li>
+                    <li class="flex items-center">
+                        <span class="mx-2">/</span>
+                        <span class="text-red-800 font-medium" id="currentPostTitle">${title}</span>
+                    </li>
+                </ol>
+            </nav>`;
+
+            const h1 = `
+            <h1 class="text-2xl md:text-2xl lg:text-4xl font-bold mb-6 leading-tight post-title">
+                ${title}
+            </h1>`;
+
+            const meta = `
+            <div class="flex flex-wrap gap-4 mb-8 post-meta">
+                <div class="meta-item flex items-center bg-white rounded-lg px-4 py-2 shadow-sm">
+                    <i class="fas fa-calendar-alt text-blue-500 mr-2"></i>
+                    <span class="font-medium text-black-900">${date}</span>
+                </div>
+                
+                <div class="meta-item flex items-center bg-white rounded-lg px-4 py-2 shadow-sm">
+                    <i class="fas fa-tag text-purple-500 mr-2"></i>
+                    <span class="font-medium text-black-900">${catText}</span>
+                </div>
+                
+                <div class="meta-item flex items-center bg-white rounded-lg px-4 py-2 shadow-sm">
+                    <i class="fas fa-clock text-amber-500 mr-2"></i>
+                    <span class="font-medium text-black-900">5 min read</span>
+                </div>
+
+                <div class="meta-item flex items-center bg-white rounded-lg px-4 py-2 shadow-sm">
+                    <i class="fas fa-user text-green-500 mr-2"></i>
+                    <span class="font-medium text-black-900">SRK Team</span>
+                </div>
+            </div>`;
+
+            const postSummary = `
+            <div class="post-summary">
+                <div class="flex items-start">
+                    </div>
+                    <div>
+                        <h3 class="flex items-center justify-between text-xl font-bold mb-3">
+                            <span class="bg-orange-400 text-blue-900 px-3 py-1 rounded-lg text-lg font-extrabold shadow-md">
+                                Post Summary
+                            </span>
+                            <span class="bg-orange-400 text-white px-3 py-1 rounded-lg text-lg font-extrabold shadow-md">
+                                Total Post : ${totalPosts}
+                            </span>
+                        </h3>
+                        <div class="text-gray-700 leading-relaxed">
+                            ${summary || '<p class="text-gray-500 italic">No summary provided.</p>'}
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+
+            const datesCard = `
+            <div class="dates-card">
+                <div class="dates-header">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Important Dates</span>
+                </div>
+                <div class="dates-content">
+                    ${dateItems || '<p class="text-gray-500 italic">No dates provided.</p>'}
+                </div>
+            </div>`;
+
+            const feesCard = `
+            <div class="fees-card">
+                <div class="fees-header">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <span>Application Fees</span>
+                </div>
+                <div class="fees-content">
+                    ${feeItems || '<p class="text-gray-500 italic">No fees provided.</p>'}
+                    
+                    <div class="payment-methods">
+                        <h4>Payment Methods</h4>
+                        <p class="text-sm text-gray-600 mb-3">You can make the payment using the following online methods:</p>
+                        <div class="payment-list">
+                            <span class="payment-method">Debit Card</span>
+                            <span class="payment-method">Credit Card</span>
+                            <span class="payment-method">Internet Banking</span>
+                            <span class="payment-method">IMPS</span>
+                            <span class="payment-method">Cash Card</span>
+                            <span class="payment-method">Mobile Wallet</span>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+
+            const datesFees = `
+            <div class="dates-fees-section">
+                ${datesCard}
+                ${feesCard}
+            </div>`;
+
+            const linksCard = `
+            <div class="links-card">
+                <div class="links-header">
+                    <i class="fas fa-link"></i>
+                    <span>Important Links</span>
+                </div>
+                <div class="links-content">
+                    ${linkItems || '<p class="text-gray-500 italic">No links provided.</p>'}
+                </div>
+            </div>`;
+
+            const ageCard = `
+            <div class="age-card">
+                <div class="age-header">
+                    <i class="fas fa-user-clock"></i>
+                    <span>Age Limit</span>
+                </div>
+                <div class="age-content">
+                    ${ageItems || '<p class="text-gray-500 italic">No age details provided.</p>'}
+                    
+                    <div class="payment-methods">
+                        <h4>Age Relaxation</h4>
+                        <div class="text-sm text-gray-600">
+                            ${ageRelaxation || `SC (Scheduled Caste): 5 years relaxation – Maximum age limit 29 years<br>
+                            ST (Scheduled Tribe): 5 years relaxation – Maximum age limit 29 years<br>
+                            OBC (Other Backward Class): 3 years relaxation – Maximum age limit 27 years<br>
+                            PwBD (Persons with Benchmark Disability): 10 years relaxation – Maximum age limit 34 years`}
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+
+            const linksAge = `
+            <div class="links-age-section">
+                ${linksCard}
+                ${ageCard}
+            </div>`;
+
+            const vacancySection = `
+        <!-- Vacancy Details Section (Full Width) -->
+        <div class="vacancy-section">
+            <div class="vacancy-card">
+                <div class="vacancy-header">
+                    <i class="fas fa-briefcase"></i>
+                    <span>Vacancy Details</span>
+                </div>
+                <table class="vacancy-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;">Post Name</th>
+                            <th style="width: 15%;">No. Of Post</th>
+                            <th style="width: 60%;">Eligibility Criteria</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${vacancyRows || '<tr><td colspan="3" class="text-center text-gray-500">No vacancy details provided.</td></tr>'}
+                    </tbody>
+                </table>
+            </div>
+        </div>`;
+
+            const castVacancySection = `
+        <!-- Cast Wise Vacancy Details Section (Full Width) -->
+        <div class="cast-vacancy-section">
+            <div class="cast-vacancy-card">
+                <div class="cast-vacancy-header">
+                    <i class="fas fa-users"></i>
+                    <span>Cast Wise Vacancy Details</span>
+                </div>
+                <div class="cast-vacancy-content">
+                    <div class="cast-vacancy-grid">
+                        <!-- Column 1: Post Names -->
+                        <div class="post-name-column">
+                            <div class="cast-row header">
+                                <div class="post-name-cell">Post Name</div>
+                            </div>
+                            ${castPostRows || '<div class="cast-row"><div class="post-name-cell text-gray-500">No cast details provided.</div></div>'}
+                        </div>
+                        
+                        <!-- Column 2: Category Details -->
+                        <div class="category-column">
+                            <div class="cast-row header">
+                                <div class="category-grid">
+                                    <div class="category-cell header">General</div>
+                                    <div class="category-cell header">EWS</div>
+                                    <div class="category-cell header">OBC</div>
+                                    <div class="category-cell header">SC</div>
+                                    <div class="category-cell header">ST</div>
+                                </div>
+                            </div>
+                            ${castCategoryRows || '<div class="cast-row"><div class="category-grid"><div class="category-cell data text-gray-500" colspan="5">No cast details provided.</div></div></div>'}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+
+            const processSection = `
+        <!-- How To Fill Online Form Section (Full Width) -->
+        <div class="process-section">
+            <div class="process-card">
+                <div class="process-header">
+                    <i class="fas fa-file-alt"></i>
+                    <span>How To Fill Online Form</span>
+                </div>
+                <div class="process-content">
+                    <ul class="process-list">
+                        ${formStepItems || '<li class="text-gray-500 italic">No steps provided.</li>'}
+                    </ul>
+                    <div class="note-box">
+                        <div class="process-text note-text">
+                            <div>${formNotesHtml || 'No notes provided.'}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+
+            const selectionSection = `
+        <!-- Mode Of Selection Section (Full Width) -->
+        <div class="selection-section">
+            <div class="selection-card">
+                <div class="selection-header">
+                    <i class="fas fa-tasks"></i>
+                    <span>Mode Of Selection</span>
+                </div>
+                <div class="selection-content">
+                    <ul class="selection-list">
+                        ${selectionItems || '<li class="text-gray-500 italic">No selection items provided.</li>'}
+                    </ul>
+                </div>
+            </div>
+        </div>`;
+
+            const faqSection = `
+        <!-- FAQ Section -->
+        <div class="faq-section">
+            <div class="faq-card">
+                <div class="faq-header">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Frequently Asked Questions (FAQ)</span>
+                </div>
+                <div class="faq-content">
+                    <div class="faq-intro">
+                        <h2>${title}</h2>
+                        <div>Answers for frequently asked questions about ${title}</div>
+                    </div>
+
+                    <div class="faq-accordion">
+                        ${faqItems || '<div class="text-gray-500 italic">No FAQs provided.</div>'}
+                    </div>
+                </div>
+            </div>
+        </div>`;
+
+            // Posts sections (HTML only - JavaScript is in script.js)
+            const postsSections = `
+<!-- Side by Side Posts Sections -->
+<div class="posts-sections-container">
+    <!-- New Posts Section -->
+    <div class="posts-section">
+        <div class="posts-header">
+            <i class="fas fa-newspaper"></i>
+            <span>New Posts</span>
+        </div>
+        <div class="posts-content" id="new-posts-container">
+            <!-- New posts will be loaded here by JavaScript -->
+            <div class="no-posts">Loading new posts...</div>
+        </div>
+    </div>
+    
+    <!-- Related Posts Section -->
+    <div class="posts-section">
+        <div class="related-posts-header">
+            <i class="fas fa-link"></i>
+            <span>Related Posts</span>
+        </div>
+        <div class="posts-content" id="related-posts-container">
+            <!-- Related posts will be loaded here by JavaScript -->
+            <div class="no-posts">Loading related posts...</div>
+        </div>
+    </div>
+</div>`;
+
+            // Full generated HTML
+            const fullHtml = `<!-- Post Detail Section (80% Width) --><main class="main-content py-8">
+    ${breadcrumb}
+    ${h1}
+    ${meta}
+    ${postSummary}
+            
+${datesFees}
+                
+${linksAge}
+                
+${vacancySection}
+                
+${castVacancySection}
+                
+${processSection}
+                
+${selectionSection}
+                
+${faqSection}
+                
+${postsSections}</main>`;
+
+            // Display
+            document.getElementById('htmlOutput').value = fullHtml;
+            document.getElementById('output').classList.remove('hidden');
+            document.getElementById('htmlOutput').scrollIntoView({ behavior: 'smooth' });
+        } catch (error) {
+            console.error('Error generating HTML:', error);
+            alert('Error generating HTML: ' + error.message + '\n\nCheck the browser console (F12) for more details.');
+        }
+    }
+
+    function copyToClipboard() {
+        const output = document.getElementById('htmlOutput');
+        output.select();
+        output.setSelectionRange(0, 99999); // For mobile devices
+        navigator.clipboard.writeText(output.value).then(() => {
+            // Visual feedback
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = 'Copied!';
+            btn.classList.add('bg-green-600');
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.classList.remove('bg-green-600');
+            }, 2000);
+        }).catch(err => {
+            alert('Failed to copy: ' + err);
+        });
+        // Explicitly do nothing to form data - it persists via localStorage
+    }
+
+    // Add initial row
+    addCastRow();
+</script>
+</body>
+</html>
