@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Blog Generator Tool</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+        }
+        .container {
+            max-width: 1400px;
+        }
+        .input-group {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .code-container {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+        }
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+        .btn-secondary {
+            background-color: #10b981;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .btn-secondary:hover {
+            background-color: #059669;
+        }
+        .btn-copy {
+            background-color: #6b7280;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .btn-copy:hover {
+            background-color: #4b5563;
+        }
+        .input-field {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        .label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #374151;
+        }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            background-color: #10b981;
+            color: white;
+            border-radius: 6px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s;
+        }
+        .notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .paragraph-section {
+            margin-bottom: 1.5rem;
+            border: 1px dashed #d1d5db;
+            border-radius: 8px;
+            padding: 1rem;
+            background-color: #f9fafb;
+        }
+        .table-controls {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .table-control-btn {
+            padding: 0.5rem 1rem;
+            background-color: #e5e7eb;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+        .table-control-btn.active {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .faq-input {
+            width: 100%;
+            height: 200px;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 1rem;
+            resize: vertical;
+        }
+        .table-rows-container {
+            margin-top: 1rem;
+        }
+        .table-row {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            align-items: center;
+        }
+        .table-row input {
+            flex: 1;
+        }
+        .add-row-btn, .remove-row-btn {
+            padding: 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            border: none;
+        }
+        .add-row-btn {
+            background-color: #10b981;
+            color: white;
+            margin-top: 0.5rem;
+        }
+        .remove-row-btn {
+            background-color: #ef4444;
+            color: white;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .add-paragraph-btn {
+            background-color: #f3f4f6;
+            border: 1px dashed #d1d5db;
+            border-radius: 6px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 1rem;
+            transition: all 0.2s;
+        }
+        .add-paragraph-btn:hover {
+            background-color: #e5e7eb;
+        }
+        .remove-paragraph-btn {
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.25rem 0.5rem;
+            cursor: pointer;
+            float: right;
+        }
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        .section-header i {
+            color: #3b82f6;
+        }
+        .grid-2-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        .grid-3-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1rem;
+        }
+        .grid-4-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 1rem;
+        }
+        @media (max-width: 1024px) {
+            .grid-4-col {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        @media (max-width: 768px) {
+            .grid-2-col, .grid-3-col, .grid-4-col {
+                grid-template-columns: 1fr;
+            }
+        }
+        .parse-box {
+            background-color: #f8fafc;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        .parse-format {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+        .parse-example {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            margin-bottom: 0.5rem;
+        }
+        .parse-btn {
+            background-color: #8b5cf6;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+        .parse-btn:hover {
+            background-color: #7c3aed;
+        }
+        /* Style for Quill editor container to match input-field look */
+        #postSummaryEditor, .paragraph-content-editor {
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+        }
+        #postSummaryEditor .ql-container, .paragraph-content-editor .ql-container {
+            border: none;
+            min-height: 100px; /* Adjusted min height */
+        }
+        #postSummaryEditor .ql-toolbar, .paragraph-content-editor .ql-toolbar {
+            border-top-left-radius: 6px;
+            border-top-right-radius: 6px;
+            background-color: #f9fafb;
+            border-bottom: 1px solid #d1d5db;
+        }
+        #postSummaryEditor, #paragraphsContainer .ql-editor {
+            font-size: 1rem; /* Ensure consistent font size */
+        }
+    </style>
+</head>
+<body class="py-8">
+    <div class="container mx-auto px-4">
+        <header class="text-center mb-12">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">Advanced Blog Generator Tool</h1>
+            <p class="text-gray-600 max-w-2xl mx-auto">Create professional blog posts with modern paragraphs, tables, and FAQs</p>
+        </header>
+
+        <div class="grid grid-cols-1 gap-8">
+            <div class="input-group">
+                <div class="section-header">
+                    <i class="fas fa-newspaper text-xl"></i>
+                    <h2 class="text-xl font-bold text-gray-800">Blog Details</h2>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="label">H1 Title</label>
+                        <input type="text" id="h1Title" class="input-field" placeholder="Enter your blog title here" value="AFCAT 2026 Exam: Notification PDF, Application Dates & Selection Process">
+                    </div>
+                    
+                    <div>
+                        <label class="label">Date</label>
+                        <input type="date" id="postDate" class="input-field">
+                    </div>
+                    
+                    <div>
+                        <label class="label">Category</label>
+                        <input type="text" id="postCategory" class="input-field" value="Admit Card">
+                    </div>
+                    
+                    <div>
+                        <label class="label">Reading Time</label>
+                        <input type="text" id="readingTime" class="input-field" value="5 Min Read">
+                    </div>
+                    
+                    <div>
+                        <label class="label">Author</label>
+                        <input type="text" id="postAuthor" class="input-field" value="SKR Team">
+                    </div>
+                    
+                    <div>
+                        <label class="label">Total Posts</label>
+                        <input type="number" id="totalPosts" class="input-field" value="340">
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <label class="label">Text Summary</label>
+                    <div id="postSummaryEditor" class="post-summary-editor"></div>
+                    <textarea id="postSummary" class="hidden-summary-content" style="display:none;">The Railway Recruitment Boards (RRBs) have issued the RRB NTPC Recruitment 2025 notification (CEN 06/2025) for 5,810 graduate-level vacancies across 21 Railway zones. Positions include Junior Accounts Assistant Cum Typist, Senior Clerk Cum Typist, and Ticket Clerk roles. The selection process involves CBT-1, CBT-2, Typing Skill Test or Aptitude Test, followed by Document Verification and Medical Examination. Eligible candidates must hold a Bachelor's degree from a recognized university. The recruitment is open to Indian citizens and eligible persons of Indian origin. Interested applicants can apply online through respective RRB websites before the closing date.</textarea>
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <div class="section-header">
+                    <i class="fas fa-paragraph text-xl"></i>
+                    <h2 class="text-xl font-bold text-gray-800">Modern Paragraphs</h2>
+                </div>
+                <div id="paragraphsContainer">
+                    </div>
+                <div class="add-paragraph-btn" id="addParagraphBtn">
+                    <i class="fas fa-plus mr-2"></i> Add Paragraph Section
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <div class="section-header">
+                    <i class="fas fa-question-circle text-xl"></i>
+                    <h2 class="text-xl font-bold text-gray-800">FAQ Section</h2>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="label">FAQ Title</label>
+                        <input type="text" id="faqTitle" class="input-field" value="AFCAT 01/2026">
+                    </div>
+                    <div>
+                        <label class="label">FAQ Description</label>
+                        <input type="text" id="faqDescription" class="input-field" value="Answers for frequently asked questions about AFCAT 01/2026">
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <label class="label">FAQ Content (Format: Q: Question? A: Answer)</label>
+                    <textarea id="faqContent" class="faq-input" placeholder="Enter FAQs in the format:
+Q: When does the online application for AFCAT 01/2026 start and end?
+A: The online application process begins on 17 November 2025 at 1100 hrs and ends on 14 December 2025 at 2330 hrs.
+
+Q: What is the date of the AFCAT online examination?
+A: The AFCAT examination is scheduled for 31 January 2026, which is a Saturday.
+
+Q: How can candidates apply for the exam?
+A: Candidates must apply online only through the official website https://afcat.edcil.co.in, using their Aadhaar Card for registration.">Q: When does the online application for AFCAT 01/2026 start and end?
+A: The online application process begins on 17 November 2025 at 1100 hrs and ends on 14 December 2025 at 2330 hrs.
+
+Q: What is the date of the AFCAT online examination?
+A: The AFCAT examination is scheduled for 31 January 2026, which is a Saturday.
+
+Q: How can candidates apply for the exam?
+A: Candidates must apply online only through the official website https://afcat.edcil.co.in, using their Aadhaar Card for registration.</textarea>
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <div class="section-header">
+                    <i class="fas fa-cogs text-xl"></i>
+                    <h2 class="text-xl font-bold text-gray-800">Generate Blog</h2>
+                </div>
+                
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <button id="generateBtn" class="btn-primary flex items-center justify-center">
+                        <i class="fas fa-code mr-2"></i> Generate HTML
+                    </button>
+                    <button id="copyBtn" class="btn-secondary flex items-center justify-center">
+                        <i class="fas fa-copy mr-2"></i> Copy to Clipboard
+                    </button>
+                </div>
+                
+                <div class="mt-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">How to Use</h3>
+                    <ol class="list-decimal pl-5 space-y-2 text-gray-700">
+                        <li>Fill in all the required fields with your blog content</li>
+                        <li>Add modern paragraph sections with optional tables</li>
+                        <li>Enter FAQs in the specified format</li>
+                        <li>Click "Generate HTML" to create the code</li>
+                        <li>Click "Copy to Clipboard" to copy the HTML code</li>
+                        <li>Paste the code into your website or CMS</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <div class="code-container">
+                <div class="section-header">
+                    <i class="fas fa-file-code text-xl text-white"></i>
+                    <h2 class="text-xl font-bold text-white">Generated HTML Code</h2>
+                </div>
+                <pre id="generatedCode" class="whitespace-pre-wrap text-sm">HTML code will be generated here</pre>
+                <button id="copyCodeBtn" class="btn-copy mt-4 flex items-center">
+                    <i class="fas fa-copy mr-2"></i> Copy Code
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="notification" class="notification">
+        Code copied to clipboard!
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Global storage for Quill instances
+            const quillInstances = {};
+
+            // Set today's date as default
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            document.getElementById('postDate').value = formattedDate;
+
+            // --- 3. INITIALIZE POST SUMMARY QUILL EDITOR ---
+            const postSummaryInitialContent = document.getElementById('postSummary').value;
+            const postSummaryEditor = new Quill('#postSummaryEditor', {
+                theme: 'snow',
+                modules: {
+                    toolbar: [
+                        ['bold', 'italic', 'underline'],
+                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                        ['link']
+                    ]
+                }
+            });
+            postSummaryEditor.root.innerHTML = postSummaryInitialContent;
+            quillInstances['postSummary'] = postSummaryEditor;
+            
+            // Paragraph counter
+            let paragraphCount = 0;
+            
+            // Add first paragraph section
+            addParagraphSection();
+            
+            // Generate HTML button
+            document.getElementById('generateBtn').addEventListener('click', generateHTML);
+            
+            // Copy buttons
+            document.getElementById('copyBtn').addEventListener('click', copyToClipboard);
+            document.getElementById('copyCodeBtn').addEventListener('click', copyCodeToClipboard);
+            
+            // Add paragraph button
+            document.getElementById('addParagraphBtn').addEventListener('click', addParagraphSection);
+            
+            function addParagraphSection() {
+                paragraphCount++;
+                const currentId = paragraphCount;
+                const paragraphsContainer = document.getElementById('paragraphsContainer');
+                
+                const paragraphSection = document.createElement('div');
+                paragraphSection.className = 'paragraph-section';
+                paragraphSection.id = `paragraph-${currentId}`;
+                
+                const defaultContent = 'The Staff Selection Commission Combined Graduate Level (SSC CGL) examination is one of the most prestigious competitive exams in India, attracting lakhs of graduates every year. The examination process consists of multiple tiers, each designed to test different skill sets and competencies required for various government positions.';
+
+                paragraphSection.innerHTML = `
+                    <button class="remove-paragraph-btn" onclick="removeParagraphSection(${currentId})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <div class="mb-4">
+                        <label class="label">Paragraph Header</label>
+                        <input type="text" class="input-field paragraph-header" placeholder="Enter paragraph header" value="SSC CHSL Admit Card 2025: Key Highlights and Overview">
+                    </div>
+                    <div class="mb-4">
+                        <label class="label">Paragraph Content</label>
+                        <div id="paragraphContentEditor-${currentId}" class="paragraph-content-editor"></div>
+                        <textarea class="hidden-paragraph-content" style="display:none;">${currentId === 1 ? defaultContent : ''}</textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label class="label">Table Configuration</label>
+                        <div class="table-controls">
+                            <div class="table-control-btn ${currentId === 1 ? 'active' : ''}" data-columns="0">No Table</div>
+                            <div class="table-control-btn ${currentId === 1 ? '' : ''}" data-columns="2">2 Columns</div>
+                            <div class="table-control-btn" data-columns="3">3 Columns</div>
+                            <div class="table-control-btn" data-columns="4">4 Columns</div>
+                        </div>
+                        <div class="table-inputs" style="${currentId === 1 ? 'display: block;' : 'display: none;'}">
+                            <div class="mb-2 grid-${currentId === 1 ? '2' : '2'}-col">
+                                </div>
+                            <div class="table-rows-container" id="table-rows-${currentId}">
+                                </div>
+                            <button class="add-row-btn" onclick="addTableRow(${currentId})">
+                                <i class="fas fa-plus mr-1"></i> Add Row
+                            </button>
+                            
+                            <div class="parse-box">
+                                <div class="parse-format">Quick Table Data Entry (Use : as separator)</div>
+                                <div class="parse-example">2 columns: Region Name : States List</div>
+                                <div class="parse-example">3 columns: Region Name : States List : Cities List</div>
+                                <div class="parse-example">4 columns: Col1 : Col2 : Col3 : Col4</div>
+                                <textarea class="input-field parse-textarea" rows="4" placeholder="Enter table data here. One row per line.
+Example for 2 columns:
+Central Region (CR) : Bihar, Uttar Pradesh
+Eastern Region (ER) : West Bengal, Odisha
+
+Example for 3 columns:
+Central Region (CR) : Bihar, Uttar Pradesh : Prayagraj, Lucknow, Patna
+Eastern Region (ER) : West Bengal, Odisha : Kolkata, Bhubaneswar
+
+Example for 4 columns:
+ABC : ACD : BBB : AAA
+XYZ : YZW : CCC : DDD"></textarea>
+                                <button class="parse-btn" onclick="parseTableData(${currentId})">
+                                    <i class="fas fa-magic mr-1"></i> Parse Data
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                paragraphsContainer.appendChild(paragraphSection);
+
+                // --- 3. INITIALIZE PARAGRAPH QUILL EDITOR ---
+                const paragraphContentEditor = new Quill(`#paragraphContentEditor-${currentId}`, {
+                    theme: 'snow',
+                    modules: {
+                        toolbar: [
+                            ['bold', 'italic', 'underline'],
+                            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                            ['link']
+                        ]
+                    }
+                });
+                paragraphContentEditor.root.innerHTML = currentId === 1 ? defaultContent : '';
+                quillInstances[`paragraph-${currentId}`] = paragraphContentEditor;
+                
+                // Add event listeners to table control buttons
+                const tableControls = paragraphSection.querySelectorAll('.table-control-btn');
+                tableControls.forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        // Remove active class from all buttons in this section
+                        tableControls.forEach(b => b.classList.remove('active'));
+                        // Add active class to clicked button
+                        this.classList.add('active');
+                        
+                        // Show/hide table inputs based on selection
+                        const tableInputs = this.closest('.paragraph-section').querySelector('.table-inputs');
+                        if (this.dataset.columns === '0') {
+                            tableInputs.style.display = 'none';
+                        } else {
+                            tableInputs.style.display = 'block';
+                            
+                            // Update table structure based on column count
+                            updateTableStructure(this.closest('.paragraph-section'), parseInt(this.dataset.columns));
+                        }
+                    });
+                });
+                
+                // Initialize table structure for the first paragraph
+                if (currentId === 1) {
+                    // Set 2 columns as active for the first paragraph section
+                    paragraphSection.querySelector('.table-control-btn[data-columns="2"]').classList.add('active');
+                    paragraphSection.querySelector('.table-control-btn[data-columns="0"]').classList.remove('active');
+                    updateTableStructure(paragraphSection, 2);
+                    // Add initial rows
+                    addTableRow(1, true);
+                    addTableRow(1, true);
+                    addTableRow(1, true);
+                    addTableRow(1, true);
+                }
+            }
+            
+            function updateTableStructure(paragraphSection, columnCount) {
+                const tableRowsContainer = paragraphSection.querySelector('.table-rows-container');
+                tableRowsContainer.innerHTML = '';
+                
+                // Update header inputs
+                const headerContainer = paragraphSection.querySelector('.table-inputs .mb-2');
+                headerContainer.className = `mb-2 grid-${columnCount}-col`;
+                headerContainer.innerHTML = '';
+                
+                for (let i = 1; i <= columnCount; i++) {
+                    const headerInput = document.createElement('input');
+                    headerInput.type = 'text';
+                    headerInput.className = 'input-field table-header-' + i;
+                    headerInput.placeholder = `Column ${i} Header`;
+                    headerInput.value = i === 1 ? 'Section' : i === 2 ? 'Description' : `Column ${i}`;
+                    headerContainer.appendChild(headerInput);
+                }
+                
+                // Add initial rows if none exist
+                if (tableRowsContainer.children.length === 0) {
+                    addTableRow(getParagraphId(paragraphSection), true);
+                    addTableRow(getParagraphId(paragraphSection), true);
+                }
+            }
+            
+            function getParagraphId(paragraphSection) {
+                return parseInt(paragraphSection.id.split('-')[1]);
+            }
+            
+            function addTableRow(paragraphId, initial = false) {
+                const tableRowsContainer = document.getElementById(`table-rows-${paragraphId}`);
+                const paragraphSection = document.getElementById(`paragraph-${paragraphId}`);
+                
+                // Get column count
+                const activeTableBtn = paragraphSection.querySelector('.table-control-btn.active');
+                const columnCount = activeTableBtn ? parseInt(activeTableBtn.dataset.columns) : 0;
+                
+                if (columnCount === 0) return;
+                
+                const rowId = tableRowsContainer.children.length + 1;
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'table-row';
+                rowDiv.id = `row-${paragraphId}-${rowId}`;
+                
+                for (let col = 1; col <= columnCount; col++) {
+                    const dataInput = document.createElement('input');
+                    dataInput.type = 'text';
+                    dataInput.className = 'input-field';
+                    dataInput.placeholder = `Row ${rowId}, Col ${col}`;
+                    dataInput.classList.add(`table-row-${rowId}-col-${col}`);
+                    
+                    // Set default values for first paragraph if initial
+                    if (paragraphId === 1 && initial) {
+                        if (rowId === 1 && col === 1) dataInput.value = 'General Intelligence & Reasoning';
+                        else if (rowId === 1 && col === 2) dataInput.value = 'Tests logical thinking, analytical ability, and problem-solving skills';
+                        else if (rowId === 2 && col === 1) dataInput.value = 'General Awareness';
+                        else if (rowId === 2 && col === 2) dataInput.value = 'Evaluates knowledge of current events, history, geography, and science';
+                        else if (rowId === 3 && col === 1) dataInput.value = 'Quantitative Aptitude';
+                        else if (rowId === 3 && col === 2) dataInput.value = 'Assesses numerical ability and mathematical skills';
+                        else if (rowId === 4 && col === 1) dataInput.value = 'English Comprehension';
+                        else if (rowId === 4 && col === 2) dataInput.value = 'Measures English language skills including grammar and vocabulary';
+                    }
+                    
+                    rowDiv.appendChild(dataInput);
+                }
+                
+                // Add remove button
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'remove-row-btn';
+                removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+                removeBtn.onclick = function() {
+                    removeTableRow(paragraphId, rowId);
+                };
+                rowDiv.appendChild(removeBtn);
+                
+                tableRowsContainer.appendChild(rowDiv);
+            }
+            
+            function removeTableRow(paragraphId, rowId) {
+                const rowDiv = document.getElementById(`row-${paragraphId}-${rowId}`);
+                if (rowDiv) {
+                    rowDiv.remove();
+                }
+            }
+            
+            function parseTableData(paragraphId) {
+                const paragraphSection = document.getElementById(`paragraph-${paragraphId}`);
+                const parseTextarea = paragraphSection.querySelector('.parse-textarea');
+                const tableRowsContainer = document.getElementById(`table-rows-${paragraphId}`);
+                
+                // Get column count
+                const activeTableBtn = paragraphSection.querySelector('.table-control-btn.active');
+                const columnCount = activeTableBtn ? parseInt(activeTableBtn.dataset.columns) : 0;
+                
+                if (columnCount === 0) {
+                    alert('Please select a table configuration first (2, 3, or 4 columns)');
+                    return;
+                }
+                
+                const data = parseTextarea.value.trim();
+                if (!data) {
+                    alert('Please enter some data to parse');
+                    return;
+                }
+                
+                // Clear existing rows
+                tableRowsContainer.innerHTML = '';
+                
+                // Parse the data
+                const lines = data.split('\n');
+                let rowId = 1;
+                
+                lines.forEach(line => {
+                    line = line.trim();
+                    if (!line) return; // Skip empty lines
+                    
+                    const columns = line.split(':').map(col => col.trim());
+                    
+                    // Check if we have enough columns
+                    if (columns.length < columnCount) {
+                        // Fill missing columns with empty strings
+                        while (columns.length < columnCount) {
+                            columns.push('');
+                        }
+                    } else if (columns.length > columnCount) {
+                        // Truncate extra columns
+                        columns.length = columnCount;
+                    }
+                    
+                    // Create a new row
+                    const rowDiv = document.createElement('div');
+                    rowDiv.className = 'table-row';
+                    rowDiv.id = `row-${paragraphId}-${rowId}`;
+                    
+                    // Add columns
+                    for (let col = 0; col < columnCount; col++) {
+                        const dataInput = document.createElement('input');
+                        dataInput.type = 'text';
+                        dataInput.className = 'input-field';
+                        dataInput.value = columns[col] || '';
+                        dataInput.classList.add(`table-row-${rowId}-col-${col+1}`);
+                        rowDiv.appendChild(dataInput);
+                    }
+                    
+                    // Add remove button
+                    const removeBtn = document.createElement('button');
+                    removeBtn.className = 'remove-row-btn';
+                    removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+                    removeBtn.onclick = function() {
+                        removeTableRow(paragraphId, rowId);
+                    };
+                    rowDiv.appendChild(removeBtn);
+                    
+                    tableRowsContainer.appendChild(rowDiv);
+                    rowId++;
+                });
+                
+                // Show success message
+                showNotification('Table data parsed successfully!');
+            }
+            
+            function removeParagraphSection(id) {
+                const paragraphSection = document.getElementById(`paragraph-${id}`);
+                if (paragraphSection) {
+                    paragraphSection.remove();
+                    delete quillInstances[`paragraph-${id}`]; // Clean up Quill instance
+                }
+            }
+            
+            // Make functions available globally
+            window.removeParagraphSection = removeParagraphSection;
+            window.addTableRow = addTableRow;
+            window.removeTableRow = removeTableRow;
+            window.parseTableData = parseTableData;
+            
+            function generateHTML() {
+                const h1Title = document.getElementById('h1Title').value;
+                const postDate = formatDate(document.getElementById('postDate').value);
+                const postCategory = document.getElementById('postCategory').value;
+                const readingTime = document.getElementById('readingTime').value;
+                const postAuthor = document.getElementById('postAuthor').value;
+                
+                // 4. UPDATED: Get content from Quill editor using innerHTML
+                const postSummary = quillInstances['postSummary'].root.innerHTML;
+
+                const totalPosts = document.getElementById('totalPosts').value;
+                const faqTitle = document.getElementById('faqTitle').value;
+                const faqDescription = document.getElementById('faqDescription').value;
+                const faqContent = document.getElementById('faqContent').value;
+                
+                // Generate modern paragraphs HTML
+                let modernParagraphsHTML = '';
+                const paragraphSections = document.querySelectorAll('.paragraph-section');
+                
+                paragraphSections.forEach(section => {
+                    const id = getParagraphId(section);
+                    const header = section.querySelector('.paragraph-header').value;
+                    
+                    // 4. UPDATED: Get content from Quill editor using innerHTML
+                    const content = quillInstances[`paragraph-${id}`].root.innerHTML;
+                    
+                    // Get table configuration
+                    const activeTableBtn = section.querySelector('.table-control-btn.active');
+                    const columnCount = activeTableBtn ? parseInt(activeTableBtn.dataset.columns) : 0;
+                    
+                    let tableHTML = '';
+                    if (columnCount > 0) {
+                        tableHTML = `<table class="responsive-table">
+                        <thead>
+                            <tr>`;
+                        
+                        // Add table headers
+                        for (let i = 1; i <= columnCount; i++) {
+                            const headerInput = section.querySelector(`.table-header-${i}`);
+                            if (headerInput) {
+                                tableHTML += `<th>${headerInput.value}</th>`;
+                            }
+                        }
+                        
+                        tableHTML += `</tr>
+                        </thead>
+                        <tbody>`;
+                        
+                        // Add table rows
+                        const tableRowsContainer = section.querySelector('.table-rows-container');
+                        if (tableRowsContainer) {
+                            const rows = tableRowsContainer.querySelectorAll('.table-row');
+                            rows.forEach((row, rowIndex) => {
+                                let hasData = false;
+                                for (let col = 1; col <= columnCount; col++) {
+                                    // rowIndex is 0-based, so row inputs are row-${rowIndex+1}-col-${col}
+                                    const dataInput = row.querySelector(`.table-row-${rowIndex+1}-col-${col}`);
+                                    if (dataInput && dataInput.value.trim() !== '') {
+                                        hasData = true;
+                                        break;
+                                    }
+                                }
+                                
+                                if (hasData) {
+                                    tableHTML += `<tr>`;
+                                    for (let col = 1; col <= columnCount; col++) {
+                                        const dataInput = row.querySelector(`input:nth-child(${col})`);
+                                        tableHTML += `<td>${dataInput ? dataInput.value : ''}</td>`;
+                                    }
+                                    tableHTML += `</tr>`;
+                                }
+                            });
+                        }
+                        
+                        tableHTML += `</tbody>
+                    </table>`;
+                    }
+                    
+                    modernParagraphsHTML += `
+            <div class="modern-paragraph-section">
+                <div class="modern-paragraph-card">
+                    <div class="modern-paragraph-header">
+                        <i class="fas fa-chart-line"></i>
+                        <span>${header}</span>
+                    </div>
+                    <div class="modern-paragraph-content">
+                        <div>
+                                ${content}
+                            </div>
+                        
+                        ${tableHTML}
+                    </div>
+                </div>
+            </div>`;
+                });
+                
+                // Generate FAQ HTML
+                let faqHTML = '';
+                if (faqContent.trim() !== '') {
+                    const faqItems = parseFAQContent(faqContent);
+                    
+                    faqHTML = `
+            <div class="faq-section">
+                <div class="faq-card">
+                    <div class="faq-header">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Frequently Asked Questions (FAQ)</span>
+                    </div>
+                    <div class="faq-content">
+                        <div class="faq-intro">
+                            <h2>${faqTitle}</h2>
+                            <div>${faqDescription}</div>
+                        </div>
+
+                        <div class="faq-accordion">`;
+                    
+                    faqItems.forEach(item => {
+                        faqHTML += `
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span class="question-text">
+                                ${item.question}
+                            </span>
+                            <span class="question-icon"></span>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="answer-content">
+                                <div>
+                                ${item.answer}
+                            </div>
+                            </div>
+                        </div>
+                    </div>`;
+                    });
+                    
+                    faqHTML += `
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+                }
+                
+                const htmlCode = `
+    <main class="main-content py-8">
+        <nav class="flex mb-8 text-sm text-gray-600" aria-label="Breadcrumb">
+            <ol class="flex items-center space-x-2">
+                <li>
+                    <a href="index.html" class="hover:text-blue-600 transition">Home</a>
+                </li>
+                <li class="flex items-center">
+                    <span class="mx-2">/</span>
+                    <a href="/latest-posts.html" class="hover:text-blue-600 transition">Latest Posts</a>
+                </li>
+                <li class="flex items-center">
+                    <span class="mx-2">/</span>
+                    <span class="text-red-800 font-medium" id="currentPostTitle">${h1Title}</span>
+                </li>
+            </ol>
+        </nav>
+
+        <h1 class="text-2xl md:text-2xl lg:text-4xl font-bold mb-6 leading-tight post-title">
+            ${h1Title}
+        </h1>
+
+        <div class="flex flex-wrap gap-4 mb-8 post-meta">
+            <div class="meta-item flex items-center bg-white rounded-lg px-4 py-2 shadow-sm">
+                <i class="fas fa-calendar-alt text-blue-500 mr-2"></i>
+                <span class="font-medium text-black-900">${postDate}</span>
+            </div>
+            
+            <div class="meta-item flex items-center bg-white rounded-lg px-4 py-2 shadow-sm">
+                <i class="fas fa-tag text-purple-500 mr-2"></i>
+                <span class="font-medium text-black-900">${postCategory}</span>
+            </div>
+            
+            <div class="meta-item flex items-center bg-white rounded-lg px-4 py-2 shadow-sm">
+                <i class="fas fa-clock text-amber-500 mr-2"></i>
+                <span class="font-medium text-black-900">${readingTime}</span>
+            </div>
+
+            <div class="meta-item flex items-center bg-white rounded-lg px-4 py-2 shadow-sm">
+                <i class="fas fa-user text-green-500 mr-2"></i>
+                <span class="font-medium text-black-900">${postAuthor}</span>
+            </div>
+        </div>
+        
+        <div class="post-summary">
+            <div class="flex items-start">
+                </div>
+                <div>
+                    <h3 class="flex items-center justify-between text-xl font-bold mb-3">
+                        <span class="bg-orange-400 text-blue-900 px-3 py-1 rounded-lg text-lg font-extrabold shadow-md">
+        Post Summary
+    </span>
+    <span class="bg-orange-400 text-white-500 px-3 py-1 rounded-lg text-lg font-extrabold shadow-md">
+      Total Post : ${totalPosts}
+    </span></h3>
+                    <div class="text-gray-700 leading-relaxed">
+                        ${postSummary}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        ${modernParagraphsHTML}
+        
+        ${faqHTML}
+                    
+<div class="posts-sections-container">
+    <div class="posts-section">
+        <div class="posts-header">
+            <i class="fas fa-newspaper"></i>
+            <span>New Posts</span>
+        </div>
+        <div class="posts-content" id="new-posts-container">
+            <div class="no-posts">Loading new posts...</div>
+        </div>
+    </div>
+    
+    <div class="posts-section">
+        <div class="related-posts-header">
+            <i class="fas fa-link"></i>
+            <span>Related Posts</span>
+        </div>
+        <div class="posts-content" id="related-posts-container">
+            <div class="no-posts">Loading related posts...</div>
+        </div>
+    </div>
+</div>
+            
+    </main>`;
+                
+                document.getElementById('generatedCode').textContent = htmlCode;
+            }
+            
+            function parseFAQContent(content) {
+                const faqItems = [];
+                const lines = content.split('\n');
+                let currentQuestion = '';
+                let currentAnswer = '';
+                
+                for (let i = 0; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    
+                    if (line.startsWith('Q:') || line.startsWith('q:')) {
+                        // If we have a previous question, save it
+                        if (currentQuestion && currentAnswer) {
+                            faqItems.push({
+                                question: currentQuestion,
+                                answer: currentAnswer
+                            });
+                        }
+                        
+                        // Start new question
+                        currentQuestion = line.substring(2).trim();
+                        currentAnswer = '';
+                    } else if (line.startsWith('A:') || line.startsWith('a:')) {
+                        currentAnswer = line.substring(2).trim();
+                    } else if (line !== '' && currentQuestion) {
+                        // Continue the answer if it's a multi-line answer
+                        if (currentAnswer) {
+                            currentAnswer += '<br>' + line;
+                        } else {
+                            currentAnswer = line;
+                        }
+                    }
+                }
+                
+                // Add the last FAQ item
+                if (currentQuestion && currentAnswer) {
+                    faqItems.push({
+                        question: currentQuestion,
+                        answer: currentAnswer
+                    });
+                }
+                
+                return faqItems;
+            }
+            
+            function formatDate(dateString) {
+                const date = new Date(dateString);
+                const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                return date.toLocaleDateString('en-US', options);
+            }
+            
+            function copyToClipboard() {
+                const htmlCode = document.getElementById('generatedCode').textContent;
+                copyTextToClipboard(htmlCode);
+            }
+            
+            function copyCodeToClipboard() {
+                const htmlCode = document.getElementById('generatedCode').textContent;
+                copyTextToClipboard(htmlCode);
+            }
+            
+            function copyTextToClipboard(text) {
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                showNotification('Code copied to clipboard!');
+            }
+            
+            function showNotification(message = 'Code copied to clipboard!') {
+                const notification = document.getElementById('notification');
+                notification.textContent = message;
+                notification.classList.add('show');
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            }
+            
+            // Generate initial HTML on page load
+            generateHTML();
+        });
+    </script>
+</body>
+</html>
