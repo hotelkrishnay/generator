@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crystal Sea Foods | Premium Frozen Seafood Exporter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #005f8d;
+            --primary-light: #00a8e8;
+            --secondary: #ffc107;
+            --dark: #0a192f;
+            --glass: rgba(255, 255, 255, 0.8);
+            --card-shadow: 0 20px 40px rgba(0,0,0,0.06);
+            --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #2d3436;
+            line-height: 1.7;
+            background-color: #fdfdfd;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 30px;
+        }
+
+        /* --- Modern Glass Header --- */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            transition: var(--transition);
+            padding: 15px 0;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-text {
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            color: var(--primary);
+        }
+
+        .logo-text span { color: var(--secondary); }
+
+        .nav-links { display: flex; gap: 40px; }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover { color: var(--primary-light); }
+
+        /* --- Hero Section Redesign --- */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, rgba(10, 25, 47, 0.85) 0%, rgba(0, 95, 141, 0.7) 100%), 
+                        url('https://images.unsplash.com/photo-1551731350-59d005846651?auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: left;
+        }
+
+        .hero-content { max-width: 800px; }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            line-height: 1.1;
+            margin-bottom: 25px;
+            color: white;
+        }
+
+        .since-badge {
+            background: var(--secondary);
+            color: var(--dark);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 20px;
+            font-size: 0.8rem;
+        }
+
+        .btn {
+            padding: 18px 40px;
+            border-radius: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-block;
+            transition: var(--transition);
+            margin-right: 15px;
+        }
+
+        .btn-primary { background: var(--primary-light); color: white; box-shadow: 0 10px 20px rgba(0,168,232,0.3); }
+        .btn-primary:hover { transform: translateY(-5px); background: #008fca; }
+
+        /* --- Sophisticated 3D Gallery --- */
+        .gallery-section {
+            background: radial-gradient(circle at top right, #f0f7ff, #ffffff);
+            padding: 120px 0;
+            perspective: 2000px;
+            overflow: hidden;
+        }
+
+        .gallery-title { text-align: center; margin-bottom: 80px; }
+        
+        .gallery-wrap {
+            height: 450px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: galleryRotate 40s infinite linear;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .gallery-item {
+            position: absolute;
+            width: 320px;
+            height: 220px;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 5px solid white;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .gallery-item:hover {
+            filter: brightness(1.1);
+            transform: scale(1.1) !important;
+        }
+
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* 3D Circular Positions */
+        .gallery-item:nth-child(1) { transform: rotateY(0deg) translateZ(550px); }
+        .gallery-item:nth-child(2) { transform: rotateY(45deg) translateZ(550px); }
+        .gallery-item:nth-child(3) { transform: rotateY(90deg) translateZ(550px); }
+        .gallery-item:nth-child(4) { transform: rotateY(135deg) translateZ(550px); }
+        .gallery-item:nth-child(5) { transform: rotateY(180deg) translateZ(550px); }
+        .gallery-item:nth-child(6) { transform: rotateY(225deg) translateZ(550px); }
+        .gallery-item:nth-child(7) { transform: rotateY(270deg) translateZ(550px); }
+        .gallery-item:nth-child(8) { transform: rotateY(315deg) translateZ(550px); }
+
+        @keyframes galleryRotate {
+            from { transform: rotateY(0deg); }
+            to { transform: rotateY(360deg); }
+        }
+
+        /* --- Figma-Touch Products Section --- */
+        #products { padding: 100px 0; background: #fff; }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .product-card {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 12px;
+            transition: var(--transition);
+            border: 1px solid #f0f0f0;
+            position: relative;
+        }
+
+        .product-card:hover {
+            transform: translateY(-15px);
+            box-shadow: var(--card-shadow);
+            border-color: var(--primary-light);
+        }
+
+        .product-img-wrap {
+            height: 240px;
+            border-radius: 18px;
+            overflow: hidden;
+            background: #f8f9fa;
+            margin-bottom: 20px;
+        }
+
+        .product-img {
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            transition: var(--transition);
+        }
+
+        .product-card:hover .product-img { transform: scale(1.1); }
+
+        .product-content { padding: 0 10px 15px; }
+
+        .product-content h3 { font-size: 1.25rem; margin-bottom: 8px; color: var(--dark); }
+
+        .sci-tag {
+            display: inline-block;
+            background: rgba(0, 95, 141, 0.05);
+            color: var(--primary);
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-style: italic;
+        }
+
+        /* --- Elegant About Section --- */
+        .about-section {
+            background: var(--dark);
+            color: white;
+            padding: 120px 0;
+            border-radius: 60px 60px 0 0;
+            margin-top: -60px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .about-section h2 { color: white; }
+        .about-section h2:after { background: var(--primary-light); }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            padding: 30px;
+            border-radius: 24px;
+            border: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+        }
+
+        .stat-card i { font-size: 2rem; color: var(--secondary); margin-bottom: 15px; }
+        .stat-card h4 { color: white; margin-bottom: 10px; }
+
+        /* --- Mobile Responsiveness --- */
+        @media (max-width: 992px) {
+            .about-grid { grid-template-columns: 1fr; gap: 40px; }
+            .gallery-wrap { height: 350px; }
+            .gallery-item { width: 220px; height: 160px; transform-origin: center center -350px !important; }
+            /* Update 3D transforms for mobile */
+            .gallery-item:nth-child(1) { transform: rotateY(0deg) translateZ(350px); }
+            .gallery-item:nth-child(2) { transform: rotateY(45deg) translateZ(350px); }
+            .gallery-item:nth-child(3) { transform: rotateY(90deg) translateZ(350px); }
+            .gallery-item:nth-child(4) { transform: rotateY(135deg) translateZ(350px); }
+            .gallery-item:nth-child(5) { transform: rotateY(180deg) translateZ(350px); }
+            .gallery-item:nth-child(6) { transform: rotateY(225deg) translateZ(350px); }
+            .gallery-item:nth-child(7) { transform: rotateY(270deg) translateZ(350px); }
+            .gallery-item:nth-child(8) { transform: rotateY(315deg) translateZ(350px); }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hero h1 { font-size: 2.5rem; }
+            .hero { text-align: center; }
+        }
+
+        /* Section Headings Helper */
+        .text-center { text-align: center; }
+        .section-title { font-size: 2.5rem; margin-bottom: 50px; }
+    </style>
+</head>
+<body>
+
+    <header id="header">
+        <div class="container header-container">
+            <div class="logo-text">CRYSTAL<span>SEAFOODS</span></div>
+            <nav class="nav-links">
+                <a href="#home">Home</a>
+                <a href="#products">Products</a>
+                <a href="#about">About</a>
+                <a href="#contact">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="hero-content">
+                <div class="since-badge">ESTABLISHED 2015</div>
+                <h1>Excellence in Every <br><span style="color: var(--secondary)">Frozen Catch.</span></h1>
+                <p>Global suppliers of premium seafood, processed with cutting-edge technology to preserve the soul of the ocean.</p>
+                <div style="margin-top: 40px;">
+                    <a href="#products" class="btn btn-primary">Our Catalog</a>
+                    <a href="#contact" class="btn" style="color: white; border: 1px solid white;">Get a Quote</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="gallery-section">
+        <div class="container">
+            <div class="gallery-title">
+                <h2 class="section-title">The Ocean's Finest</h2>
+                <p>A panoramic view of our premium export quality stock</p>
+            </div>
+            <div class="gallery-wrap">
+                <div class="gallery-item"><img src="assets/images/Lobster.png" alt="Lobster"></div>
+                <div class="gallery-item"><img src="assets/images/ribbon fish.jpg" alt="Ribbon Fish"></div>
+                <div class="gallery-item"><img src="assets/images/silver_croaker.png" alt="Silver Croaker"></div>
+                <div class="gallery-item"><img src="assets/images/Yellow-Croaker.png" alt="Yellow Croaker"></div>
+                <div class="gallery-item"><img src="assets/images/prawns-fish-500x500.webp" alt="Prawns"></div>
+                <div class="gallery-item"><img src="assets/images/Lobster.png" alt="Lobster"></div>
+                <div class="gallery-item"><img src="assets/images/ribbon fish.jpg" alt="Ribbon Fish"></div>
+                <div class="gallery-item"><img src="assets/images/silver_croaker.png" alt="Silver Croaker"></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="products">
+        <div class="container">
+            <div class="text-center">
+                <h2 class="section-title">Premium Export Catalog</h2>
+            </div>
+            <div class="products-grid" id="productsGrid">
+                </div>
+        </div>
+    </section>
+
+    <section class="about-section" id="about">
+        <div class="container">
+            <div class="about-grid">
+                <div>
+                    <h2 class="section-title">A Legacy Built <br>On Trust.</h2>
+                    <p style="color: rgba(255,255,255,0.7); font-size: 1.1rem; margin-bottom: 30px;">Starting in 2015, Crystal Sea Foods evolved from a local supplier to a global export powerhouse. We bridge the gap between the bounty of the Indian Ocean and global dinner tables.</p>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <i class="fas fa-globe"></i>
+                            <h4>Global Reach</h4>
+                            <p>20+ Countries</p>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-certificate"></i>
+                            <h4>Quality First</h4>
+                            <p>HACCP Certified</p>
+                        </div>
+                    </div>
+                </div>
+                <div style="background: rgba(255,255,255,0.03); padding: 40px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.05);">
+                    <h3 style="color: white; margin-bottom: 20px;">Our Core Verticals</h3>
+                    <ul style="list-style: none;">
+                        <li style="margin-bottom: 20px; display: flex; align-items: center; gap: 15px;">
+                            <span style="width: 10px; height: 10px; background: var(--secondary); border-radius: 50%;"></span>
+                            <div>
+                                <strong>Crystal Sea Food:</strong> Premium Frozen Exports
+                            </div>
+                        </li>
+                        <li style="margin-bottom: 20px; display: flex; align-items: center; gap: 15px;">
+                            <span style="width: 10px; height: 10px; background: var(--primary-light); border-radius: 50%;"></span>
+                            <div>
+                                <strong>Ultra Fish:</strong> Raw Material Sourcing
+                            </div>
+                        </li>
+                        <li style="margin-bottom: 20px; display: flex; align-items: center; gap: 15px;">
+                            <span style="width: 10px; height: 10px; background: #fff; border-radius: 50%;"></span>
+                            <div>
+                                <strong>Ocean Impex:</strong> Specialty Dry Maw Processing
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <h2 class="section-title text-center">Let's Connect</h2>
+            
+            <div class="contact-grid">
+                <div class="contact-main-card">
+                    <div class="contact-header">
+                        <h3>Get In Touch</h3>
+                        <p>Our team is ready to assist with global exports and inquiries.</p>
+                    </div>
+
+                    <div class="contact-info-list">
+                        <div class="info-item">
+                            <div class="info-icon"><i class="fas fa-user-tie"></i></div>
+                            <div>
+                                <span>Founder & CEO</span>
+                                <p>Zuber Chauhan</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-icon"><i class="fab fa-whatsapp"></i></div>
+                            <div>
+                                <span>Phone / WhatsApp</span>
+                                <p>+91 8200107344</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-icon"><i class="fas fa-envelope-open-text"></i></div>
+                            <div>
+                                <span>Email Address</span>
+                                <p>crystalseafoods5@gmail.com</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="address-bento">
+                        <div class="address-card">
+                            <h4><i class="fas fa-fish"></i> Crystal Sea Foods</h4>
+                            <p>GIDC Area, Plot #1305, Veraval, Gujarat (India) - 362265</p>
+                        </div>
+                        <div class="address-card">
+                            <h4><i class="fas fa-water"></i> Ocean Impex</h4>
+                            <p>Plot #50, Satnam Industrial Area, Veraval - 362265</p>
+                        </div>
+                        <div class="address-card">
+                            <h4><i class="fas fa-ship"></i> Ultra Fish</h4>
+                            <p>Shop #34/35, Jafrabad Market, GIDC Area, Veraval - 362265</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="vision-card">
+                    <div class="vision-content">
+                        <div class="vision-badge">OUR PURPOSE</div>
+                        <h3>Vision & Mission</h3>
+                        <div class="vision-text">
+                            <p><strong>Vision:</strong> To be a globally respected seafood group delivering high-quality, responsibly sourced products while creating long-term value for our partners.</p>
+                        </div>
+                        
+                        <ul class="mission-list">
+                            <li><i class="fas fa-check-circle"></i> International Quality Standards</li>
+                            <li><i class="fas fa-check-circle"></i> Competitive Global Pricing</li>
+                            <li><i class="fas fa-check-circle"></i> Reliable Supply Chain</li>
+                            <li><i class="fas fa-check-circle"></i> Sustainable Growth</li>
+                        </ul>
+                    </div>
+
+                    <div class="social-wrapper">
+                        <h4>Follow Our Journey</h4>
+                        <div class="social-links">
+                            <a href="#" class="social-btn"><i class="fab fa-whatsapp"></i></a>
+                            <a href="#" class="social-btn"><i class="fab fa-weixin"></i></a>
+                            <a href="#" class="social-btn"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="social-btn"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo-text" style="color: white; margin-bottom: 20px;">CRYSTAL<span>SEAFOODS</span></div>
+                    <p>Premium frozen seafood processor and exporter since 2015, delivering excellence across global markets.</p>
+                    <div class="footer-loc">
+                        <i class="fas fa-map-marker-alt"></i> G.I.D.C Veraval - 362265, India
+                    </div>
+                </div>
+                
+                <div class="footer-nav">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#products">Products</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-nav">
+                    <h4>Our Brands</h4>
+                    <ul>
+                        <li><a href="#">Crystal Sea Food</a></li>
+                        <li><a href="#">Ultra Fish</a></li>
+                        <li><a href="#">Ocean Impex</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 Crystal Sea Foods. Crafted for Excellence. | Since 2015</p>
+            </div>
+        </div>
+    </footer>
+
+    <style>
+        /* Contact Section Styling */
+        .contact-section {
+            padding: 120px 0;
+            background-color: #fdfdfd;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        /* Figma-style Main Card */
+        .contact-main-card {
+            background: white;
+            padding: 50px;
+            border-radius: 32px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.04);
+            border: 1px solid #f0f0f0;
+        }
+
+        .contact-header h3 { font-size: 2rem; margin-bottom: 10px; }
+        .contact-header p { color: #666; margin-bottom: 40px; }
+
+        .contact-info-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .info-item { display: flex; align-items: center; gap: 15px; }
+        .info-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 95, 141, 0.05);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            font-size: 1.2rem;
+        }
+        .info-item span { font-size: 0.8rem; color: #888; display: block; }
+        .info-item p { font-weight: 700; color: var(--dark); margin: 0; }
+
+        /* Bento Grid for Addresses */
+        .address-bento {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .address-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 20px;
+            transition: var(--transition);
+        }
+
+        .address-card:first-child { grid-column: span 2; background: var(--dark); color: white; }
+        .address-card:first-child h4 { color: white; }
+        .address-card h4 { font-size: 1rem; margin-bottom: 10px; color: var(--primary); }
+        .address-card p { font-size: 0.85rem; opacity: 0.8; margin: 0; }
+
+        /* Vision Card */
+        .vision-card {
+            background: var(--primary);
+            border-radius: 32px;
+            color: white;
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vision-badge {
+            background: rgba(255,255,255,0.1);
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .vision-card h3 { color: white; font-size: 1.8rem; margin-bottom: 20px; }
+        .mission-list { list-style: none; margin-top: 30px; }
+        .mission-list li { margin-bottom: 15px; display: flex; align-items: center; gap: 10px; font-size: 0.95rem; }
+        .mission-list i { color: var(--secondary); }
+
+        .social-wrapper { margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); pt: 30px; }
+        .social-wrapper h4 { font-size: 0.9rem; margin-bottom: 20px; opacity: 0.7; }
+        .social-links { display: flex; gap: 15px; }
+
+        .social-btn {
+            width: 45px;
+            height: 45px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: var(--transition);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .social-btn:hover { background: var(--secondary); color: var(--dark); transform: translateY(-5px); }
+
+        /* Footer Styling */
+        .main-footer {
+            background: #050b16;
+            color: rgba(255,255,255,0.6);
+            padding: 80px 0 30px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 80px;
+            padding-bottom: 60px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .footer-brand p { max-width: 350px; margin-bottom: 20px; }
+        .footer-loc { color: white; font-weight: 500; font-size: 0.9rem; }
+        .footer-loc i { color: var(--primary-light); margin-right: 8px; }
+
+        .footer-nav h4 { color: white; margin-bottom: 25px; font-size: 1.1rem; }
+        .footer-nav ul { list-style: none; }
+        .footer-nav li { margin-bottom: 12px; }
+        .footer-nav a { color: inherit; text-decoration: none; transition: 0.3s; font-size: 0.9rem; }
+        .footer-nav a:hover { color: var(--primary-light); padding-left: 5px; }
+
+        .footer-bottom { padding-top: 30px; text-align: center; font-size: 0.8rem; }
+
+        /* Mobile Fixes */
+        @media (max-width: 992px) {
+            .contact-grid { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+        }
+
+        @media (max-width: 600px) {
+            .address-bento { grid-template-columns: 1fr; }
+            .address-card:first-child { grid-column: span 1; }
+            .contact-main-card { padding: 30px 20px; }
+            .footer-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+
+    <script>
+        const products = [
+            { name: "Leather Jacket Whole", sciName: "Aluterus Monoceros" },
+            { name: "Black Pomfret", sciName: "Parastromateus Niger" },
+            { name: "Silver Pomfret", sciName: "Pampus Argenteus" },
+            { name: "King Fish", sciName: "Scomberomorus Commerson" },
+            { name: "Ribbon Fish WR", sciName: "Lepturacanthus Savala" },
+            { name: "Tiger Tooth Croaker", sciName: "Otolithes Ruber" }
+        ];
+
+        const localImages = [
+            'assets/images/Lobster.png',
+            'assets/images/prawns-fish-500x500.webp',
+            'assets/images/ribbon fish.jpg',
+            'assets/images/silver_croaker.png',
+            'assets/images/Yellow-Croaker.png'
+        ];
+
+        const grid = document.getElementById('productsGrid');
+
+        products.forEach((p, i) => {
+            const img = localImages[i % localImages.length];
+            grid.innerHTML += `
+                <div class="product-card">
+                    <div class="product-img-wrap">
+                        <div class="product-img" style="background-image: url('${img}')"></div>
+                    </div>
+                    <div class="product-content">
+                        <span class="sci-tag">${p.sciName}</span>
+                        <h3>${p.name}</h3>
+                        <p style="font-size: 0.85rem; color: #666;">Flash-frozen within hours of harvest to maintain peak nutritional value.</p>
+                    </div>
+                </div>
+            `;
+        });
+
+        // Shrink header on scroll
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.style.padding = '10px 0';
+                header.style.background = 'rgba(255,255,255,0.9)';
+            } else {
+                header.style.padding = '15px 0';
+                header.style.background = 'rgba(255,255,255,0.7)';
+            }
+        });
+    </script>
+</body>
+</html>
