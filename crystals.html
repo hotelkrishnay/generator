@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capital Group | Crystal Sea Foods Veraval Gujarat</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #003d5b; /* Deep Professional Navy */
+            --primary-light: #00a8e8;
+            --secondary: #ffc107; /* Premium Gold */
+            --accent: #ffc107; 
+            --dark: #050b16;
+            --bg-light: #f4f7fa;
+            --text-dark: #050b16;
+            --glass: rgba(255, 255, 255, 0.45);
+            --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            --card-shadow: 0 20px 40px rgba(0,0,0,0.06);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #2d3436;
+            line-height: 1.7;
+            background-color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 { font-family: 'Montserrat', sans-serif; font-weight: 800; color: var(--primary); }
+
+        .container { max-width: 1300px; margin: 0 auto; padding: 0 30px; }
+
+        /* --- STYLISH GLASS NAVIGATION --- */
+        header {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 1200px;
+            background: rgba(46, 111, 86, 0.45);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(10, 10, 10, 0.4);
+            padding: 15px 40px;
+            border-radius: 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transition: rgba(46, 111, 86, 0.45);
+        }
+
+        .logo { 
+            font-family: 'Montserrat'; 
+            font-weight: 800; 
+            font-size: 1.2rem; 
+            color: var(--primary); 
+            letter-spacing: -0.5px; 
+            text-transform: uppercase;
+        }
+        .logo span { color: var(--accent); }
+
+        .nav-links { display: flex; gap: 30px; }
+        .nav-links a { 
+            text-decoration: none; 
+            color: var(--text-dark); 
+            font-weight: 700; 
+            font-size: 0.8rem; 
+            text-transform: uppercase; 
+            transition: 0.3s;
+            letter-spacing: 0.5px;
+        }
+        .nav-links a:hover { color: var(--primary-light); }
+
+        /* --- BRAND INTRODUCTION SECTION --- */
+        .brand-intro {
+            padding: 180px 0 100px;
+            background: linear-gradient(135deg, #ffffff 0%, #f0f4f8 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .intro-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 60px;
+            align-items: start;
+        }
+
+        .badge {
+            background: var(--secondary);
+            color: var(--dark);
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-weight: 800;
+            font-size: 0.7rem;
+            display: inline-block;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .brand-title { font-size: clamp(2.2rem, 4vw, 3.5rem); line-height: 1.1; margin-bottom: 25px; }
+        .brand-title span { color: var(--primary-light); font-weight: 400; display: block; font-size: 1.6rem; margin-top: 10px; }
+
+        .lead-text {
+            font-size: 1.2rem;
+            color: var(--primary);
+            font-weight: 600;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--secondary);
+            padding-left: 20px;
+        }
+
+        .text-body p { margin-bottom: 18px; color: #4a5568; font-size: 1rem; }
+
+        /* --- VERTICALS GRID --- */
+        .verticals-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-top: 60px;
+            grid-column: 1 / span 2;
+            width: 100%;
+        }
+
+        .vertical-item {
+            background: white;
+            padding: 40px 20px;
+            border-radius: 24px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+            border: 1px solid #edf2f7;
+            transition: var(--transition);
+        }
+
+        .vertical-item:hover {
+            transform: translateY(-10px);
+            border-color: var(--secondary);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .vertical-item h3 { font-size: 1.1rem; margin-bottom: 15px; color: var(--primary); }
+        .vertical-item i { color: var(--secondary); font-size: 2rem; margin-bottom: 15px; display: block; }
+        .vertical-item span { font-size: 0.9rem; font-weight: 700; color: var(--primary-light); text-transform: uppercase; letter-spacing: 1px; }
+
+        /* Vision & Mission Stack */
+        .vision-mission-stack { display: flex; flex-direction: column; gap: 30px; }
+        .glass-card {
+            background: white;
+            padding: 40px;
+            border-radius: 32px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.05);
+            border: 1px solid rgba(255,255,255,0.7);
+            transition: var(--transition);
+        }
+        .icon-circle {
+            width: 50px; height: 50px;
+            background: var(--primary);
+            color: white;
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 20px;
+        }
+        .mission-list { list-style: none; margin-top: 20px; }
+        .mission-list li { display: flex; gap: 12px; margin-bottom: 15px; font-size: 0.95rem; color: #4a5568; }
+        .mission-list i { color: var(--secondary); margin-top: 5px; }
+
+        /* --- 3D Gallery --- */
+        .gallery-section { padding: 100px 0; background: #fff; overflow: hidden; perspective: 2000px; }
+        .gallery-wrap { height: 300px; position: relative; transform-style: preserve-3d; animation: galleryRotate 40s infinite linear; display: flex; justify-content: center; align-items: center; }
+        .gallery-item { position: absolute; width: 300px; height: 200px; border-radius: 20px; overflow: hidden; border: 4px solid white; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+        @keyframes galleryRotate { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
+        .gallery-item:nth-child(1) { transform: rotateY(0deg) translateZ(500px); }
+        .gallery-item:nth-child(2) { transform: rotateY(45deg) translateZ(500px); }
+        .gallery-item:nth-child(3) { transform: rotateY(90deg) translateZ(500px); }
+        .gallery-item:nth-child(4) { transform: rotateY(135deg) translateZ(500px); }
+        .gallery-item:nth-child(5) { transform: rotateY(180deg) translateZ(500px); }
+        .gallery-item:nth-child(6) { transform: rotateY(225deg) translateZ(500px); }
+        .gallery-item:nth-child(7) { transform: rotateY(270deg) translateZ(500px); }
+        .gallery-item:nth-child(8) { transform: rotateY(315deg) translateZ(500px); }
+
+        /* --- Products & Contact --- */
+        #products { padding: 100px 0; background: #f8fafc; }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; margin-top: 50px; }
+        .product-card { background: white; border-radius: 24px; padding: 15px; border: 1px solid #e2e8f0; transition: var(--transition); }
+        .product-card:hover { transform: translateY(-10px); box-shadow: var(--card-shadow); }
+        .product-img-wrap { height: 220px; border-radius: 18px; overflow: hidden; background: #f1f5f9; margin-bottom: 20px; }
+        .product-img { width: 100%; height: 100%; background-size: cover; background-position: center; transition: var(--transition); }
+        .sci-tag { display: inline-block; background: rgba(0, 61, 91, 0.05); color: var(--primary); padding: 4px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 700; font-style: italic; margin-bottom: 10px; }
+
+        #contact { padding: 100px 0; }
+        .contact-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 30px; margin-top: 50px; }
+        .contact-card { background: var(--primary); color: white; padding: 50px; border-radius: 32px; }
+        .info-item { display: flex; gap: 20px; margin-bottom: 30px; }
+        .info-icon { width: 45px; height: 45px; background: rgba(255,255,255,0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--secondary); }
+        .address-bento { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 30px; }
+        .addr-box { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; font-size: 0.85rem; }
+        .addr-box h4 { color: var(--secondary); margin-bottom: 10px; font-size: 0.9rem; }
+
+        footer { background: var(--dark); color: rgba(255,255,255,0.6); padding: 60px 0 30px; text-align: center; }
+
+/* --- FIXED RESPONSIVE SETTINGS --- */
+@media (max-width: 992px) {
+    /* 1. Navbar Fix: Stack logo and links to prevent overlapping */
+    header { 
+        width: 95%; 
+        padding: 15px 10px; 
+        top: 10px;
+        flex-direction: column; 
+        gap: 12px;
+        border-radius: 20px; 
+        height: auto;
+    }
+
+    .logo { 
+        font-size: 0.9rem; 
+        text-align: center;
+        width: 100%;
+        letter-spacing: 0.5px;
+    }
+
+    .nav-links { 
+        gap: 15px; 
+        width: 100%;
+        justify-content: center;
+        border-top: 1px solid rgba(0,0,0,0.05);
+        padding-top: 10px;
+    }
+
+    .nav-links a { font-size: 0.75rem; white-space: nowrap; }
+
+    /* 2. Content Spacing: Push intro down so header doesn't cover it */
+    .brand-intro { padding-top: 160px; }
+    .intro-grid { grid-template-columns: 1fr; gap: 40px; }
+    
+    /* 3. Verticals & Products: Grid to single column */
+    .verticals-grid { 
+        grid-column: 1; 
+        grid-template-columns: 1fr; 
+        margin-top: 30px; 
+        gap: 15px;
+    }
+    
+    .products-grid { grid-template-columns: 1fr; gap: 20px; }
+
+    /* 4. Contact Grid Fix: Ensure boxes stack and don't overflow */
+    .contact-grid { 
+        grid-template-columns: 1fr; 
+        gap: 20px; 
+    }
+
+    .contact-card { 
+        padding: 30px 20px; 
+        border-radius: 20px; 
+    }
+
+    .address-bento { 
+        grid-template-columns: 1fr; /* Stack address boxes vertically */
+    }
+
+    .addr-box { width: 100%; }
+
+    /* 5. Footer Fix: Center and add breathing room */
+    footer { padding: 40px 20px; }
+    footer h2 { font-size: 1.5rem; }
+}
+.product-card img {
+    width: 100%;
+    height: 260px;              /* consistent card height */
+    object-fit: cover;          /* fills box without distortion */
+    border-radius: 10px;
+}
+
+/* Floating Buttons Container */
+.whatsapp-float,
+.call-float {
+    position: fixed;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease-in-out;
+    text-decoration: none;
+}
+
+.whatsapp-float:hover,
+.call-float:hover {
+    transform: scale(1.1);
+    box-shadow: 3px 3px 15px rgba(0, 0, 0, 0.4);
+}
+
+.whatsapp-float:active,
+.call-float:active {
+    transform: scale(0.95);
+}
+
+/* WhatsApp Button Specific */
+.whatsapp-float {
+    background-color: #25d366;
+    bottom: 100px;
+    right: 20px;
+}
+
+/* Call Button Specific */
+.call-float {
+    background-color: #007bff;
+    bottom: 30px;
+    right: 20px;
+}
+
+/* Icon Images */
+.whatsapp-icon-img,
+.call-icon-img {
+    width: 35px;
+    height: 35px;
+    object-fit: contain;
+    border-radius: 50%;
+}
+
+/* Tooltip on Hover */
+.whatsapp-float::after,
+.call-float::after {
+    content: attr(aria-label);
+    position: absolute;
+    right: 70px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    font-family: Arial, sans-serif;
+}
+
+.whatsapp-float:hover::after,
+.call-float:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .whatsapp-float,
+    .call-float {
+        width: 55px;
+        height: 55px;
+        bottom: 20px;
+    }
+    
+    .whatsapp-float {
+        right: 20px;
+        bottom: 90px;
+    }
+    
+    .call-float {
+        right: 20px;
+        bottom: 20px;
+    }
+    
+    .whatsapp-icon-img,
+    .call-icon-img {
+        width: 30px;
+        height: 30px;
+    }
+    
+    /* Hide tooltip on mobile for cleaner look */
+    .whatsapp-float::after,
+    .call-float::after {
+        display: none;
+    }
+}
+
+/* For very small screens */
+@media (max-width: 480px) {
+    .whatsapp-float,
+    .call-float {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .whatsapp-icon-img,
+    .call-icon-img {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .whatsapp-float {
+        bottom: 85px;
+    }
+}
+
+    </style>
+</head>
+<body>
+
+    <header id="header">
+        <div class="logo">CRYSTAL<span>SEA</span>FOODS</div>
+        <nav class="nav-links">
+            <a href="#home">About</a>
+            <a href="#products">Products</a>
+            <a href="#contact">Contact</a>
+        </nav>
+    </header>
+
+    <section class="brand-intro" id="home">
+        <div class="container">
+            <div class="intro-grid">
+                <div class="about-content">
+                    <div class="badge">A Legacy of Excellence Since 2015</div>
+                    <h1 class="brand-title">Capital Group <span>Crystal Sea Foods</span></h1>
+                    <p class="lead-text">
+                        Capital Group, operating under the flagship brand Crystal Sea Food Group, is a diversified seafood enterprise with over a decade of experience in the seafood industry.
+                    </p>
+                    <div class="text-body">
+                        <p>The journey of Crystal Sea Food Group began more than ten years ago as a reliable supplier of fresh fish to leading frozen seafood exporters. With deep industry knowledge, strong sourcing networks, and a clear understanding of global market demand, the Group identified opportunities in value-added processing and international exports.</p>
+                        <p>Over time, the Group established its own seafood processing and export operations, delivering high-quality frozen seafood products to international markets. Further strengthening its portfolio, the Group also ventured into the processing and export of dry fish maw, catering to specialized global demand.</p>
+                        <p>Despite significant growth and diversification, the Group has remained firmly connected to its roots. The fresh fish supply business continues to be a core strength, providing direct access to abundant raw material sources. This integrated supply chain enables the Group to procure seafood at economical rates, maintain strict quality control, and consistently meet buyer requirements with superior quality products at competitive prices.</p>
+                        <p>Year after year, Crystal Sea Food Group has emerged as a trusted and dynamic name in the seafood industry, driven by integrity, consistency, and customer satisfaction.</p>
+                    </div>
+                </div>
+
+                <div class="vision-mission-stack">
+                    <div class="glass-card">
+                        <div class="icon-circle"><i class="fas fa-eye"></i></div>
+                        <h3>Our Vision</h3>
+                        <p style="color: #4a5568;">To be a globally respected seafood group delivering high-quality, responsibly sourced products while creating long-term value for customers, partners, and stakeholders.</p>
+                    </div>
+                    <div class="glass-card">
+                        <div class="icon-circle"><i class="fas fa-bullseye"></i></div>
+                        <h3>Our Mission</h3>
+                        <ul class="mission-list">
+                            <li><i class="fas fa-check-circle"></i> <span><strong>Premium Standards:</strong> Consistently delivering seafood that meets international quality benchmarks.</span></li>
+                            <li><i class="fas fa-check-circle"></i> <span><strong>Sourcing Expertise:</strong> Leveraging our supply chain to offer the most competitive global pricing.</span></li>
+                            <li><i class="fas fa-check-circle"></i> <span><strong>Transparency:</strong> Maintaining reliable and long-term relationships with global buyers.</span></li>
+                            <li><i class="fas fa-check-circle"></i> <span><strong>Sustainability:</strong> Growing while staying rooted in our core values.</span></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="verticals-grid">
+                    <div class="vertical-item">
+                        <h3>Crystal Sea Foods</h3>
+                        <i class="fas fa-fish"></i>
+                        <span>Frozen Export</span>
+                        <p>GIDC Area, Plot #1305, Veraval, Gujarat (India) - 362265</p>
+                    </div>
+                    <div class="vertical-item">
+                        <h3>Ocean Impex</h3>
+                        <i class="fas fa-fish"></i>
+                        <span>Dry Fish Maw</span>
+                        <p>Plot #50, Satnam Industrial Area, Veraval - 362265</p>
+                    </div>
+                    <div class="vertical-item">
+                        <h3>Ultra Fish</h3>
+                        <i class="fas fa-fish"></i>
+                        <span>Fresh Supply</span>
+                        <p>Shop #34/35, Jafrabad Market, GIDC Area, Veraval - 362265</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="gallery-section">
+        <div class="container" style="text-align: center; margin-bottom: 50px;">
+            <h2 style="font-size: 2rem;">The Ocean's Finest</h2>
+            <p style="color: #666;">Export quality stock processed at our GIDC facilities</p>
+        </div>
+        <div class="gallery-wrap">
+            <div class="gallery-item"><img src="images/leather-jacket.webp" alt="Lobster"></div>
+            <div class="gallery-item"><img src="images/reefcod.webp" alt="Ribbon Fish"></div>
+            <div class="gallery-item"><img src="images/solefish.webp" alt="Silver Croaker"></div>
+            <div class="gallery-item"><img src="images/Indian-mackerel.webp" alt="Yellow Croaker"></div>
+            <div class="gallery-item"><img src="images/horse-mackerel.webp" alt="Prawns"></div>
+            <div class="gallery-item"><img src="images/spotted-grouper.webp" alt="Lobster"></div>
+            <div class="gallery-item"><img src="images/barracuda.webp" alt="Lobster"></div>
+            <div class="gallery-item"><img src="images/black-pomfret.webp" alt="Lobster"></div>
+            
+        </div>
+    </section>
+
+   <section id="products">
+    <div class="container">
+        <h2 style="text-align: center; font-size: 2.5rem;">Export Catalog</h2>
+
+        <div class="products-grid">
+
+            <!-- Product 1 -->
+            <div class="product-card">
+                <img 
+                    src="images/barracuda.webp"
+                    alt="Premium Frozen Barracuda Sphyraena Jello for Export"
+                >
+                <h3>Barracuda (Sphyraena Jello)</h3>
+                <p>Fresh-frozen barracuda, individually quick frozen to preserve flavor and texture.</p>
+            </div>
+
+            <!-- Product 2 -->
+            <div class="product-card">
+                <img 
+                    src="images/black-pomfret.webp"
+                    alt="Export Quality Frozen Black Pomfret Fish"
+                >
+                <h3>Black Pomfret (Parastromateus Niger)</h3>
+                <p>Delicate, flavorful black pomfret, expertly cleaned and flash-frozen at peak freshness.</p>
+            </div>
+
+            <!-- Product 3 -->
+            <div class="product-card">
+                <img 
+                    src="images/horse-mackerel.webp"
+                    alt="Horse Mackerel Fish Megalaspis Cordyla for Wholesale"
+                >
+                <h3>Horse Mackerel (Megalaspis Cordyla)</h3>
+                <p>High-grade horse mackerel, ideal for frying, grilling, or traditional recipes.</p>
+            </div>
+
+            <!-- Product 4 -->
+            <div class="product-card">
+                <img 
+                    src="images/Indian-mackerel.webp"
+                    alt="Fresh Frozen Indian Mackerel Rastrelliger Kanagurta"
+                >
+                <h3>Indian Mackerel (Rastrelliger Kanagurta)</h3>
+                <p>Oil-rich Indian mackerel, a staple seafood choice, frozen to retain its distinctive taste.</p>
+            </div>
+
+             <!-- Product 5 -->
+            <div class="product-card">
+                <img 
+                    src="images/leather-jacket.webp"
+                    alt="Whole Leather Jacket Fish Aluterus Monoceros Export"
+                >
+                <h3>Leather Jacket Whole (Aluterus Monoceros)</h3>
+                <p>Firm-textured whole leather jacket fish, perfect for soups, stews, and grilling.</p>
+            </div>
+
+             <!-- Product 6 -->
+            <div class="product-card">
+                <img 
+                    src="images/reefcod.webp"
+                    alt="Frozen Reefcod Epinephelus Diacanthus Grouper"
+                >
+                <h3>Reefcod Fish (Epinephelus Diacanthus)</h3>
+                <p>Mild, flaky reefcod, a versatile white fish suitable for a variety of culinary applications.</p>
+            </div>
+
+             <!-- Product 7 -->
+            <div class="product-card">
+                <img 
+                    src="images/silver-pomfret.webp"
+                    alt="Premium Silver Pomfret Pampus Argenteus Frozen"
+                >
+                <h3>Silver Pomfret - (Pampus Argenteus)</h3>
+                <p>Highly prized silver pomfret, known for its tender, sweet meat and minimal bones.</p>
+            </div>
+
+             <!-- Product 8 -->
+            <div class="product-card">
+                <img 
+                    src="images/solefish.webp"
+                    alt="Export Quality Sole Fish Cynoglossus Cynoglossus"
+                >
+                <h3>Sole Fish (Cynoglossus Cynoglossus)</h3>
+                <p>Delicate sole fish, thin-filleted and frozen, excellent for pan-frying and delicate dishes.</p>
+            </div>
+
+             <!-- Product 9 -->
+            <div class="product-card">
+                <img 
+                    src="images/spotted-grouper.webp"
+                    alt="Spotted Grouper Fish Epinephelus Chlorostigma"
+                >
+                <h3>Spotted Grouper (Epinephelus Chlorostigma)</h3>
+                <p>Spotted grouper with firm, lean flesh, ideal for steaming, baking, or curries.</p>
+            </div>
+
+             <!-- Product 10 -->
+            <div class="product-card">
+                <img 
+                    src="images/kingfish.webp"
+                    alt="Fresh Frozen King Fish Scomberomorus Commerson"
+                >
+                <h3>King Fish  (Scomberomorus Commerson)</h3>
+                <p>Meaty and flavorful kingfish steaks, a popular choice for grilling and barbecues.</p>
+            </div>
+
+             <!-- Product 11 -->
+            <div class="product-card">
+                <img 
+                    src="images/seerfish.webp"
+                    alt="Seer Fish Scomberomorus Commerson Export"
+                >
+                <h3>Seer Fish  (Scomberomorus Commerson)</h3>
+                <p>Premium seer fish, known for its large flakes and rich flavor, cut into steaks or whole.</p>
+            </div>
+
+             <!-- Product 12 -->
+            <div class="product-card">
+                <img 
+                    src="images/big-mouth-croaker.webp"
+                    alt="Big Mouth Croaker Fish Otolithoides Runneius"
+                >
+                <h3>Big Mouth Croaker (Otolithoides Runneius)</h3>
+                <p>Big mouth croaker, valued for its sweet taste and soft texture, often used in Asian cuisine.</p>
+            </div>
+
+            <!-- Product 13 -->
+            <div class="product-card">
+                <img 
+                    src="images/tiger-tooth-croaker.webp"
+                    alt="Tiger Tooth Croaker Otolithes Ruber Frozen"
+                >
+                <h3>Tiger Tooth Croaker  (Otolithes Ruber)</h3>
+                <p>Tiger tooth croaker, featuring a distinctive appearance and firm, flavorful flesh.</p>
+            </div>
+
+            <!-- Product 14 -->
+            <div class="product-card">
+                <img 
+                    src="images/ribbon-fish-wr.webp"
+                    alt="Whole Round Ribbon Fish Lepturacanthus Savala"
+                >
+                <h3>Ribbon Fish WR (Lepturacanthus Savala)</h3>
+                <p>Silver ribbon fish, whole round (WR), a unique variety with a delicate, savory flavor.</p>
+            </div>
+
+            <!-- Product 15 -->
+            <div class="product-card">
+                <img 
+                    src="images/silver-croaker.webp"
+                    alt="Silver Croaker Fish Johnius Dussumieri"
+                >
+                <h3>Silver Croacker - (Johnius Dussumieri)</h3>
+                <p>Silver croaker, a small to medium-sized fish perfect for frying whole or in curries.</p>
+            </div>
+
+            <!-- Product 16 -->
+            <div class="product-card">
+                <img 
+                    src="images/japanese-threadfin-bream .webp"
+                    alt="Japanese Threadfin Bream Nemipterus Japonicus"
+                >
+                <h3>Japanese Threadfin Bream  (Nemipterus Japonicus)</h3>
+                <p>Japanese threadfin bream, esteemed for its exceptionally tender and sweet meat.</p>
+            </div>
+
+            <!-- Product 17 -->
+            <div class="product-card">
+                <img 
+                    src="images/bull-eye-fish.webp"
+                    alt="Bull Eye Fish Priacanthus Macracanthus Export"
+                >
+                <h3>Bull Eye Fish (Priacanthus Macracanthus)</h3>
+                <p>Bull eye fish, recognizable by its large eyes, offers moist and mild-flavored flesh.</p>
+            </div>
+
+            <!-- Product 18 -->
+            <div class="product-card">
+                <img 
+                    src="images/squid-whole.webp"
+                    alt="Whole Cleaned Squid Loligo Duvauceli Seafood"
+                >
+                <h3>Squid Whole (Loligo Duvauceli)</h3>
+                <p>Whole cleaned squid, tender and ready to cook for stir-fries, grilling, or stuffing.</p>
+            </div>
+
+            <!-- Product 19 -->
+            <div class="product-card">
+                <img 
+                    src="images/eel-fish.webp"
+                    alt="Freshwater Eel Fish Anguilla Bengalensis"
+                >
+                <h3>Eel Fish (Anguilla Bengalensis)</h3>
+                <p>Freshwater eel, rich and flavorful, a delicacy often grilled or used in specialty dishes.</p>
+            </div>
+
+            <!-- Product 20 -->
+            <div class="product-card">
+                <img 
+                    src="images/cuttle-fish.webp"
+                    alt="Whole Cuttlefish Sepia Pharaonis for Cooking"
+                >
+                <h3>Cuttle Fish Whole (Sepia Pharaonis)</h3>
+                <p>Whole cuttlefish, similar to squid but with a richer flavor and unique, tender texture.</p>
+            </div>
+
+             <!-- Product 21 -->
+            <div class="product-card">
+                <img 
+                    src="images/black-sea-bream.webp"
+                    alt="Black Sea Bream Fish Acanthopagrus Latus"
+                >
+                <h3>Black Sea Bream (Acanthopagrus Latus)</h3>
+                <p>Black sea bream, a firm-fleshed fish with excellent flavor, suitable for whole baking or frying.</p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+    <section id="contact">
+        <div class="container">
+            <div class="contact-grid">
+                <div class="contact-card">
+                    <h2 style="color: white; margin-bottom: 10px;">Connect With Us</h2>
+                    <p style="color: rgba(255,255,255,0.7); margin-bottom: 40px;">For export inquiries, price quotes, and global partnerships.</p>
+                    <div class="info-item">
+                        <div class="info-icon"><i class="fas fa-user-tie"></i></div>
+                        <div><span style="display:block; font-size: 0.8rem; opacity: 0.6;">Founder & CEO</span><strong>Zuber Chauhan</strong></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon"><i class="fab fa-whatsapp"></i></div>
+                        <div><span style="display:block; font-size: 0.8rem; opacity: 0.6;">Phone / WhatsApp</span><strong>+91 8200107344</strong></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon"><i class="fas fa-envelope"></i></div>
+                        <div><span style="display:block; font-size: 0.8rem; opacity: 0.6;">Email Address</span><strong>crystalseafoods5@gmail.com</strong></div>
+                    </div>
+                    <div class="address-bento">
+                        <div class="addr-box" style="grid-column: span 2;">
+                            <h4>Crystal Sea Foods (HQ)</h4>
+                            <p>GIDC Area, Plot #1305, Veraval, Gujarat (India) - 362265</p>
+                        </div>
+                        <div class="addr-box"><h4>Ocean Impex</h4><p>Plot #50, Satnam Industrial</p></div>
+                        <div class="addr-box"><h4>Ultra Fish</h4><p>Shop #34/35, GIDC Market</p></div>
+                    </div>
+                </div>
+                <div style="background: #f8fafc; padding: 40px; border-radius: 32px; display: flex; align-items: center; justify-content: center; text-align: center;">
+                    <div>
+                        <i class="fas fa-ship" style="font-size: 4rem; color: #cbd5e1; margin-bottom: 20px;"></i>
+                        <h3>Global Logistics</h3>
+                        <p style="color: #64748b;">Shipping premium frozen catches to over 20+ countries worldwide.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <h2 style="color: white; margin-bottom: 15px;">CAPITAL GROUP</h2>
+            <div class="footer-bottom">&copy; 2015 - 2026 Crystal Sea Food Group.</div>
+        </div>
+    </footer>
+
+    <script>
+        const products = [
+            { name: "Leather Jacket Whole", sciName: "Aluterus Monoceros" },
+            { name: "Black Pomfret", sciName: "Parastromateus Niger" },
+            { name: "Silver Pomfret", sciName: "Pampus Argenteus" },
+            { name: "Barracuda", sciName: "Sphyraena Jello" },
+            { name: "Horse Mackerel", sciName: "Megalaspis Cordyla" },
+            { name: "Indian Mackerel", sciName: "Rastrelliger Kanagurta" }
+            
+        ];
+        const localImages = ['images/leather-jacket.webp','images/black-pomfret.webp','images/silver-pomfret.webp','images/barracuda.webp','images/horse-mackerel.webp','images/indian-mackerel.webp'];
+        const grid = document.getElementById('productsGrid');
+        products.forEach((p, i) => {
+            const img = localImages[i % localImages.length];
+            grid.innerHTML += `
+                <div class="product-card">
+                    <div class="product-img-wrap"><div class="product-img" style="background-image: url('${img}')"></div></div>
+                    <div class="product-content"><span class="sci-tag">${p.sciName}</span><h3>${p.name}</h3></div>
+                </div>`;
+        });
+        
+        // Dynamic scroll effect for glass navbar
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.style.padding = '10px 40px';
+                header.style.background = 'rgba(255, 255, 255, 0.85)';
+                header.style.width = '85%';
+            } else {
+                header.style.padding = '15px 40px';
+                header.style.background = 'var(--glass)';
+                header.style.width = '90%';
+            }
+        });
+    </script>
+
+    <!-- Floating WhatsApp Button -->
+<a href="https://wa.me/+918200107344" class="whatsapp-float" target="_blank" rel="noopener noreferrer">
+    <img src="../images/whatsapp.gif" alt="Chat with us on WhatsApp" class="whatsapp-icon-img">
+</a>
+
+<!-- Floating Call Button -->
+<a href="tel:+918200107344" class="call-float" target="_blank" rel="noopener noreferrer">
+    <img src="../images/call.gif" alt="Call us at +91 95749 90800" class="call-icon-img">
+</a>
+</body>
+</html>
