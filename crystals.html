@@ -423,10 +423,11 @@
     }
 }
 
-.catalogue-float {
+/* Floating WeChat Button */
+.wechat-float {
     position: fixed;
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -436,24 +437,28 @@
     transition: all 0.3s ease-in-out;
     text-decoration: none;
 
-    background-color: #f9f9f8; /* eye-catching catalogue color */
-    bottom: 170px;             /* stacked above WhatsApp */
+    /* Official WeChat Green Color */
+    background-color: #f8f8f8; 
+    bottom: 170px; /* Positioned above WhatsApp */
     right: 20px;
 }
 
-.catalogue-float:hover {
+.wechat-float:hover {
     transform: scale(1.1);
     box-shadow: 3px 3px 15px rgba(0, 0, 0, 0.4);
+    background-color: #fefefe; /* Slightly darker green on hover */
 }
 
-.catalogue-float:active {
+.wechat-float:active {
     transform: scale(0.95);
 }
-.catalogue-icon-img {
-    width: 50px;
-    height: 50px;
+
+/* WeChat Icon Styling */
+.wechat-icon-img {
+    width: 65px; /* Adjusted slightly for better padding inside the circle */
+    height: 65px;
     object-fit: contain;
-    border-radius: 50%;
+    border-radius: 50px;
 }
 
     </style>
@@ -862,16 +867,15 @@
 </a>
 
 <!-- Floating Catalogue Download Button -->
-<a href="images/pdf.pdf"
-   class="catalogue-float"
-   download
-   aria-label="Download Export Catalogue PDF"
-   target="_blank"
-   rel="noopener noreferrer">
-
-    <img src="images/download-catelogue.gif"
-         alt="Download Export Catalogue PDF"
-         class="catalogue-icon-img">
+<a href="weixin://dl/chat?CRYSTALSEAFOODS" 
+   class="wechat-float" 
+   target="_blank" 
+   rel="noopener noreferrer"
+   aria-label="Chat with us on WeChat">
+    
+    <img src="images/m024t0255_i_discord_16oct22.jpg" 
+         alt="Chat with us on WeChat" 
+         class="wechat-icon-img">
 </a>
 
 </body>
