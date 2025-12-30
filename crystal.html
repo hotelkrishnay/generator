@@ -36,7 +36,7 @@
 
         /* --- STYLISH GLASS NAVIGATION --- */
         header {
-            position: fixed;
+            position: relative;
             top: 20px;
             left: 50%;
             transform: translateX(-50%);
@@ -598,6 +598,251 @@
     border-radius: 50px;
 }
 
+/* Android-Style Bottom Navigation */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    padding: 12px 16px;
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+    display: flex;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.bottom-nav-container {
+    position: relative;
+    display: flex;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border-radius: 28px;
+    padding: 8px;
+    max-width: 360px;
+    width: 100%;
+    box-shadow: 
+        0 -4px 20px rgba(0, 0, 0, 0.05),
+        0 10px 40px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(255, 255, 255, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    pointer-events: auto;
+}
+
+.nav-tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    padding: 12px 8px;
+    border-radius: 20px;
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 2;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.nav-icon {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 6px;
+    position: relative;
+    z-index: 1;
+}
+
+.nav-icon svg {
+    width: 50%;
+    height: 50%;
+    fill: #046233;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #140000;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    letter-spacing: 0.2px;
+}
+
+/* Active Tab Styles */
+.nav-tab.active .nav-icon svg {
+    fill: #23F207;
+    transform: translateY(-2px);
+}
+
+.nav-tab.active .nav-label {
+    color: #23F207;
+    font-weight: 600;
+    transform: translateY(-1px);
+}
+
+.active-indicator {
+    position: absolute;
+    top: -8px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #23F207;
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-tab.active .active-indicator {
+    opacity: 1;
+    transform: translateY(-3px);
+}
+
+/* Hover Effects */
+@media (hover: hover) {
+    .nav-tab:hover {
+        background: rgba(35, 242, 7, 0.05);
+    }
+    
+    .nav-tab:hover .nav-icon svg {
+        fill: #1ED700;
+        transform: scale(1.1);
+    }
+    
+    .nav-tab:hover .nav-label {
+        color: #1ED700;
+    }
+}
+
+/* Touch Feedback */
+.nav-tab:active {
+    background: rgba(35, 242, 7, 0.1);
+    transform: scale(0.95);
+    transition: transform 0.1s ease;
+}
+
+/* Background Highlight for Active Tab */
+.nav-background {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    width: calc(33.333% - 16px);
+    height: calc(100% - 16px);
+    background: rgba(35, 242, 7, 0.1);
+    border-radius: 20px;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1;
+    border: 1px solid rgba(35, 242, 7, 0.15);
+    box-shadow: 
+        0 4px 12px rgba(35, 242, 7, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+/* Move background for different active tabs */
+.bottom-nav-container[data-active-tab="0"] .nav-background {
+    transform: translateX(0);
+}
+
+.bottom-nav-container[data-active-tab="1"] .nav-background {
+    transform: translateX(100%);
+}
+
+.bottom-nav-container[data-active-tab="2"] .nav-background {
+    transform: translateX(200%);
+}
+
+/* Responsive Design */
+@media (min-width: 768px) {
+    .bottom-nav {
+        display: none; /* Hide on desktop, show only on mobile */
+    }
+}
+
+@media (max-width: 374px) {
+    .nav-label {
+        font-size: 11px;
+    }
+    
+    .nav-tab {
+        padding: 10px 6px;
+    }
+}
+
+/* Safe Area Support for Notches */
+@supports (padding: max(0px)) {
+    .bottom-nav {
+        padding-bottom: max(16px, env(safe-area-inset-bottom));
+    }
+}
+
+/* Animation for Tab Switching */
+@keyframes tabBounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-3px);
+    }
+}
+
+.nav-tab.active .nav-icon {
+    animation: tabBounce 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Ripple Effect */
+.nav-tab {
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-tab::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: rgba(35, 242, 7, 0.3);
+    opacity: 0;
+    border-radius: 100%;
+    transform: scale(1, 1) translate(-50%);
+    transform-origin: 50% 50%;
+}
+
+.nav-tab:focus:not(:active)::after {
+    animation: ripple 1s ease-out;
+}
+
+@keyframes ripple {
+    0% {
+        transform: scale(0, 0);
+        opacity: 0.5;
+    }
+    20% {
+        transform: scale(25, 25);
+        opacity: 0.3;
+    }
+    100% {
+        opacity: 0;
+        transform: scale(40, 40);
+    }
+}
+
+/* Hide on Desktop */
+@media (min-width: 768px) {
+    .bottom-nav {
+        display: none;
+    }
+}
+
+/* Optional: Add bottom spacing for content on mobile */
+@media (max-width: 767px) {
+    body {
+        padding-bottom: 80px;
+    }
+}
+
+
     </style>
 </head>
 <body>
@@ -958,6 +1203,125 @@
     </footer>
 
     <script>
+
+        /* JavaScript for Interactive Behavior */
+
+document.addEventListener('DOMContentLoaded', function() {
+    const bottomNav = document.querySelector('.bottom-nav');
+    const navTabs = document.querySelectorAll('.nav-tab');
+    const navContainer = document.querySelector('.bottom-nav-container');
+    
+    // Function to set active tab
+    function setActiveTab(index) {
+        navTabs.forEach(tab => tab.classList.remove('active'));
+        navTabs[index].classList.add('active');
+        navContainer.setAttribute('data-active-tab', index);
+        
+        // Add haptic feedback if available
+        if (navigator.vibrate) {
+            navigator.vibrate(10);
+        }
+    }
+    
+    // Set initial active tab based on URL hash
+    function setInitialTab() {
+        const hash = window.location.hash;
+        let activeIndex = 0;
+        
+        switch(hash) {
+            case '#products':
+                activeIndex = 1;
+                break;
+            case '#contact':
+                activeIndex = 2;
+                break;
+            default:
+                activeIndex = 0;
+        }
+        
+        setActiveTab(activeIndex);
+    }
+    
+    // Event listeners for tabs
+    navTabs.forEach((tab, index) => {
+        tab.addEventListener('click', function(e) {
+            e.preventDefault();
+            setActiveTab(index);
+            
+            // Scroll to section
+            const targetId = this.getAttribute('href').substring(1);
+            const targetSection = document.getElementById(targetId);
+            
+            if (targetSection) {
+                window.scrollTo({
+                    top: targetSection.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+            }
+        });
+        
+        // Add touch feedback
+        tab.addEventListener('touchstart', function() {
+            this.classList.add('touch-active');
+        });
+        
+        tab.addEventListener('touchend', function() {
+            this.classList.remove('touch-active');
+        });
+    });
+    
+    // Auto-hide/show on scroll
+    let lastScrollTop = 0;
+    const navHeight = bottomNav.offsetHeight;
+    
+    window.addEventListener('scroll', function() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+        if (scrollTop > lastScrollTop && scrollTop > navHeight) {
+            // Scrolling down
+            bottomNav.style.transform = 'translateY(100%)';
+        } else {
+            // Scrolling up
+            bottomNav.style.transform = 'translateY(0)';
+        }
+        
+        lastScrollTop = scrollTop;
+    });
+    
+    // Initialize
+    setInitialTab();
+    
+    // Update active tab on scroll
+    window.addEventListener('scroll', function() {
+        const sections = ['home', 'products', 'contact'];
+        let currentSection = 'home';
+        
+        sections.forEach(section => {
+            const element = document.getElementById(section);
+            if (element) {
+                const rect = element.getBoundingClientRect();
+                if (rect.top <= window.innerHeight / 2 && rect.bottom >= window.innerHeight / 2) {
+                    currentSection = section;
+                }
+            }
+        });
+        
+        const index = sections.indexOf(currentSection);
+        if (index !== -1) {
+            setActiveTab(index);
+        }
+    });
+    
+    // Handle window resize
+    window.addEventListener('resize', function() {
+        if (window.innerWidth >= 768) {
+            bottomNav.style.display = 'none';
+        } else {
+            bottomNav.style.display = 'flex';
+        }
+    });
+});
+ 
         const products = [
             { name: "Leather Jacket Whole", sciName: "Aluterus Monoceros" },
             { name: "Black Pomfret", sciName: "Parastromateus Niger" },
@@ -1014,6 +1378,42 @@
          alt="Chat with us on WeChat" 
          class="wechat-icon-img">
 </a>
-
+<!-- Add this at the bottom of your body, before closing </body> -->
+<div class="bottom-nav">
+    <div class="bottom-nav-container">
+        <a href="#home" class="nav-tab active">
+            <div class="nav-icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                </svg>
+            </div>
+            <span class="nav-label">Home</span>
+            <div class="active-indicator"></div>
+        </a>
+        
+        <a href="#products" class="nav-tab">
+            <div class="nav-icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-6 0h-4V4h4v2z"/>
+                    <path d="M13 10h-2v3H8v2h3v3h2v-3h3v-2h-3z"/>
+                </svg>
+            </div>
+            <span class="nav-label">Products</span>
+            <div class="active-indicator"></div>
+        </a>
+        
+        <a href="#contact" class="nav-tab">
+            <div class="nav-icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z"/>
+                </svg>
+            </div>
+            <span class="nav-label">Contact</span>
+            <div class="active-indicator"></div>
+        </a>
+        
+        <div class="nav-background"></div>
+    </div>
+</div>
 </body>
 </html>
